@@ -174,6 +174,7 @@ package
       
       private function DrawUpdate() : void
       {
+         var pad:Number = this._padding;
          this.background.alpha = this._backgroundAlpha;
          this.background.graphics.clear();
          this.arrow.graphics.clear();
@@ -227,12 +228,13 @@ package
             this.arrow.graphics.moveTo(this._width - 12,this._height / 2 - 6);
             this.arrow.graphics.lineTo(this._width - 2,this._height / 2);
             this.arrow.graphics.lineTo(this._width - 12,this._height / 2 + 6);
+            pad += 8;
          }
          this.background.graphics.endFill();
          this.arrow.graphics.endFill();
-         this.textLabel.x = 10;
+         this.textLabel.x = pad;
          this.textLabel.y = 0;
-         this.textLabel.width = _width - 20;
+         this.textLabel.width = _width - pad * 2;
          this.textLabel.height = _height;
          if(isDisabled && isSelected)
          {
@@ -254,8 +256,6 @@ package
             this.textLabel.defaultTextFormat = this._textFormat;
             this.textLabel.setTextFormat(this._textFormat);
          }
-         TextFieldEx.setVerticalAlign(this.textLabel,TextFieldEx.VALIGN_CENTER);
-         TextFieldEx.setTextAutoSize(this.textLabel,TextFieldEx.TEXTAUTOSZ_SHRINK);
          GlobalFunc.SetText(textLabel,_text);
       }
       
@@ -273,8 +273,8 @@ package
          tf.height = _height;
          tf.defaultTextFormat = this._textFormat;
          tf.setTextFormat(this._textFormat);
-         TextFieldEx.setVerticalAlign(tf,TextFieldEx.VALIGN_CENTER);
          TextFieldEx.setTextAutoSize(tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
+         TextFieldEx.setVerticalAlign(tf,TextFieldEx.VALIGN_CENTER);
       }
       
       public function get text() : String
@@ -307,6 +307,13 @@ package
       override public function set height(value:Number) : void
       {
          _height = value;
+         this.DrawUpdate();
+      }
+      
+      public function set padding(value:Number) : void
+      {
+         this._padding = value;
+         this.formatTextField(this.textLabel);
          this.DrawUpdate();
       }
       

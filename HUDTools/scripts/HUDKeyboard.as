@@ -79,6 +79,7 @@ package
          {
             var bKey:String = String(i);
             buttonsList[bKey] = new HUDButton(this.size,this.size);
+            buttonsList[bKey].padding = 0;
             buttonsList[bKey].x = i % this.columns * this.size;
             buttonsList[bKey].y = int(i / this.columns) * this.size;
             buttonsList[bKey].text = charButtons.charAt(i);
@@ -91,6 +92,7 @@ package
             bIndex = this.rows * this.columns - (i + 1);
             bKey = String(bIndex);
             buttonsList[bKey] = new HUDButton(this.size,this.size);
+            buttonsList[bKey].padding = 0;
             buttonsList[bKey].x = bIndex % this.columns * this.size;
             buttonsList[bKey].y = int(bIndex / this.columns) * this.size;
             buttonsList[bKey].text = endButtons[i];
