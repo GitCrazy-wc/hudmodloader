@@ -78,7 +78,6 @@ package
       {
          super.SetMeterPercent(param1);
          this.PercentText_mc.DisplayText_tf.text = Math.round(param1);
-         this.PercentText_mc.DropShadowText_tf.text = Math.round(param1);
       }
       
       private function onGlowRollOffComplete(param1:Event) : void

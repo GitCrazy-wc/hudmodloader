@@ -155,17 +155,21 @@ package Shared.AS3
                if(param3)
                {
                   _loc4_ = "IconCu_CapsHUD";
-                  break;
                }
-               _loc4_ = "IconCu_Caps";
+               else
+               {
+                  _loc4_ = "IconCu_Caps";
+               }
                break;
             case CURRENCY_LEGENDARY_TOKENS:
                if(param3)
                {
                   _loc4_ = "IconCu_LegendaryTokenHUD";
-                  break;
                }
-               _loc4_ = "IconCu_LegendaryToken";
+               else
+               {
+                  _loc4_ = "IconCu_LegendaryToken";
+               }
                break;
             case CURRENCY_POSSUM_BADGES:
                _loc4_ = "IconCu_Possum";
@@ -177,17 +181,21 @@ package Shared.AS3
                if(param3)
                {
                   _loc4_ = "IconCu_GBHUD";
-                  break;
                }
-               _loc4_ = "IconCu_GB";
+               else
+               {
+                  _loc4_ = "IconCu_GB";
+               }
                break;
             case CURRENCY_PERK_COINS:
                if(param3)
                {
                   _loc4_ = "IconCu_LGNPerkCoinHUD";
-                  break;
                }
-               _loc4_ = "IconCu_LGNPerkCoin";
+               else
+               {
+                  _loc4_ = "IconCu_LGNPerkCoin";
+               }
                break;
             case CURRENCY_EXPEDITION_ULTRACITE_BATTERY:
                if(param3)
@@ -199,9 +207,11 @@ package Shared.AS3
                if(param3)
                {
                   _loc4_ = "IconCu_StampsHUD";
-                  break;
                }
-               _loc4_ = "IconCu_Stamps";
+               else
+               {
+                  _loc4_ = "IconCu_Stamps";
+               }
                break;
             case CURRENCY_SUPPLIES:
                _loc4_ = "IconCu_SuppliesHUD";

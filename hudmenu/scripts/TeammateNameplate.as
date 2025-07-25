@@ -484,9 +484,11 @@ package
                if(this._inLOS && this._Distance < DISTANCE_VISIBLE_THRESHOLD)
                {
                   _loc3_ = true;
-                  break;
                }
-               _loc1_ = true;
+               else
+               {
+                  _loc1_ = true;
+               }
                break;
             case "teammate":
                _loc5_ = this._IsBeyondRailLimits;

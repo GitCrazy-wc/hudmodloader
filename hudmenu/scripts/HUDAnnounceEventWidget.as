@@ -394,9 +394,8 @@ package
                         {
                            _loc2_ = this.animateEvent(_loc4_);
                            _loc5_ = _loc2_;
-                           break;
                         }
-                        if(Boolean(this.m_CurEvent) && this.m_CurEvent.questInstanceId == _loc4_.questInstanceId)
+                        else if(Boolean(this.m_CurEvent) && this.m_CurEvent.questInstanceId == _loc4_.questInstanceId)
                         {
                            if(this.m_CurClip == this.AnnounceAvailableQuest_mc)
                            {
@@ -419,7 +418,6 @@ package
                         {
                            _loc2_ = this.animateEvent(_loc4_);
                            _loc5_ = _loc2_;
-                           break;
                         }
                   }
                   if(_loc5_)
@@ -697,9 +695,8 @@ package
                      }
                   }
                   GlobalFunc.PlayMenuSound("UIQuestCompleteRewardItem");
-                  break;
                }
-               if(!this.m_CurEvent.isCompletionRewards)
+               else if(!this.m_CurEvent.isCompletionRewards)
                {
                   this.DisplaySimpleRewards(this.m_CurEvent);
                }
@@ -722,6 +719,7 @@ package
                   name = name.substr(0,starsIndex);
                   GlobalFunc.PlayMenuSound("UIFanfareLegendaryCrafted0" + this.m_CurEvent.numLegendaryStars);
                }
+               eventClip.NewAnim_mc.visible = this.m_CurEvent.featuredItemShowNew;
                eventClip.FanfareInternal_mc.Name_mc.Name_tf.text = name;
                break;
             case FANFARE_TYPE_QUESTAVAILABLE:
@@ -780,9 +778,11 @@ package
                if(this.m_CurEvent.isEvent)
                {
                   GlobalFunc.PlayMenuSound("UIEventStart");
-                  break;
                }
-               GlobalFunc.PlayMenuSound("UIQuestNew");
+               else
+               {
+                  GlobalFunc.PlayMenuSound("UIQuestNew");
+               }
                break;
             case FANFARE_TYPE_MESSAGETEXT:
                eventClip = this.AnnounceMessage_mc;
@@ -866,7 +866,6 @@ package
                if(this.m_CurEvent.soundId != 0)
                {
                   GlobalFunc.PlayMenuSoundWithFormID(this.m_CurEvent.soundId);
-                  break;
                }
          }
          if(eventClip != null && eventTypeData != null)
@@ -1195,12 +1194,13 @@ package
                      {
                         this.m_HoldTimer = new BSButtonHintHoldTimer(500);
                         addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-                        break;
                      }
-                     this.m_HoldTimer = null;
-                     this.m_TrackButton.holdPercent = 0;
-                     removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-                     break;
+                     else
+                     {
+                        this.m_HoldTimer = null;
+                        this.m_TrackButton.holdPercent = 0;
+                        removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
+                     }
                   }
             }
          }

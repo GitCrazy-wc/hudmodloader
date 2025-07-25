@@ -119,9 +119,11 @@ package
                      if(!_loc4_ && !_loc5_)
                      {
                         MessageArray.push(new HUDMessageItemData(_loc3_.messageId,_loc3_.type,_loc3_,_loc3_.sound));
-                        break;
                      }
-                     DiscardMessage(_loc3_.messageId);
+                     else
+                     {
+                        DiscardMessage(_loc3_.messageId);
+                     }
                      break;
                   case "remove":
                      _loc3_ = MessagePayload.data.messages[_loc2_];

@@ -58,6 +58,7 @@ package
       {
          this.m_Data = param1;
          var _loc2_:String = "gold";
+         var _loc3_:String = "gold";
          var _loc4_:String = "";
          this.capsGained_mc.alpha = 0;
          this.capsLost_mc.alpha = 0;
@@ -168,9 +169,9 @@ package
                this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc5_].playerName;
          }
          this.pvpStrokeColor_mc.gotoAndStop(_loc2_);
-         this.pvpPlayerScoreText_mc.gotoAndStop("gold");
-         this.pvpEnemyScoreText_mc.gotoAndStop("gold");
-         this.pvpVsText_mc.gotoAndStop("gold");
+         this.pvpPlayerScoreText_mc.gotoAndStop(_loc3_);
+         this.pvpEnemyScoreText_mc.gotoAndStop(_loc3_);
+         this.pvpVsText_mc.gotoAndStop(_loc3_);
          TextFieldEx.setTextAutoSize(this.pvpPlayerName_mc.pvpPlayerName_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
          this.capsGained_mc.capsGained_tf.text = param1.capsGained;
          this.capsLost_mc.capsLost_tf.text = param1.capsLost;

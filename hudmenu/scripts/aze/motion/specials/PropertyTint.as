@@ -98,8 +98,7 @@ package aze.motion.specials
       
       override public function dispose() : void
       {
-         this.delta = null;
-         this.start = null;
+         this.start = this.delta = null;
          this.tvalue = null;
          super.dispose();
       }

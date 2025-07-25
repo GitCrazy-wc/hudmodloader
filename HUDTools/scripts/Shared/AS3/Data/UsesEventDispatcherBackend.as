@@ -51,6 +51,7 @@ package Shared.AS3.Data
       
       public function dispatchEvent(param1:Event) : Boolean
       {
+         var _loc2_:Boolean = false;
          if(this.eventDispatcherBackend is BSUIEventDispatcherBackend)
          {
             this.eventDispatcherBackend.DispatchEventToGame(param1);

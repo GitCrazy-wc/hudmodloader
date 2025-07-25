@@ -246,14 +246,12 @@ package
                      {
                         this.updateQuestTypeFrame();
                      }
-                     break;
                   }
-                  if(this.m_IsAI)
+                  else if(this.m_IsAI)
                   {
                      this.Marker_mc.gotoAndStop("QuestNPC");
-                     break;
                   }
-                  if(this.m_MarkerType == "ActiveQuest" || this.m_MarkerType == "InactiveQuest")
+                  else if(this.m_MarkerType == "ActiveQuest" || this.m_MarkerType == "InactiveQuest")
                   {
                      this.updateQuestTypeFrame();
                   }

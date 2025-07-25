@@ -927,7 +927,7 @@ package
          var _loc1_:uint = 0;
          while(_loc1_ < this.m_DisplayedQuests.length)
          {
-            if(true)
+            if(true || this.m_DisplayedQuests[_loc1_].needArrangeObjectives)
             {
                this.m_DisplayedQuests[_loc1_].arrangeObjectives(false);
             }
@@ -1473,12 +1473,16 @@ package
                   if(param1.shiftKey)
                   {
                      this.test_questRemove();
-                     break;
                   }
-                  this.test_questAdd();
-                  break;
+                  else
+                  {
+                     this.test_questAdd();
+                  }
                }
-               this.test_questComplete(param1.shiftKey);
+               else
+               {
+                  this.test_questComplete(param1.shiftKey);
+               }
                break;
             case 117:
                if(param1.ctrlKey)
@@ -1486,36 +1490,46 @@ package
                   if(param1.shiftKey)
                   {
                      this.test_objectiveRemove();
-                     break;
                   }
-                  this.test_objectiveAdd();
-                  break;
+                  else
+                  {
+                     this.test_objectiveAdd();
+                  }
                }
-               this.test_objectiveComplete(param1.shiftKey);
+               else
+               {
+                  this.test_objectiveComplete(param1.shiftKey);
+               }
                break;
             case 118:
                if(param1.shiftKey)
                {
                   this.test_questStateUpdate("isActive",false,QUEST_EVENT_INACTIVE);
-                  break;
                }
-               this.test_questStateUpdate("isActive",true,QUEST_EVENT_ACTIVE);
+               else
+               {
+                  this.test_questStateUpdate("isActive",true,QUEST_EVENT_ACTIVE);
+               }
                break;
             case 119:
                if(param1.shiftKey)
                {
                   this.test_questStateUpdate("isDisplayedToTeam",false,QUEST_EVENT_UNDISPLAYEDTOTEAM);
-                  break;
                }
-               this.test_questStateUpdate("isDisplayedToTeam",true,QUEST_EVENT_DISPLAYEDTOTEAM);
+               else
+               {
+                  this.test_questStateUpdate("isDisplayedToTeam",true,QUEST_EVENT_DISPLAYEDTOTEAM);
+               }
                break;
             case 123:
                if(param1.shiftKey)
                {
                   this.test_objectiveTimerChange();
-                  break;
                }
-               this.test_questTimerChange();
+               else
+               {
+                  this.test_questTimerChange();
+               }
                break;
             case 114:
                if(param1.ctrlKey)
@@ -1523,13 +1537,16 @@ package
                   if(param1.shiftKey)
                   {
                      this.test_objectiveAlertChange();
-                     break;
                   }
-                  this.test_objectiveProgressChange();
-                  break;
+                  else
+                  {
+                     this.test_objectiveProgressChange();
+                  }
                }
-               this.test_objectiveCountUpdate(param1.shiftKey);
-               break;
+               else
+               {
+                  this.test_objectiveCountUpdate(param1.shiftKey);
+               }
          }
       }
       
@@ -1963,9 +1980,8 @@ package
                            {
                               --objective.count;
                            }
-                           break;
                         }
-                        if(objective.count < objective.countMax)
+                        else if(objective.count < objective.countMax)
                         {
                            ++objective.count;
                         }

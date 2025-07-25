@@ -249,7 +249,6 @@ package Shared.AS3
                if(BEtoENMap.hasOwnProperty(param1))
                {
                   param1 = BEtoENMap[param1];
-                  break;
                }
          }
          return param1;

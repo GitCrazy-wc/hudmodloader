@@ -982,6 +982,7 @@ package
       {
          this.m_FanfareAnimating = true;
          var _loc3_:Boolean = false;
+         dispatchEvent(new HUDModUserEvent(param1,param2));
          if(this.FrobberWidget_mc.show && !_loc3_)
          {
             _loc3_ = this.FrobberWidget_mc.ProcessUserEvent(param1,param2);

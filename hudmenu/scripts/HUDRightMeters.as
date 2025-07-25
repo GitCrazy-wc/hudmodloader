@@ -5,7 +5,6 @@ package
    import Shared.GlobalFunc;
    import Shared.HUDModes;
    import flash.display.MovieClip;
-   import flash.events.Event;
    import flash.utils.clearTimeout;
    import flash.utils.setTimeout;
    import scaleform.gfx.Extensions;
@@ -77,7 +76,7 @@ package
       
       private var ThirstTimeout:int = -1;
       
-      private var PercentIndefiniteShow:Number = 0.2;
+      private const PercentIndefiniteShow:Number = 0.2;
       
       private const PercentChangeVal:Number = 0.03;
       
@@ -91,7 +90,6 @@ package
       
       public function HUDRightMeters()
       {
-         this.PercentIndefiniteShow = 0.2;
          super();
          addFrameScript(0,this.frame1,1,this.frame2);
          BSUIDataManager.Subscribe("HUDRightMetersData",this.onStateUpdate);
@@ -324,7 +322,6 @@ package
          {
             this.bShowHunger = true;
             this.HUDHungerMeter_mc.gotoAndPlay("rollOn");
-            dispatchEvent(new Event("HUD::HungerFadedIn"));
          }
       }
       
@@ -335,7 +332,6 @@ package
             this.HungerTimeout = -1;
             this.bShowHunger = false;
             this.HUDHungerMeter_mc.gotoAndPlay("rollOff");
-            dispatchEvent(new Event("HUD::HungerFadedOut"));
          }
       }
       
@@ -364,7 +360,6 @@ package
          {
             this.bShowThirst = true;
             this.HUDThirstMeter_mc.gotoAndPlay("rollOn");
-            dispatchEvent(new Event("HUD::ThirstFadedIn"));
          }
       }
       
@@ -375,7 +370,6 @@ package
             this.ThirstTimeout = -1;
             this.bShowThirst = false;
             this.HUDThirstMeter_mc.gotoAndPlay("rollOff");
-            dispatchEvent(new Event("HUD::ThirstFadedOut"));
          }
       }
       
@@ -404,7 +398,6 @@ package
          {
             this.bShowFeral = true;
             this.FeralMeter_mc.gotoAndPlay("rollOn");
-            dispatchEvent(new Event("HUD::FeralFadedIn"));
          }
       }
       
@@ -414,7 +407,6 @@ package
          {
             this.bShowFeral = false;
             this.FeralMeter_mc.gotoAndPlay("rollOff");
-            dispatchEvent(new Event("HUD::FeralFadedOut"));
          }
       }
       
@@ -430,11 +422,6 @@ package
       public function SetOverheatMeterPercent(param1:Number) : *
       {
          this.OverheatMeter_mc.MeterBar_mc.Percent = param1;
-      }
-      
-      public function SetPercentIndefiniteShow(param1:Number) : *
-      {
-         this.PercentIndefiniteShow = param1;
       }
       
       internal function frame1() : *

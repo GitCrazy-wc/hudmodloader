@@ -44,6 +44,7 @@ package Shared.AS3
       private function getIconClip(param1:String, param2:String = "", param3:String = null) : MovieClip
       {
          var _loc4_:Object = null;
+         var _loc5_:MovieClip = null;
          if(param3 != null && (param1 == null || param1.length <= 0))
          {
             param1 = param3;

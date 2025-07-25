@@ -64,9 +64,11 @@ package com.adobe.serialization.json
                {
                   _loc1_ = JSONToken.create(JSONTokenType.TRUE,true);
                   this.nextChar();
-                  break;
                }
-               this.parseError("Expecting \'true\' but found " + _loc2_);
+               else
+               {
+                  this.parseError("Expecting \'true\' but found " + _loc2_);
+               }
                break;
             case "f":
                _loc3_ = "f" + this.nextChar() + this.nextChar() + this.nextChar() + this.nextChar();
@@ -74,9 +76,11 @@ package com.adobe.serialization.json
                {
                   _loc1_ = JSONToken.create(JSONTokenType.FALSE,false);
                   this.nextChar();
-                  break;
                }
-               this.parseError("Expecting \'false\' but found " + _loc3_);
+               else
+               {
+                  this.parseError("Expecting \'false\' but found " + _loc3_);
+               }
                break;
             case "n":
                _loc4_ = "n" + this.nextChar() + this.nextChar() + this.nextChar();
@@ -84,9 +88,11 @@ package com.adobe.serialization.json
                {
                   _loc1_ = JSONToken.create(JSONTokenType.NULL,null);
                   this.nextChar();
-                  break;
                }
-               this.parseError("Expecting \'null\' but found " + _loc4_);
+               else
+               {
+                  this.parseError("Expecting \'null\' but found " + _loc4_);
+               }
                break;
             case "N":
                _loc5_ = "N" + this.nextChar() + this.nextChar();
@@ -94,9 +100,11 @@ package com.adobe.serialization.json
                {
                   _loc1_ = JSONToken.create(JSONTokenType.NAN,NaN);
                   this.nextChar();
-                  break;
                }
-               this.parseError("Expecting \'NaN\' but found " + _loc5_);
+               else
+               {
+                  this.parseError("Expecting \'NaN\' but found " + _loc5_);
+               }
                break;
             case "\"":
                _loc1_ = this.readString();
@@ -105,15 +113,15 @@ package com.adobe.serialization.json
                if(this.isDigit(this.ch) || this.ch == "-")
                {
                   _loc1_ = this.readNumber();
-                  break;
                }
-               if(this.ch == "")
+               else if(this.ch == "")
                {
                   _loc1_ = null;
-                  break;
                }
-               this.parseError("Unexpected " + this.ch + " encountered");
-               break;
+               else
+               {
+                  this.parseError("Unexpected " + this.ch + " encountered");
+               }
          }
          return _loc1_;
       }

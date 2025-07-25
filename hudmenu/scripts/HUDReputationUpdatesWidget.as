@@ -123,6 +123,7 @@ package
       {
          var _loc4_:Object = null;
          var _loc5_:String = null;
+         var _loc6_:int = 0;
          var _loc2_:Object = {};
          var _loc3_:Array = ["Crater","Foundation"];
          var _loc7_:uint = 0;

@@ -273,8 +273,7 @@ package aze.motion
                      _loc4_.prev = null;
                   }
                }
-               _loc12_.next = null;
-               _loc12_.prev = null;
+               _loc12_.prev = _loc12_.next = null;
             }
             else
             {
@@ -525,8 +524,7 @@ package aze.motion
          }
          if(param1)
          {
-            this._onComplete = null;
-            this._onUpdate = null;
+            this._onUpdate = this._onComplete = null;
             this.update(this.endTime);
          }
          else
@@ -554,8 +552,7 @@ package aze.motion
          else
          {
             this.init();
-            this._duration = 1;
-            this.endTime = 1;
+            this.endTime = this._duration = 1;
             this.update(0);
          }
          return this;

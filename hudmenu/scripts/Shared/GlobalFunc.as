@@ -1294,6 +1294,7 @@ package Shared
          var _loc9_:Number = NaN;
          var _loc10_:Number = NaN;
          var _loc11_:uint = 0;
+         var _loc12_:Object = null;
          var _loc13_:Array = null;
          var _loc14_:uint = 0;
          var _loc7_:uint = param1.length;

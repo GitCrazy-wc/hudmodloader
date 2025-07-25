@@ -18,6 +18,7 @@ package
    import flash.text.TextFormat;
    import flash.ui.Keyboard;
    import flash.utils.Dictionary;
+   import flash.utils.Timer;
    import flash.utils.getQualifiedClassName;
    import scaleform.gfx.TextFieldEx;
    
@@ -80,6 +81,10 @@ package
       
       private var uiController:* = 0;
       
+      private var menuTimer:Timer;
+      
+      private var menuTimerDelay:Number = 2000;
+      
       public function HUDTools()
       {
          super();
@@ -119,13 +124,17 @@ package
          }
          try
          {
+            this.menuTimer = new Timer(menuTimerDelay,1);
+            this.menuTimer.addEventListener(TimerEvent.TIMER_COMPLETE,menuTimerCompleteHandler);
             stage.addEventListener(HUDModError.EVENT,this.onHUDModError);
+            stage.addEventListener(HUDModUserEvent.EVENT,this.onHUDModUserEvent);
             stage.addEventListener(PlatformChangeEvent.PLATFORM_CHANGE,this.onPlatformChange);
             this.msgPayload = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
             this.SubscribeListener("MessageEvents",this.onMessageEvent);
             this.SubscribeListener("HUDModeData",this.hudModeUpdate);
             newMsgString = this.sharedTools.formatMsg(SharedHUDTools.BROADCAST,SharedHUDTools.READY,[]);
             this.sharedTools.dispatchMessage(newMsgString);
+            this.menuFormats[SharedHUDTools.HUDTOOLS] = "50,-100";
          }
          catch(e:Error)
          {
@@ -135,7 +144,10 @@ package
       
       private function onPlatformChange(aEvent:PlatformChangeEvent) : void
       {
-         this.uiController = aEvent.uiController;
+         if(aEvent != null && aEvent.hasOwnProperty("uiController"))
+         {
+            this.uiController = aEvent.uiController;
+         }
          if(this.entryMode)
          {
             this.endTextEdit(false);
@@ -382,7 +394,7 @@ package
             menu_obj = new HUDToolsMenu(menuDir);
             menu_obj.x = menuX;
             menu_obj.y = menuY;
-            addChild(this.menu_obj);
+            this.topLevel.addChild(this.menu_obj);
             initMenuTextfield();
             this.topLevel.addChild(this.controller_tf);
             this.topLevel.stage.focus = this.controller_tf;
@@ -407,10 +419,18 @@ package
             this.controller_tf.text = "";
             this.topLevel.stage.focus = this.topLevel.stage;
             this.topLevel.removeChild(this.controller_tf);
-            removeChild(this.menu_obj);
+            this.topLevel.removeChild(this.menu_obj);
             BSUIDataManager.dispatchEvent(new CustomEvent(ON_ENDEDITTEXT,{"tag":"Chat"}));
-            newMsgString = sharedTools.formatMsg(this.menu_mod,SharedHUDTools.MENU,[]);
-            this.sharedTools.dispatchMessage(newMsgString);
+            if(this.menu_mod != SharedHUDTools.HUDTOOLS)
+            {
+               newMsgString = this.sharedTools.formatMsg(this.menu_mod,SharedHUDTools.MENU,[]);
+               this.sharedTools.dispatchMessage(newMsgString);
+            }
+            else
+            {
+               newMsgString = this.sharedTools.formatMsg(SharedHUDTools.BROADCAST,SharedHUDTools.STOPMENU,[]);
+               this.sharedTools.dispatchMessage(newMsgString);
+            }
          }
          catch(e:Error)
          {
@@ -502,7 +522,7 @@ package
                   this.entry_keyboard.x = oskX;
                   this.entry_keyboard.y = oskY;
                   this.entry_keyboard.setColors(oskColor,oskBGColor,oskBGAlpha,oskSelect,oskBGSelect);
-                  addChild(this.entry_keyboard);
+                  this.topLevel.addChild(this.entry_keyboard);
                }
                this.entry_tf.border = false;
                this.entry_tf.text = textString;
@@ -551,7 +571,7 @@ package
             this.topLevel.removeChild(this.controller_tf);
             if(this.entry_keyboard != null)
             {
-               removeChild(this.entry_keyboard);
+               this.topLevel.removeChild(this.entry_keyboard);
                this.entry_keyboard = null;
             }
             BSUIDataManager.dispatchEvent(new CustomEvent(ON_ENDEDITTEXT,{"tag":"Chat"}));
@@ -742,6 +762,55 @@ package
       public function onHUDModError(param1:HUDModError) : *
       {
          this.displayError(param1.toString(),true);
+      }
+      
+      public function onHUDModUserEvent(param1:HUDModUserEvent) : *
+      {
+         if(this.menuMode || this.entryMode)
+         {
+            return;
+         }
+         if(param1.EventName == "DiagnosticSnapshot" && !param1.IsKeyDown)
+         {
+            this.menu_mod = SharedHUDTools.HUDTOOLS;
+            if(this.startMenu())
+            {
+               var newMsgString:String = this.sharedTools.formatMsg(SharedHUDTools.BROADCAST,SharedHUDTools.STARTMENU,[]);
+               this.sharedTools.dispatchMessage(newMsgString);
+               this.menuMode = true;
+            }
+         }
+         if(this.currentHUDMode != HUDModes.PIPBOY)
+         {
+            return;
+         }
+         if(!isInputKeyboard() && param1.EventName == "L3")
+         {
+            if(param1.IsKeyDown && !this.menuTimer.running)
+            {
+               this.menuTimer.reset();
+               this.menuTimer.start();
+            }
+            else if(!param1.IsKeyDown && this.menuTimer.running)
+            {
+               this.menuTimer.reset();
+            }
+         }
+      }
+      
+      private function menuTimerCompleteHandler(e:TimerEvent) : void
+      {
+         if(this.menuMode || this.entryMode || isInputKeyboard() || this.currentHUDMode != HUDModes.PIPBOY)
+         {
+            return;
+         }
+         this.menu_mod = SharedHUDTools.HUDTOOLS;
+         if(this.startMenu())
+         {
+            var newMsgString:String = this.sharedTools.formatMsg(SharedHUDTools.BROADCAST,SharedHUDTools.STARTMENU,[]);
+            this.sharedTools.dispatchMessage(newMsgString);
+            this.menuMode = true;
+         }
       }
       
       private function displayError(errorString:String, showFlag:Boolean = false) : void
