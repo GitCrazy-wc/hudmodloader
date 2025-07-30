@@ -78,18 +78,18 @@ package
                   modConfig = line.split(",");
                   if(modConfig.length > 0)
                   {
-                     modName = modConfig[0];
+                     modName = modConfig[0].replace(/^\s+|\s+$/g, "");
                      if(indexOfMod(modName) < 0)
                      {
                         loadType = "true";
                         if(modConfig.length > 1)
                         {
-                           loadType = modConfig[1].toLowerCase();
+                           loadType = modConfig[1].replace(/^\s+|\s+$/g, "").toLowerCase();
                         }
                         looseType = "false";
                         if(modConfig.length > 2)
                         {
-                           looseType = modConfig[2].toLowerCase();
+                           looseType = modConfig[2].replace(/^\s+|\s+$/g, "").toLowerCase();
                         }
                         helper = new LoaderHelper(this.topLevel,modName,modType,loadType,looseType);
                         loaders.push(helper);
