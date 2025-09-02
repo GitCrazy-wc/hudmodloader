@@ -55,12 +55,6 @@ package
       
       private static const NOTIFICATION_OFFSET_Y_DIALOGUE:Number = 275;
       
-      private static const NOTIFICATION_OFFSET_X_WORKSHOP:Number = 100;
-      
-      private static const NOTIFICATION_OFFSET_Y_WORKSHOP:Number = 35;
-      
-      private static const NOTIFICATION_OFFSET_Y_WORKSHOP_FREECAM:Number = 150;
-      
       private static const NOTIFICATION_OFFSET_Y_CONTAINER:Number = 15;
       
       private static const NOTIFICATION_OFFSET_X_MAP:Number = -50;
@@ -72,6 +66,14 @@ package
       private static const NOTIFICATION_OFFSET_Y_MAP_MESSAGES:Number = 270;
       
       private static const NOTIFICATION_OFFSET_Y_MAP_SURVIVAL:Number = 225;
+      
+      private static const NOTIFICATION_X_WORKSHOP:Number = 1315;
+      
+      private static const NOTIFICATION_Y_WORKSHOP:Number = 900;
+      
+      private static const TUTORIAL_X_PADDING:Number = 21;
+      
+      private static const TUTORIAL_Y_PADDING:Number = 110;
       
       public static const ON_STARTEDITTEXT:String = "ControlMap::StartEditText";
       
@@ -638,45 +640,56 @@ package
       {
          var _loc1_:Number = 0;
          var _loc2_:Number = 0;
-         var _loc3_:Boolean = false;
+         var _loc3_:Number = 0;
+         var _loc4_:Number = 0;
+         var _loc5_:Boolean = false;
+         HUDMessageItemBase.showBottomRight = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE;
+         this.HUDNotificationsGroup_mc.Messages_mc.showBottomRight = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE;
          switch(this.m_LastHUDMode)
          {
             case HUDModes.DIALOGUE_MODE:
                _loc2_ = NOTIFICATION_OFFSET_Y_DIALOGUE;
+               _loc4_ = NOTIFICATION_OFFSET_Y_DIALOGUE;
                break;
             case HUDModes.WORKSHOP_MODE:
-               _loc1_ = NOTIFICATION_OFFSET_X_WORKSHOP;
-               _loc2_ = this.m_IsFreeCamMode ? NOTIFICATION_OFFSET_Y_WORKSHOP_FREECAM : NOTIFICATION_OFFSET_Y_WORKSHOP;
+               _loc1_ = NOTIFICATION_X_WORKSHOP - this.m_MessagesBaseX;
+               _loc2_ = NOTIFICATION_Y_WORKSHOP - this.m_MessagesBaseX;
+               _loc3_ = NOTIFICATION_X_WORKSHOP - this.m_TutorialTextBaseX - TUTORIAL_X_PADDING;
+               _loc4_ = NOTIFICATION_Y_WORKSHOP - this.m_TutorialTextBaseY - TUTORIAL_Y_PADDING;
                break;
             case HUDModes.CONTAINER_MODE:
                _loc2_ = NOTIFICATION_OFFSET_Y_CONTAINER;
+               _loc4_ = NOTIFICATION_OFFSET_Y_CONTAINER;
                break;
             case HUDModes.MAP_MENU:
                if(this.m_WorldType == GlobalFunc.WORLD_TYPE_SURVIVAL)
                {
                   _loc2_ = NOTIFICATION_OFFSET_Y_MAP_SURVIVAL;
+                  _loc4_ = NOTIFICATION_OFFSET_Y_MAP_SURVIVAL;
                }
                else if(this.m_WorldType == GlobalFunc.WORLD_TYPE_NORMAL || this.m_WorldType == GlobalFunc.WORLD_TYPE_PRIVATE)
                {
                   _loc1_ = NOTIFICATION_OFFSET_X_MAP;
                   _loc2_ = NOTIFICATION_OFFSET_Y_MAP;
-                  _loc3_ = true;
+                  _loc3_ = NOTIFICATION_OFFSET_X_MAP;
+                  _loc4_ = NOTIFICATION_OFFSET_Y_MAP;
+                  _loc5_ = true;
                }
          }
-         this.HUDNotificationsGroup_mc.Messages_mc.x = this.m_MessagesBaseX + (_loc3_ ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : _loc1_);
-         this.HUDNotificationsGroup_mc.Messages_mc.y = this.m_MessagesBaseY + (_loc3_ ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : _loc2_);
-         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.x = this.m_PromptMessageBaseX + (_loc3_ ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : _loc1_);
-         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.y = this.m_PromptMessageBaseY + (_loc3_ ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : _loc2_);
-         this.HUDNotificationsGroup_mc.TutorialText_mc.x = this.m_TutorialTextBaseX + _loc1_;
-         this.HUDNotificationsGroup_mc.TutorialText_mc.y = this.m_TutorialTextBaseY + _loc2_;
+         this.HUDNotificationsGroup_mc.Messages_mc.x = this.m_MessagesBaseX + (_loc5_ ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : _loc1_);
+         this.HUDNotificationsGroup_mc.Messages_mc.y = this.m_MessagesBaseY + (_loc5_ ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : _loc2_);
+         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.x = this.m_PromptMessageBaseX + (_loc5_ ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : _loc1_);
+         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.y = this.m_PromptMessageBaseY + (_loc5_ ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : _loc2_);
+         this.HUDNotificationsGroup_mc.TutorialText_mc.x = this.m_TutorialTextBaseX + _loc3_;
+         this.HUDNotificationsGroup_mc.TutorialText_mc.y = this.m_TutorialTextBaseY + _loc4_;
          this.TopRightGroup_mc.enabled = !bNuclearWinterMode;
          this.TopRightGroup_mc.visible = !bNuclearWinterMode;
          this.AnnounceEventWidget_mc.enabled = !bNuclearWinterMode;
          this.AnnounceEventWidget_mc.visible = !bNuclearWinterMode;
          this.AnnounceAvailableQuest_mc.enabled = !bNuclearWinterMode;
          this.AnnounceAvailableQuest_mc.visible = !bNuclearWinterMode;
-         var _loc4_:HUDCompassWidget = this.CompassWidget_mc as HUDCompassWidget;
-         _loc4_.bNuclearWinterMode = bNuclearWinterMode;
+         var _loc6_:HUDCompassWidget = this.CompassWidget_mc as HUDCompassWidget;
+         _loc6_.bNuclearWinterMode = bNuclearWinterMode;
       }
       
       private function updateRankVis() : void

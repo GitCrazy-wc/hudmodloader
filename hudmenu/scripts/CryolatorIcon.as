@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol494")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol526")]
    public dynamic class CryolatorIcon extends MovieClip
    {
       

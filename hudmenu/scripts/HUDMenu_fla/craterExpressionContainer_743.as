@@ -2,14 +2,14 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol286")]
-   public dynamic class messageBoxStarContainer_701 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol223")]
+   public dynamic class craterExpressionContainer_743 extends MovieClip
    {
       
-      public function messageBoxStarContainer_701()
+      public function craterExpressionContainer_743()
       {
          super();
-         addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3,3,this.frame4,4,this.frame5,5,this.frame6);
+         addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3,3,this.frame4,4,this.frame5,5,this.frame6,6,this.frame7);
       }
       
       internal function frame1() : *
@@ -38,6 +38,11 @@ package HUDMenu_fla
       }
       
       internal function frame6() : *
+      {
+         stop();
+      }
+      
+      internal function frame7() : *
       {
          stop();
       }

@@ -3,7 +3,7 @@ package
    import Shared.GlobalFunc;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol237")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol241")]
    public class HUDMessageItemTeamKill extends HUDMessageItemBase
    {
       
@@ -24,6 +24,7 @@ package
          var _loc3_:MovieClip = null;
          if(data != null)
          {
+            Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
             GlobalFunc.SetText(Internal_mc.Header_tf,m_Data.data.headerText,true);
             _loc1_ = 0;

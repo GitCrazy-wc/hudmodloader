@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol680")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol710")]
    public class PingMarkersContainer extends MovieClip
    {
       

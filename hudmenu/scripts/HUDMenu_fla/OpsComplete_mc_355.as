@@ -4,7 +4,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol788")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol818")]
    public dynamic class OpsComplete_mc_355 extends MovieClip
    {
       

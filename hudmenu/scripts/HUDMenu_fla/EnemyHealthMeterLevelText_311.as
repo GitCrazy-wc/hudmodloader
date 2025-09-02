@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol937")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol967")]
    public dynamic class EnemyHealthMeterLevelText_311 extends MovieClip
    {
       

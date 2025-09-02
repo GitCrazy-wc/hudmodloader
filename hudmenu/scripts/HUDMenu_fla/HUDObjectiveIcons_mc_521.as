@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol584")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol614")]
    public dynamic class HUDObjectiveIcons_mc_521 extends MovieClip
    {
       

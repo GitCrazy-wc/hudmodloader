@@ -5,7 +5,7 @@ package
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol586")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol616")]
    public dynamic class HUDObjectiveItem extends HUDFadingListItem
    {
       

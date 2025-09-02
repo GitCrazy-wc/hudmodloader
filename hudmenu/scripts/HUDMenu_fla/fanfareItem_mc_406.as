@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol896")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol926")]
    public dynamic class fanfareItem_mc_406 extends MovieClip
    {
       

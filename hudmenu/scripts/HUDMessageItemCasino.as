@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol279")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol298")]
    public class HUDMessageItemCasino extends HUDMessageItemBase
    {
       

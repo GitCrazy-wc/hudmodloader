@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1847")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1877")]
    public dynamic class HUDNotificationsGroup_412 extends MovieClip
    {
       

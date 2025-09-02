@@ -2,7 +2,7 @@ package
 {
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol245")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol252")]
    public class HUDMessageItemRecentActivity extends HUDMessageItemBase
    {
       
@@ -28,6 +28,7 @@ package
          var _loc1_:String = null;
          if(Boolean(data) && Boolean(data.data))
          {
+            Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
             _loc1_ = "";
             switch(data.type)

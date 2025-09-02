@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1306")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1336")]
    public dynamic class appalachiaVOFlyoutGraphic_mc_276 extends MovieClip
    {
       

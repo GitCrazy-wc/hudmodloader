@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol859")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol889")]
    public dynamic class QuestAvailableHeader_380 extends MovieClip
    {
       

@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1396")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1426")]
    public dynamic class SetBonusIcon_199 extends MovieClip
    {
       
