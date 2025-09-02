@@ -2,7 +2,7 @@ package
 {
    import Shared.GlobalFunc;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol255")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol266")]
    public class HUDMessageItemUnderAttack extends HUDMessageItemBase
    {
       
@@ -16,6 +16,7 @@ package
       {
          if(data != null)
          {
+            Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
             GlobalFunc.SetText(Internal_mc.RewardHeader_tf,m_Data.data.rewardHeader,true);
             GlobalFunc.SetText(Internal_mc.RewardValue_tf,m_Data.data.rewardValue,true);

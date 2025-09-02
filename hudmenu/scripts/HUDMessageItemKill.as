@@ -2,7 +2,7 @@ package
 {
    import Shared.GlobalFunc;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol261")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol276")]
    public class HUDMessageItemKill extends HUDMessageItemBase
    {
       
@@ -16,6 +16,7 @@ package
       {
          if(data != null)
          {
+            Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
             GlobalFunc.SetText(Internal_mc.Header_tf,m_Data.data.headerText,true);
             if(m_Data.data.teams != null)

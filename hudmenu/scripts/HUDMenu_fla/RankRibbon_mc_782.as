@@ -3,12 +3,12 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol39")]
-   public dynamic class RankRibbon_mc_778 extends MovieClip
+   public dynamic class RankRibbon_mc_782 extends MovieClip
    {
       
       public var Star1_mc:MovieClip;
       
-      public function RankRibbon_mc_778()
+      public function RankRibbon_mc_782()
       {
          super();
          addFrameScript(0,this.frame1,9,this.frame10,19,this.frame20,29,this.frame30,39,this.frame40);

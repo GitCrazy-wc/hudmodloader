@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol491")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol523")]
    public dynamic class FatmanIcon extends MovieClip
    {
       

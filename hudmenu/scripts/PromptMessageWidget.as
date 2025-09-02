@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol688")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol718")]
    public dynamic class PromptMessageWidget extends BSUIComponent
    {
       

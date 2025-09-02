@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1602")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1632")]
    public dynamic class sneakAttackMessage_mc_176 extends MovieClip
    {
       

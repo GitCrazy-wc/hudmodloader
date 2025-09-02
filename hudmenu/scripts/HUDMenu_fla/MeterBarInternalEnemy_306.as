@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol925")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol955")]
    public dynamic class MeterBarInternalEnemy_306 extends MovieClip
    {
       

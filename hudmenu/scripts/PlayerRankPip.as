@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol684")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol714")]
    public dynamic class PlayerRankPip extends MovieClip
    {
       

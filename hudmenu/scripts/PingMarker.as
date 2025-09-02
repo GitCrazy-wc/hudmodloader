@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import scaleform.gfx.Extensions;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol679")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol709")]
    public class PingMarker extends MovieClip
    {
       

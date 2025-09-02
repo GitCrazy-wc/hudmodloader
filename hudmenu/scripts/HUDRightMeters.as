@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1700")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1730")]
    public class HUDRightMeters extends MovieClip
    {
       

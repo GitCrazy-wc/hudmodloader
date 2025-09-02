@@ -26,7 +26,7 @@ package
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol797")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol827")]
    public dynamic class QuestUpdateVaultBoy extends VaultBoyImageLoader
    {
       

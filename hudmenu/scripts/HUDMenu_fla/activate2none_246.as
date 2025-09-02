@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1358")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1388")]
    public dynamic class activate2none_246 extends MovieClip
    {
       

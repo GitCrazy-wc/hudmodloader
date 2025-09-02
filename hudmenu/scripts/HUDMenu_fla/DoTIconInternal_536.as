@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol551")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol581")]
    public dynamic class DoTIconInternal_536 extends MovieClip
    {
       

@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1357")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1387")]
    public dynamic class activateLoop_245 extends MovieClip
    {
       

@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol645")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol675")]
    public class HUDQuestTrackerObjective extends BSDisplayObject
    {
       

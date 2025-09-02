@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1719")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1749")]
    public dynamic class pvpPlayerIconHolder_mc_19 extends MovieClip
    {
       

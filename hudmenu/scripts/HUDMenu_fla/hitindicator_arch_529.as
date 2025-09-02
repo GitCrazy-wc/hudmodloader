@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol568")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol598")]
    public dynamic class hitindicator_arch_529 extends MovieClip
    {
       

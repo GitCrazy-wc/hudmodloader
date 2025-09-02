@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol597")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol627")]
    public dynamic class ActiveEffectsTextPopup extends MovieClip
    {
       

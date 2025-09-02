@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol930")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol960")]
    public dynamic class MeterBarFriendly extends MeterBarWidget
    {
       

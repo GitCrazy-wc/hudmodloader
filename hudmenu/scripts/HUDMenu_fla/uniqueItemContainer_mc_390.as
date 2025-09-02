@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol897")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol927")]
    public dynamic class uniqueItemContainer_mc_390 extends MovieClip
    {
       

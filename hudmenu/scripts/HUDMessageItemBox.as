@@ -3,7 +3,7 @@ package
    import Shared.GlobalFunc;
    import flash.text.TextFieldAutoSize;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol288")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol310")]
    public class HUDMessageItemBox extends HUDMessageItemBase
    {
       
@@ -19,6 +19,7 @@ package
       {
          if(data)
          {
+            Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
             GlobalFunc.SetText(Internal_mc.HeaderText_tf,m_Data.data.headerText,true);
             GlobalFunc.SetText(Internal_mc.TitleText_tf,m_Data.data.titleText,true);

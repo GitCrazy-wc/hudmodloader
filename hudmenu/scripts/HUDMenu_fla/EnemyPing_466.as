@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol658")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol688")]
    public dynamic class EnemyPing_466 extends MovieClip
    {
       

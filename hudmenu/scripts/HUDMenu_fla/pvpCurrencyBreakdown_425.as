@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol704")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol734")]
    public dynamic class pvpCurrencyBreakdown_425 extends MovieClip
    {
       

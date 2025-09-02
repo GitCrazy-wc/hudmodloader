@@ -5,6 +5,8 @@ package
    public class HUDMessageItemBase extends HUDFadingListItem
    {
       
+      protected static var m_ShowBottomRight:Boolean = false;
+      
       public var Internal_mc:MovieClip;
       
       protected var m_Data:HUDMessageItemData = null;
@@ -12,6 +14,11 @@ package
       public function HUDMessageItemBase()
       {
          super();
+      }
+      
+      public static function set showBottomRight(param1:Boolean) : void
+      {
+         m_ShowBottomRight = param1;
       }
       
       public function get data() : HUDMessageItemData

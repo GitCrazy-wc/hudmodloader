@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol686")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol716")]
    public class HUDFloatingTargetManager extends MovieClip
    {
       
@@ -27,7 +27,7 @@ package
       
       private function onAddedToStage(param1:Event) : *
       {
-         this.HUDModes = new Array(Shared.HUDModes.ALL,Shared.HUDModes.ACTIVATE_TYPE,Shared.HUDModes.SIT_WAIT_MODE,Shared.HUDModes.VERTIBIRD_MODE,Shared.HUDModes.POWER_ARMOR,Shared.HUDModes.IRON_SIGHTS,Shared.HUDModes.SCOPE_MENU,Shared.HUDModes.INSIDE_MEMORY,Shared.HUDModes.WORKSHOP_MODE,Shared.HUDModes.CAMP_PLACEMENT,Shared.HUDModes.CROSSHAIR_AND_ACTIVATE_ONLY);
+         this.HUDModes = new Array(Shared.HUDModes.ALL,Shared.HUDModes.ACTIVATE_TYPE,Shared.HUDModes.SIT_WAIT_MODE,Shared.HUDModes.VERTIBIRD_MODE,Shared.HUDModes.POWER_ARMOR,Shared.HUDModes.IRON_SIGHTS,Shared.HUDModes.SCOPE_MENU,Shared.HUDModes.INSIDE_MEMORY,Shared.HUDModes.CAMP_PLACEMENT,Shared.HUDModes.CROSSHAIR_AND_ACTIVATE_ONLY);
          BSUIDataManager.Subscribe("MapMenuDataChanges",this.onFloatingTargetChange);
          BSUIDataManager.Subscribe("HotMapMarkerData",this.onHotMapMenuData);
          BSUIDataManager.Subscribe("HUDModeData",this.onHudModeDataChange);

@@ -2,11 +2,11 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol130")]
-   public dynamic class teamMateState_mc_753 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol187")]
+   public dynamic class FactionIcon_731 extends MovieClip
    {
       
-      public function teamMateState_mc_753()
+      public function FactionIcon_731()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

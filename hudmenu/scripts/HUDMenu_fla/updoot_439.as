@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1853")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1883")]
    public dynamic class updoot_439 extends MovieClip
    {
       

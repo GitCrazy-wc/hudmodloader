@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1787")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1817")]
    public dynamic class dHitRightContainer_4 extends MovieClip
    {
       

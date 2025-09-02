@@ -9,7 +9,7 @@ package
    import flash.events.Event;
    import flash.utils.getTimer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol689")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol719")]
    public dynamic class Messages extends BSUIComponent
    {
       
@@ -35,13 +35,17 @@ package
       
       private var bPauseUpdates:Boolean = false;
       
-      private var _maxClipHeight:Number = 160;
+      private var m_TotalHeight:Number = 0;
+      
+      private var _maxClipHeight:Number = 155;
       
       private var MessagePayload:UIDataFromClient = null;
       
       private var NotificationPayload:UIDataFromClient = null;
       
       private var ThrottledMessages:Vector.<Object>;
+      
+      private var m_ShowBottomRight:Boolean = false;
       
       public function Messages()
       {
@@ -148,6 +152,15 @@ package
          this._maxClipHeight = param1;
       }
       
+      public function set showBottomRight(param1:Boolean) : void
+      {
+         if(this.m_ShowBottomRight != param1)
+         {
+            this.m_ShowBottomRight = param1;
+            this.RedrawElements();
+         }
+      }
+      
       private function get pauseUpdates() : Boolean
       {
          return this.bPauseUpdates;
@@ -187,6 +200,32 @@ package
       public function get ShownCount() : int
       {
          return this.ShownMessageArray.length;
+      }
+      
+      private function RedrawElements() : void
+      {
+         var _loc1_:Number = 0;
+         var _loc2_:* = this.ShownCount - 1;
+         while(_loc2_ >= 0)
+         {
+            if(this.ShownMessageArray[_loc2_].data.type != "")
+            {
+               this.ShownMessageArray[_loc2_].redrawDisplayObject();
+            }
+            else
+            {
+               this.ShownMessageArray[_loc2_].y = _loc1_;
+               if(this.m_ShowBottomRight)
+               {
+                  _loc1_ -= this.ShownMessageArray[_loc2_].height - this.MessageSpacing;
+               }
+               else
+               {
+                  _loc1_ += this.ShownMessageArray[_loc2_].height + this.MessageSpacing;
+               }
+            }
+            _loc2_--;
+         }
       }
       
       public function UpdatePositions() : *
@@ -233,14 +272,14 @@ package
             _loc3_ = _loc1_ - 1;
             _loc4_ = this.ShownMessageArray[_loc3_];
             _loc5_ = this.ShownMessageArray[_loc3_ - 1];
-            _loc6_ = _loc4_.height;
-            _loc7_ = _loc5_.y;
-            _loc8_ = _loc6_ + this.MessageSpacing;
-            _loc9_ = _loc8_ - _loc7_;
+            _loc6_ = this.m_ShowBottomRight ? uint(_loc4_.y) : uint(_loc4_.height);
+            _loc7_ = this.m_ShowBottomRight ? uint(_loc5_.height) : uint(_loc5_.y);
+            _loc8_ = this.m_ShowBottomRight ? _loc6_ - this.MessageSpacing - _loc7_ : _loc6_ + this.MessageSpacing;
+            _loc9_ = this.m_ShowBottomRight ? int(_loc5_.y - _loc8_) : _loc8_ - _loc7_;
             this.bAnimating = _loc9_ > 0 || _loc4_.bIsDirty;
             if(!_loc4_.bIsDirty)
             {
-               _loc10_ = _loc4_.CanFadeIn() && _loc1_ <= MAX_SHOWN;
+               _loc10_ = _loc4_.CanFadeIn() && _loc1_ <= MAX_SHOWN && this.m_TotalHeight <= this._maxClipHeight;
                if(_loc10_)
                {
                   _loc4_.FadeIn();
@@ -251,7 +290,14 @@ package
                   _loc12_ = 0;
                   while(_loc12_ < _loc3_)
                   {
-                     this.ShownMessageArray[_loc12_].y += _loc11_;
+                     if(this.m_ShowBottomRight)
+                     {
+                        this.ShownMessageArray[_loc12_].y -= _loc11_;
+                     }
+                     else
+                     {
+                        this.ShownMessageArray[_loc12_].y += _loc11_;
+                     }
                      _loc12_++;
                   }
                }
@@ -277,6 +323,7 @@ package
             if(!param1 || this.ShownMessageArray[_loc2_].currentFrame >= this.ShownMessageArray[_loc2_].endAnimFrame || this.ShownMessageArray[_loc2_].fullyFadedOut)
             {
                _loc3_ = this.ShownMessageArray.splice(_loc2_,1);
+               this.m_TotalHeight -= _loc3_[0].Internal_mc.height + this.MessageSpacing;
                this.removeChild(_loc3_[0]);
                this.fadingOutMessage = false;
                this.DiscardMessage(_loc3_[0].data.messageID);
@@ -363,6 +410,7 @@ package
                _loc9_.data = _loc8_;
                this.addChild(_loc9_);
                this.ShownMessageArray.push(_loc9_ as HUDMessageItemBase);
+               this.m_TotalHeight += _loc9_.Internal_mc.height + this.MessageSpacing;
                BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{"soundID":_loc9_.data.sound}));
             }
             this.UpdatePositions();

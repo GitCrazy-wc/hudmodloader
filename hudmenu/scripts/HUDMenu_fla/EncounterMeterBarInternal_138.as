@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1534")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1564")]
    public dynamic class EncounterMeterBarInternal_138 extends MovieClip
    {
       

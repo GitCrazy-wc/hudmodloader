@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol854")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol884")]
    public dynamic class BGBox_379 extends MovieClip
    {
       
