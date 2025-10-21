@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol665")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol666")]
    public dynamic class QuestTrackerObjectiveMeterTwoWay_482 extends MovieClip
    {
       

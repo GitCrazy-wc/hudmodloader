@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol672")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol673")]
    public dynamic class QuestTrackerAlertInternal_488 extends MovieClip
    {
       

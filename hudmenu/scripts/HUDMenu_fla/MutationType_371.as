@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol846")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol847")]
    public dynamic class MutationType_371 extends MovieClip
    {
       

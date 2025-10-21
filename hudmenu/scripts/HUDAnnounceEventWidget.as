@@ -20,7 +20,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol933")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol934")]
    public class HUDAnnounceEventWidget extends MovieClip
    {
       
@@ -1266,7 +1266,7 @@ package
       
       private function onAddedToStage(param1:Event) : void
       {
-         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.INSPECT_MODE,HUDModes.WORKSHOP_MODE,HUDModes.CAMP_PLACEMENT,HUDModes.FURNITURE_ENTER_EXIT,HUDModes.FISHING_MODE);
+         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.INSPECT_MODE,HUDModes.WORKSHOP_MODE,HUDModes.WORKSHOP_NO_CROSSHAIR_MODE,HUDModes.CAMP_PLACEMENT,HUDModes.FURNITURE_ENTER_EXIT,HUDModes.FISHING_MODE);
          BSUIDataManager.Subscribe("FireForgetEvent",this.onFFEvent);
          this.m_EventData = BSUIDataManager.GetDataFromClient("FanfareData");
          BSUIDataManager.Subscribe("FanfareData",this.onDataUpdate);

@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol880")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol881")]
    public dynamic class AnnouceMessageText_376 extends MovieClip
    {
       

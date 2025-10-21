@@ -17,7 +17,7 @@ package
    import flash.text.TextField;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol943")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol944")]
    public dynamic class HUDTeamWidget extends BSUIComponent
    {
       
@@ -134,7 +134,7 @@ package
          var _loc9_:uint = 0;
          var _loc10_:PartyListEntry = null;
          this.PartyList.visible = this.determinePartyListVisibility();
-         var _loc1_:Boolean = this.m_HudMode == HUDModes.CONTAINER_MODE || this.m_HudMode == HUDModes.WORKSHOP_MODE || this.m_HudMode == HUDModes.PIPBOY || this.m_HudMode == HUDModes.TERMINAL_MODE;
+         var _loc1_:Boolean = this.m_HudMode == HUDModes.CONTAINER_MODE || this.m_HudMode == HUDModes.WORKSHOP_MODE || this.m_HudMode == HUDModes.WORKSHOP_NO_CROSSHAIR_MODE || this.m_HudMode == HUDModes.PIPBOY || this.m_HudMode == HUDModes.TERMINAL_MODE;
          this.PartyList.alpha = _loc1_ ? 0.5 : 1;
          this.PTPartyListHeader_mc.alpha = _loc1_ ? 0.5 : 1;
          var _loc2_:uint = this.partyListMenuData.length;
@@ -222,6 +222,7 @@ package
                case HUDModes.MAP_MENU:
                case HUDModes.FURNITURE_ENTER_EXIT:
                case HUDModes.WORKSHOP_MODE:
+               case HUDModes.WORKSHOP_NO_CROSSHAIR_MODE:
                   _loc1_ = false;
             }
          }

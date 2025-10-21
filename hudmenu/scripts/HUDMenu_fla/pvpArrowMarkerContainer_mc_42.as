@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1760")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1761")]
    public dynamic class pvpArrowMarkerContainer_mc_42 extends MovieClip
    {
       

@@ -13,7 +13,7 @@ package
    import flash.utils.clearTimeout;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1037")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1038")]
    public class HUDQuestTracker extends MovieClip
    {
       
@@ -138,7 +138,7 @@ package
       public function HUDQuestTracker()
       {
          super();
-         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.CAMP_PLACEMENT,HUDModes.PIPBOY,HUDModes.TERMINAL_MODE,HUDModes.INSPECT_MODE,HUDModes.DIALOGUE_MODE,HUDModes.MESSAGE_MODE);
+         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.CAMP_PLACEMENT,HUDModes.PIPBOY,HUDModes.TERMINAL_MODE,HUDModes.INSPECT_MODE,HUDModes.DIALOGUE_MODE,HUDModes.MESSAGE_MODE);
          this.m_DisplayedQuests = new Vector.<HUDQuestTrackerEntry>();
          BSUIDataManager.Subscribe("MenuStackData",this.onMenuStackChange);
          BSUIDataManager.Subscribe("QuestEventData",this.onQuestEventsUpdate);

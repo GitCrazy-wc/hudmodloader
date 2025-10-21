@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1895")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1896")]
    public dynamic class LevelUpAnimation_436 extends MovieClip
    {
       

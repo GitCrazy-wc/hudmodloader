@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1852")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1853")]
    public dynamic class HitIndicator_253 extends MovieClip
    {
       

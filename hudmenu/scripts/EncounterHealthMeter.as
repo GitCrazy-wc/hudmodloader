@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol1569")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1570")]
    public dynamic class EncounterHealthMeter extends EncounterMeter
    {
       

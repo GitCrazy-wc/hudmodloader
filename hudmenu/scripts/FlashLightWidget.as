@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1667")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1668")]
    public dynamic class FlashLightWidget extends BSUIComponent
    {
       

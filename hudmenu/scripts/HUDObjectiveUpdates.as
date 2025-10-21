@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol720")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol721")]
    public dynamic class HUDObjectiveUpdates extends BSUIComponent
    {
       

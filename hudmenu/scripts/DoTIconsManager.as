@@ -4,7 +4,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1014")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1015")]
    public class DoTIconsManager extends MovieClip
    {
       

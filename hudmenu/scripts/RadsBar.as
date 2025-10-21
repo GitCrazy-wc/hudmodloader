@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol1640")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1641")]
    public dynamic class RadsBar extends MeterBarWidget
    {
       

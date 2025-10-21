@@ -2,11 +2,11 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol304")]
-   public dynamic class MessageBoxStar_706 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol470")]
+   public dynamic class HotkeyIcons_682 extends MovieClip
    {
       
-      public function MessageBoxStar_706()
+      public function HotkeyIcons_682()
       {
          super();
          addFrameScript(0,this.frame1);

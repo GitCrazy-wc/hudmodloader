@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol831")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol832")]
    public dynamic class fanfareDescription_mc_366 extends MovieClip
    {
       

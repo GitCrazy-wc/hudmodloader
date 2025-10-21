@@ -3,12 +3,12 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol86")]
-   public dynamic class PartySpeakerIcon_768 extends MovieClip
+   public dynamic class PartySpeakerIcon_769 extends MovieClip
    {
       
       public var Icon_mc:MovieClip;
       
-      public function PartySpeakerIcon_768()
+      public function PartySpeakerIcon_769()
       {
          super();
          addFrameScript(0,this.frame1,8,this.frame9);

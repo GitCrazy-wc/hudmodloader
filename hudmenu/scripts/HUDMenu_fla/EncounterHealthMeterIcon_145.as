@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1568")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1569")]
    public dynamic class EncounterHealthMeterIcon_145 extends MovieClip
    {
       

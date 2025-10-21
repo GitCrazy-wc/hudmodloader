@@ -7,7 +7,7 @@ package
    import Shared.HUDModes;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1813")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1814")]
    public class HUDPvPScoreboard extends MovieClip
    {
       
@@ -43,7 +43,7 @@ package
       {
          super();
          addFrameScript(0,this.frame1,349,this.frame350);
-         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.CAMP_PLACEMENT,HUDModes.VATS_MODE,HUDModes.MOVEMENT_DISABLED,HUDModes.DEATH_RESPAWN,HUDModes.AUTO_VANITY);
+         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.CAMP_PLACEMENT,HUDModes.VATS_MODE,HUDModes.MOVEMENT_DISABLED,HUDModes.DEATH_RESPAWN,HUDModes.AUTO_VANITY);
          this.pvpPlayerScoreBoard_mc = this.pvpScoreBoardsContainer_mc.pvpPlayerScoreBoard_mc;
          this.pvpTeamScoreBoard_mc = this.pvpScoreBoardsContainer_mc.pvpTeamScoreBoard_mc;
          BSUIDataManager.Subscribe("PVPScoreEventData",this.onDataUpdate);
