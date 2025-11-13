@@ -323,7 +323,7 @@ package
          {
             this.bShowHunger = true;
             this.HUDHungerMeter_mc.gotoAndPlay("rollOn");
-            dispatchEvent(new Event("HUD::HungerFadeIn"));
+            dispatchEvent(new Event("HUD::HungerFadedIn"));
          }
       }
       
