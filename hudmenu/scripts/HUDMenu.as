@@ -393,7 +393,7 @@ package
             LevelUpAnimation_mc.LevelUpText.textField.text = param1.params.displayText;
             LevelUpAnimation_mc.gotoAndPlay("On");
          });
-         this.m_ValidWantedHUDModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.SCOPE_MENU,HUDModes.INSIDE_MEMORY);
+         this.m_ValidWantedHUDModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY);
          BSUIDataManager.Subscribe("AccountInfoData",this.onAccountInfoUpdate);
          RankPlayerIcon = this.ScoreboardRank_mc.AccountIcon_mc;
          RankPlayerIcon.clipWidth = RankPlayerIcon.width * (1 / RankPlayerIcon.scaleX);
@@ -572,6 +572,7 @@ package
          switch(_loc2_)
          {
             case HUDModes.WORKSHOP_MODE:
+            case HUDModes.WORKSHOP_NO_CROSSHAIR_MODE:
                _loc3_ = 100;
                _loc5_ = -285;
                _loc6_ = 80;
@@ -643,14 +644,16 @@ package
          var _loc3_:Number = 0;
          var _loc4_:Number = 0;
          var _loc5_:Boolean = false;
-         HUDMessageItemBase.showBottomRight = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE;
-         this.HUDNotificationsGroup_mc.Messages_mc.showBottomRight = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE;
+         var _loc6_:* = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE || this.m_LastHUDMode == HUDModes.WORKSHOP_NO_CROSSHAIR_MODE;
+         HUDMessageItemBase.showBottomRight = _loc6_;
+         this.HUDNotificationsGroup_mc.Messages_mc.showBottomRight = _loc6_;
          switch(this.m_LastHUDMode)
          {
             case HUDModes.DIALOGUE_MODE:
                _loc2_ = NOTIFICATION_OFFSET_Y_DIALOGUE;
                _loc4_ = NOTIFICATION_OFFSET_Y_DIALOGUE;
                break;
+            case HUDModes.WORKSHOP_NO_CROSSHAIR_MODE:
             case HUDModes.WORKSHOP_MODE:
                _loc1_ = NOTIFICATION_X_WORKSHOP - this.m_MessagesBaseX;
                _loc2_ = NOTIFICATION_Y_WORKSHOP - this.m_MessagesBaseX;
@@ -688,8 +691,8 @@ package
          this.AnnounceEventWidget_mc.visible = !bNuclearWinterMode;
          this.AnnounceAvailableQuest_mc.enabled = !bNuclearWinterMode;
          this.AnnounceAvailableQuest_mc.visible = !bNuclearWinterMode;
-         var _loc6_:HUDCompassWidget = this.CompassWidget_mc as HUDCompassWidget;
-         _loc6_.bNuclearWinterMode = bNuclearWinterMode;
+         var _loc7_:HUDCompassWidget = this.CompassWidget_mc as HUDCompassWidget;
+         _loc7_.bNuclearWinterMode = bNuclearWinterMode;
       }
       
       private function updateRankVis() : void

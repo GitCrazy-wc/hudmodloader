@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1730")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1731")]
    public class HUDRightMeters extends MovieClip
    {
       
@@ -83,7 +83,7 @@ package
       
       private const PercentMax:Number = 1;
       
-      private var HUDModes:Array;
+      private var m_ValidHudModes:Array;
       
       private var bIsPip:Boolean = false;
       
@@ -94,7 +94,7 @@ package
          super();
          addFrameScript(0,this.frame1,1,this.frame2);
          BSUIDataManager.Subscribe("HUDRightMetersData",this.onStateUpdate);
-         this.HUDModes = new Array(Shared.HUDModes.ALL,Shared.HUDModes.ACTIVATE_TYPE,Shared.HUDModes.IRON_SIGHTS,Shared.HUDModes.POWER_ARMOR,Shared.HUDModes.PIPBOY,Shared.HUDModes.SCOPE_MENU,Shared.HUDModes.VERTIBIRD_MODE,Shared.HUDModes.SIT_WAIT_MODE,Shared.HUDModes.VATS_MODE);
+         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.IRON_SIGHTS,HUDModes.POWER_ARMOR,HUDModes.PIPBOY,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.CAMERA_SCOPE_MENU,HUDModes.VERTIBIRD_MODE,HUDModes.SIT_WAIT_MODE,HUDModes.VATS_MODE);
          BSUIDataManager.Subscribe("HUDModeData",this.onHudModeDataChange);
          BSUIDataManager.Subscribe("PowerArmorInfoData",this.onPowerArmorInfoUpdate);
          gotoAndStop("defaultHUD");
@@ -155,7 +155,7 @@ package
       
       private function onHudModeDataChange(param1:FromClientDataEvent) : *
       {
-         this.visible = this.HUDModes.indexOf(param1.data.hudMode) != -1;
+         this.visible = this.m_ValidHudModes.indexOf(param1.data.hudMode) != -1;
          this.m_InPowerArmor = param1.data.inPowerArmor;
          this.m_PowerArmorHUDEnabled = param1.data.powerArmorHUDEnabled;
          this.showFusionCoreMeter = this.m_InPowerArmor && !this.m_PowerArmorHUDEnabled;
@@ -164,7 +164,7 @@ package
             this.updateFusionCoreMeter();
          }
          var _loc2_:Boolean = this.bIsPip;
-         this.bIsPip = param1.data.hudMode == Shared.HUDModes.PIPBOY;
+         this.bIsPip = param1.data.hudMode == HUDModes.PIPBOY;
          if(this.bIsPip)
          {
             if(this.fHungerPercent >= 0 && this.bHungerVisible)

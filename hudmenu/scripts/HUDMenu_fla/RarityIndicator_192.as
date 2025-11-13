@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1414")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1415")]
    public dynamic class RarityIndicator_192 extends MovieClip
    {
       

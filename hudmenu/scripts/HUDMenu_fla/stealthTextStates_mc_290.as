@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1018")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1019")]
    public dynamic class stealthTextStates_mc_290 extends MovieClip
    {
       

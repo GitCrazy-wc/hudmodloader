@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol671")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol672")]
    public dynamic class QuestTrackerAlertText_491 extends MovieClip
    {
       

@@ -2,7 +2,7 @@ package
 {
    import flash.geom.ColorTransform;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1015")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1016")]
    public dynamic class EnemyHealthMeter extends HealthMeter
    {
       

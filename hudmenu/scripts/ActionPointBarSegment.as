@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1676")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1677")]
    public dynamic class ActionPointBarSegment extends MovieClip
    {
       

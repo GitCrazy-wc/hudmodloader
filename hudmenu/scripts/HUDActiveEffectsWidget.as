@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1683")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1684")]
    public dynamic class HUDActiveEffectsWidget extends BSUIComponent
    {
       

@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1532")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1533")]
    public dynamic class quickContainerConditionMeter_202 extends MovieClip
    {
       

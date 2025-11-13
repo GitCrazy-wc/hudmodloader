@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol956")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol957")]
    public dynamic class MeterBarEnemy extends MeterBarWidget
    {
       

@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1755")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1756")]
    public dynamic class pvpDeathX_mc_38 extends MovieClip
    {
       

@@ -4,7 +4,7 @@ package HUDMenu_fla
    import flash.text.TextField;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol275")]
-   public dynamic class HUDMessagePvpScoreBoard_Internal_714 extends MovieClip
+   public dynamic class HUDMessagePvpScoreBoard_Internal_715 extends MovieClip
    {
       
       public var Header_tf:TextField;
@@ -17,7 +17,7 @@ package HUDMenu_fla
       
       public var PlayerBValue_tf:TextField;
       
-      public function HUDMessagePvpScoreBoard_Internal_714()
+      public function HUDMessagePvpScoreBoard_Internal_715()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

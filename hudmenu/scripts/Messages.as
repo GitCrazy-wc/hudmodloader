@@ -9,7 +9,7 @@ package
    import flash.events.Event;
    import flash.utils.getTimer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol719")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol720")]
    public dynamic class Messages extends BSUIComponent
    {
       

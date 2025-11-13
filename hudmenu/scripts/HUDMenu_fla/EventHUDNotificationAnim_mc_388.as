@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol770")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol771")]
    public dynamic class EventHUDNotificationAnim_mc_388 extends MovieClip
    {
       
