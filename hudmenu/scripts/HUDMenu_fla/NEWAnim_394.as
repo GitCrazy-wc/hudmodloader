@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol921")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol923")]
    public dynamic class NEWAnim_394 extends MovieClip
    {
       

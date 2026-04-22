@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1684")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1686")]
    public dynamic class LeftMeters extends BSUIComponent
    {
       

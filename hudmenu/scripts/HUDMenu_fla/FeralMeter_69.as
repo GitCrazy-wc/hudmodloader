@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1713")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1715")]
    public dynamic class FeralMeter_69 extends MovieClip
    {
       

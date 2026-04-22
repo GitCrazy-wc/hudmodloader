@@ -1,12 +1,15 @@
 package HUDMenu_fla
 {
    import flash.display.MovieClip;
+   import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol143")]
-   public dynamic class PTNameplateBG_776 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol136")]
+   public dynamic class allyDistance_mc_773 extends MovieClip
    {
       
-      public function PTNameplateBG_776()
+      public var AllyDistance_tf:TextField;
+      
+      public function allyDistance_mc_773()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

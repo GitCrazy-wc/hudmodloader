@@ -3,10 +3,10 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol3")]
-   public dynamic class tick_817 extends MovieClip
+   public dynamic class tick_818 extends MovieClip
    {
       
-      public function tick_817()
+      public function tick_818()
       {
          super();
          addFrameScript(0,this.frame1,41,this.frame42);

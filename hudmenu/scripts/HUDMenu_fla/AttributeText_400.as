@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol923")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol925")]
    public dynamic class AttributeText_400 extends MovieClip
    {
       

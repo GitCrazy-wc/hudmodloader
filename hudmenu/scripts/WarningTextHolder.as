@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol1686")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1688")]
    public dynamic class WarningTextHolder extends PAWarningText
    {
       

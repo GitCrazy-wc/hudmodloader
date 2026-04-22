@@ -3,7 +3,7 @@ package HUDMenu_fla
    import Shared.AS3.BSButtonHintBar;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1883")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1885")]
    public dynamic class RevivePrompt_330 extends MovieClip
    {
       

@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.PerkVaultBoyContainer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1574")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1576")]
    public dynamic class PerkVaultBoy extends PerkVaultBoyContainer
    {
       

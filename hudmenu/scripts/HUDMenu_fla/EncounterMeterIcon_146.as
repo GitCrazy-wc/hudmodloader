@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.geom.ColorTransform;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1021")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1023")]
    public dynamic class EncounterMeterIcon_146 extends MovieClip
    {
       

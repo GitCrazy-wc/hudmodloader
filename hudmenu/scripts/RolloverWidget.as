@@ -9,7 +9,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1367")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1369")]
    public dynamic class RolloverWidget extends BSUIComponent
    {
       
@@ -86,7 +86,7 @@ package
       
       public function UpdateText(param1:String, param2:Boolean) : void
       {
-         var _loc3_:Array = GlobalFunc.GeneratePlayerNameAndTitleArray(param1);
+         var _loc3_:Array = GlobalFunc.GenerateNameAndTitleArray(param1);
          if(_loc3_.length > 1 && _loc3_[1] != " ")
          {
             gotoAndStop("Title");

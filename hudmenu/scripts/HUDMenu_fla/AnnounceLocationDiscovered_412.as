@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol947")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol949")]
    public dynamic class AnnounceLocationDiscovered_412 extends MovieClip
    {
       

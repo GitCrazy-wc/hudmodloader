@@ -3,7 +3,7 @@ package
    import Shared.EnumHelper;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1029")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1031")]
    public class EncounterHolder extends MovieClip
    {
       

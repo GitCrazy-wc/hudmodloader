@@ -2,6 +2,7 @@ package
 {
    import Shared.AS3.Data.BSUIDataManager;
    import Shared.AS3.Data.FromClientDataEvent;
+   import Shared.HUDModes;
    import flash.display.MovieClip;
    import flash.events.Event;
    
@@ -16,11 +17,15 @@ package
       
       private var m_EncounterMeters:Vector.<EncounterMeter>;
       
+      private var m_ValidHudModes:Array;
+      
       public function EncounterMeterContainer()
       {
          super();
          this.m_EncounterMeters = new <EncounterMeter>[this.EncounterHealthMeter1_mc,this.EncounterHealthMeter2_mc,this.EncounterHealthMeter3_mc];
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
+         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.IRON_SIGHTS,HUDModes.POWER_ARMOR,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.CAMERA_SCOPE_MENU,HUDModes.VERTIBIRD_MODE,HUDModes.SIT_WAIT_MODE,HUDModes.VATS_MODE);
+         BSUIDataManager.Subscribe("HUDModeData",this.onHudModeDataChange);
       }
       
       private function onAddedToStage(param1:Event) : void
@@ -49,6 +54,11 @@ package
             this.m_EncounterMeters[_loc2_].SetEncounter(_loc3_.EncounterIconType,_loc3_.EncounterIconLevel);
             _loc2_++;
          }
+      }
+      
+      private function onHudModeDataChange(param1:FromClientDataEvent) : *
+      {
+         this.visible = this.m_ValidHudModes.indexOf(param1.data.hudMode) != -1;
       }
    }
 }

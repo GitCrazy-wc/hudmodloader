@@ -3,17 +3,19 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol299")]
-   public dynamic class HUDMessageItemGroupKill_Internal_721 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol312")]
+   public dynamic class HUDMessageItemBox_Internal_717 extends MovieClip
    {
       
-      public var Header_tf:TextField;
+      public var BodyText_tf:TextField;
       
-      public var Team0Score_tf:TextField;
+      public var HeaderText_tf:TextField;
       
-      public var Team1Score_tf:TextField;
+      public var TitleText_tf:TextField;
       
-      public function HUDMessageItemGroupKill_Internal_721()
+      public var messageBoxStarContainer:MovieClip;
+      
+      public function HUDMessageItemBox_Internal_717()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol763")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol765")]
    public dynamic class XPMeterBar extends MeterBarWidget
    {
       

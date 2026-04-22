@@ -5,7 +5,7 @@ package HUDMenu_fla
    import flash.text.TextField;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol254")]
-   public dynamic class HUDMessageRecentActivity_Internal_730 extends MovieClip
+   public dynamic class HUDMessageRecentActivity_Internal_731 extends MovieClip
    {
       
       public var BodyText_tf:TextField;
@@ -18,7 +18,7 @@ package HUDMenu_fla
       
       public var TitleText_tf:TextField;
       
-      public function HUDMessageRecentActivity_Internal_730()
+      public function HUDMessageRecentActivity_Internal_731()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

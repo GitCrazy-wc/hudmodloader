@@ -4,7 +4,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1035")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1037")]
    public class DoTIconsManager extends MovieClip
    {
       
@@ -32,7 +32,7 @@ package
       
       private var m_bAffectedByStealth:Boolean = false;
       
-      private var ORIG_Y:Number = 23.2;
+      private var ORIG_Y:Number = 0;
       
       private var STEALTH_BAR_HEIGHT:Number = 32;
       
@@ -41,6 +41,7 @@ package
       public function DoTIconsManager()
       {
          super();
+         this.ORIG_Y = this.y;
          this.IconContainer_mc = new MovieClip();
          addChild(this.IconContainer_mc);
          addEventListener(DoTDamageIcon.EVENT_DAMAGE_COMPLETE,this.onDamageComplete);

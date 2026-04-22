@@ -6,7 +6,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol640")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol642")]
    public class AreaVoiceEntry extends BSScrollingListEntry
    {
       

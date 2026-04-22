@@ -3,18 +3,16 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol786")]
-   public dynamic class Event_SpinTheWheel_mc_392 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol154")]
+   public dynamic class NamePlateLevelBoxContainer_mc_780 extends MovieClip
    {
       
-      public var ENDynamicText_tf:TextField;
+      public var Level_tf:TextField;
       
-      public var ENHeaderText_tf:TextField;
-      
-      public function Event_SpinTheWheel_mc_392()
+      public function NamePlateLevelBoxContainer_mc_780()
       {
          super();
-         addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3,3,this.frame4,4,this.frame5);
+         addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3,3,this.frame4);
       }
       
       internal function frame1() : *
@@ -33,11 +31,6 @@ package HUDMenu_fla
       }
       
       internal function frame4() : *
-      {
-         stop();
-      }
-      
-      internal function frame5() : *
       {
          stop();
       }

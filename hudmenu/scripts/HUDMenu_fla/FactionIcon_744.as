@@ -3,10 +3,10 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol190")]
-   public dynamic class FactionIcon_743 extends MovieClip
+   public dynamic class FactionIcon_744 extends MovieClip
    {
       
-      public function FactionIcon_743()
+      public function FactionIcon_744()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

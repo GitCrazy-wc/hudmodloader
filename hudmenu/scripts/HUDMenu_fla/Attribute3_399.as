@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol938")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol940")]
    public dynamic class Attribute3_399 extends MovieClip
    {
       
@@ -28,6 +28,7 @@ package HUDMenu_fla
          this.LegendaryStar01_mc.gotoAndStop("off");
          this.LegendaryStar02_mc.gotoAndStop("off");
          this.LegendaryStar03_mc.gotoAndStop("off");
+         this.LegendaryStar04_mc.gotoAndStop("off");
       }
       
       internal function frame2() : *
@@ -35,6 +36,7 @@ package HUDMenu_fla
          this.LegendaryStar01_mc.gotoAndPlay("rollOn");
          this.LegendaryStar02_mc.gotoAndPlay("rollOn");
          this.LegendaryStar03_mc.gotoAndPlay("rollOn");
+         this.LegendaryStar04_mc.gotoAndPlay("rollOn");
       }
       
       internal function frame64() : *

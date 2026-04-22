@@ -2,11 +2,11 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol307")]
-   public dynamic class MessageBoxStar_718 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol91")]
+   public dynamic class PartyLeaderIcon_786 extends MovieClip
    {
       
-      public function MessageBoxStar_718()
+      public function PartyLeaderIcon_786()
       {
          super();
          addFrameScript(0,this.frame1);

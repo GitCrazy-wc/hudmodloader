@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol804")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol806")]
    public dynamic class SuppliesUnlocked_mc_345 extends MovieClip
    {
       

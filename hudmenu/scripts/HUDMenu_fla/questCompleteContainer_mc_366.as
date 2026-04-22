@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol851")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol853")]
    public dynamic class questCompleteContainer_mc_366 extends MovieClip
    {
       

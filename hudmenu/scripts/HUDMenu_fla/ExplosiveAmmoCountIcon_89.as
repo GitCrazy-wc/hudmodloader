@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1690")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1692")]
    public dynamic class ExplosiveAmmoCountIcon_89 extends MovieClip
    {
       

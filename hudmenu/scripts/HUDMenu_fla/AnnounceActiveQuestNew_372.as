@@ -26,7 +26,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol892")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol894")]
    public dynamic class AnnounceActiveQuestNew_372 extends MovieClip
    {
       

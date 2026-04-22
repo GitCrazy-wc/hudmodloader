@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1393")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1395")]
    public dynamic class dot2charge_237 extends MovieClip
    {
       

@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol731")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol733")]
    public class HUDFloatingTargetManager extends MovieClip
    {
       

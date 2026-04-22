@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol503")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol505")]
    public dynamic class RepairKitIcon extends MovieClip
    {
       

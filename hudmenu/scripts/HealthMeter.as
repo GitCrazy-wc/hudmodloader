@@ -85,8 +85,8 @@ package
          }
          if(this.DoTIconsManager_mc)
          {
-            this.DoTIconsManager_mc.alignment = DoTIconsManager.ALIGNMENT_CENTER;
-            this.DoTIconsManager_mc.SetStealthMeterAwareness(true);
+            this.DoTIconsManager_mc.alignment = DoTIconsManager.ALIGNMENT_LEFT;
+            this.DoTIconsManager_mc.SetStealthMeterAwareness(false);
             addEventListener(DoTIconsManager.EVENT_DOT_COMPLETE,this.onDamageComplete);
          }
          if(this.CampRepairIcon_mc)

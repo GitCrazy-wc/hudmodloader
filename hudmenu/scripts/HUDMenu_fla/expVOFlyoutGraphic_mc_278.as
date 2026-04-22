@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1261")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1263")]
    public dynamic class expVOFlyoutGraphic_mc_278 extends MovieClip
    {
       

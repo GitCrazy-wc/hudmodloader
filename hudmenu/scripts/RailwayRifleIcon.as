@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol504")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol506")]
    public dynamic class RailwayRifleIcon extends MovieClip
    {
       

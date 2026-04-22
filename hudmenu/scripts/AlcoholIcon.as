@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol549")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol551")]
    public dynamic class AlcoholIcon extends MovieClip
    {
       

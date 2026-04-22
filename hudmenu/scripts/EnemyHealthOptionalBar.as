@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol977")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol979")]
    public dynamic class EnemyHealthOptionalBar extends MeterBarWidget
    {
       

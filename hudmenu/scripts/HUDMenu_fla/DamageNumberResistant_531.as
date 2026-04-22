@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol621")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol623")]
    public dynamic class DamageNumberResistant_531 extends MovieClip
    {
       

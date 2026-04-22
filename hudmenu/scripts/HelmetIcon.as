@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol526")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol528")]
    public dynamic class HelmetIcon extends MovieClip
    {
       

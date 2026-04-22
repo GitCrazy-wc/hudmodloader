@@ -3,10 +3,10 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    
    [Embed(source="/_assets/assets.swf", symbol="symbol196")]
-   public dynamic class reputationWonkPlate_746 extends MovieClip
+   public dynamic class reputationWonkPlate_747 extends MovieClip
    {
       
-      public function reputationWonkPlate_746()
+      public function reputationWonkPlate_747()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3);

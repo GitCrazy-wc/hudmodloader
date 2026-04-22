@@ -1,13 +1,13 @@
 package Shared.AS3
 {
-   import Shared.AS3.COMPANIONAPP.PipboyLoader;
+   import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.net.URLRequest;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1059")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1061")]
    public dynamic class ConditionBoy extends BSUIComponent
    {
       
@@ -25,7 +25,7 @@ package Shared.AS3
       
       private static const CLIP_BODY_FERAL_ID:int = 20;
       
-      private static const NUM_BODY_CLIPS:int = 21;
+      private static const NUM_BODY_CLIPS:int = 20;
       
       private static const HEAD_HUNGER_FRAME:String = "Drugged";
       
@@ -37,9 +37,9 @@ package Shared.AS3
       
       private var HeadClip:MovieClip = null;
       
-      private var HeadLoader:PipboyLoader;
+      private var HeadLoader:Loader;
       
-      private var BodyLoader:PipboyLoader;
+      private var BodyLoader:Loader;
       
       private var ColorFileText:String = new String();
       
@@ -49,7 +49,7 @@ package Shared.AS3
       
       private var CurrentlyShownCondition:Object = {};
       
-      private var PreloadedBodyClips:Vector.<PipboyLoader>;
+      private var PreloadedBodyClips:Vector.<Loader>;
       
       private var ShouldUpdate:Boolean = false;
       
@@ -85,14 +85,14 @@ package Shared.AS3
       public function PreloadConditions() : *
       {
          var _loc1_:* = undefined;
-         var _loc2_:PipboyLoader = null;
+         var _loc2_:Loader = null;
          var _loc3_:URLRequest = null;
          if(!this.PreloadedBodyClips)
          {
-            this.PreloadedBodyClips = new Vector.<PipboyLoader>(NUM_BODY_CLIPS,true);
+            this.PreloadedBodyClips = new Vector.<Loader>(NUM_BODY_CLIPS,true);
             for(_loc1_ in this.PreloadedBodyClips)
             {
-               _loc2_ = new PipboyLoader();
+               _loc2_ = new Loader();
                this.PreloadedBodyClips[_loc1_] = _loc2_;
                _loc3_ = new URLRequest(this.GetPathForCondition(_loc1_));
                _loc2_.load(_loc3_);
@@ -222,7 +222,7 @@ package Shared.AS3
                }
                else
                {
-                  this.BodyLoader = new PipboyLoader();
+                  this.BodyLoader = new Loader();
                   this.BodyLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onConditionBodyLoadComplete);
                   this.BodyLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.onConditionBodyLoadFailed);
                   _loc3_ = new URLRequest(this.GetPathForCondition(_loc1_.bodyId));
@@ -248,7 +248,7 @@ package Shared.AS3
          {
             this.HeadLoader.unloadAndStop();
          }
-         this.HeadLoader = new PipboyLoader();
+         this.HeadLoader = new Loader();
          var _loc1_:URLRequest = new URLRequest("Components/ConditionClips/Condition_Head.swf");
          this.HeadLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onConditionHeadLoadComplete);
          this.HeadLoader.load(_loc1_);

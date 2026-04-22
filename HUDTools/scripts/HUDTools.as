@@ -770,7 +770,7 @@ package
          {
             return;
          }
-         if(param1.EventName == "DiagnosticSnapshot" && !param1.IsKeyDown)
+         if(param1.EventName == "DiagnosticSnapshot" && !param1.IsKeyDown && (this.currentHUDMode == HUDModes.ALL || this.currentHUDMode == HUDModes.POWER_ARMOR))
          {
             this.menu_mod = SharedHUDTools.HUDTOOLS;
             if(this.startMenu())

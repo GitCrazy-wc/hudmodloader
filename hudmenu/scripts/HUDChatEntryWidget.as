@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol962")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol964")]
    public dynamic class HUDChatEntryWidget extends BSUIComponent
    {
       

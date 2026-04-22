@@ -9,7 +9,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol664")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol666")]
    public class HUDQuestTrackerEntry extends MovieClip
    {
       
@@ -78,6 +78,10 @@ package
       private var m_QuestDisplayType:uint = 0;
       
       private var m_IsNew:Boolean = true;
+      
+      public var m_TimestampLow:uint = 4294967295;
+      
+      public var m_TimestampHigh:uint = 4294967295;
       
       public function HUDQuestTrackerEntry()
       {

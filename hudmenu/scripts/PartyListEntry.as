@@ -354,8 +354,8 @@ package
       
       private function generateName(param1:String, param2:String = "") : String
       {
-         var _loc3_:Array = GlobalFunc.GeneratePlayerNameAndTitleArray(param1);
-         return _loc3_[0] + param2 + (_loc3_.length > 1 ? GlobalFunc.PLAYER_TITLE_DIVIDER + " " + _loc3_[1] : "");
+         var _loc3_:Array = GlobalFunc.GenerateNameAndTitleArray(param1);
+         return _loc3_[0] + param2 + (_loc3_.length > 1 ? GlobalFunc.CUSTOM_TITLE_DIVIDER + " " + _loc3_[1] : "");
       }
       
       public function animateExpFlare() : void

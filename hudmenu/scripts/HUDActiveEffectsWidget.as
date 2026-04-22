@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1703")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1705")]
    public dynamic class HUDActiveEffectsWidget extends BSUIComponent
    {
       
@@ -65,35 +65,56 @@ package
       
       public function onDataUpdate(param1:Array) : void
       {
-         var _loc4_:HUDActiveEffectClip = null;
+         var _loc4_:Object = null;
          var _loc5_:Object = null;
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
+         var _loc6_:HUDActiveEffectClip = null;
+         var _loc7_:HUDActiveEffectClip = null;
          var _loc8_:uint = 0;
-         var _loc2_:uint = param1.length - 1;
+         var _loc9_:uint = 0;
+         var _loc10_:uint = 0;
+         var _loc2_:* = 0;
          var _loc3_:* = 0;
+         for(_loc4_ in param1)
+         {
+            _loc5_ = param1[_loc4_];
+            _loc3_ = 0;
+            while(_loc3_ < this.m_EffectClipsA.length)
+            {
+               _loc6_ = this.m_EffectClipsA[_loc3_];
+               if(_loc6_.iconID == _loc5_.iconID && _loc6_.EffectUID == _loc5_.effectUID && _loc6_.RefreshCount == _loc5_.refreshCount && _loc6_.Active)
+               {
+                  _loc5_.elapsed = _loc6_.CurrentTime;
+                  break;
+               }
+               _loc3_++;
+            }
+         }
+         _loc2_ = param1.length - 1;
+         _loc3_ = 0;
          while(_loc3_ < this.m_EffectClipsA.length)
          {
-            _loc4_ = this.m_EffectClipsA[_loc3_];
+            _loc7_ = this.m_EffectClipsA[_loc3_];
+            _loc5_ = param1[_loc2_];
             if(_loc3_ < param1.length)
             {
-               _loc5_ = param1[_loc2_];
-               _loc4_.IconFrame = param1[_loc2_].iconID;
-               _loc4_.IconColor = param1[_loc2_].iconColor;
-               _loc4_.StackAmount = param1[_loc2_].stackAmount;
-               _loc6_ = 0;
-               _loc7_ = 0;
-               if(param1[_loc2_].hasOwnProperty("duration"))
+               _loc7_.IconFrame = _loc5_.iconID;
+               _loc7_.IconColor = _loc5_.iconColor;
+               _loc7_.StackAmount = _loc5_.stackAmount;
+               _loc7_.RefreshCount = _loc5_.refreshCount;
+               _loc7_.EffectUID = _loc5_.effectUID;
+               _loc8_ = 0;
+               _loc9_ = 0;
+               if(Boolean(_loc5_.hasOwnProperty("duration")) && _loc5_.duration > 0)
                {
-                  _loc6_ = uint(param1[_loc2_].duration);
-                  _loc8_ = param1[_loc2_].hasOwnProperty("timeElapsed") ? uint(param1[_loc2_].timeElapsed) : 0;
-                  _loc7_ = _loc6_ > _loc8_ ? uint(_loc6_ - _loc8_) : 0;
+                  _loc8_ = uint(_loc5_.duration);
+                  _loc10_ = _loc5_.hasOwnProperty("elapsed") ? uint(_loc5_.elapsed) : 0;
+                  _loc9_ = _loc8_ > _loc10_ ? _loc10_ : 0;
                }
-               _loc4_.setEffect(param1[_loc2_].iconID,_loc7_,_loc6_);
+               _loc7_.setEffect(_loc5_.iconID,_loc9_,_loc8_);
             }
             else
             {
-               _loc4_.IconFrame = "";
+               _loc7_.IconFrame = "";
             }
             _loc3_++;
             _loc2_--;

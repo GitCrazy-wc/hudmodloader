@@ -7,7 +7,7 @@ package
    import Shared.HUDModes;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1833")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1835")]
    public class HUDPvPScoreboard extends MovieClip
    {
       

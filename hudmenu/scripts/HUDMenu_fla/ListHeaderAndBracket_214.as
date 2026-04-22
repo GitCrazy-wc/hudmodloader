@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1569")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1571")]
    public dynamic class ListHeaderAndBracket_214 extends MovieClip
    {
       

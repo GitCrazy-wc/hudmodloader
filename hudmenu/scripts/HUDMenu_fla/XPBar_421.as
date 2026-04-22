@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol760")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol762")]
    public dynamic class XPBar_421 extends MovieClip
    {
       

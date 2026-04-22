@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol514")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol516")]
    public dynamic class OneHandMeleeIcon extends MovieClip
    {
       

@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1396")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1398")]
    public dynamic class crosshair2none_241 extends MovieClip
    {
       

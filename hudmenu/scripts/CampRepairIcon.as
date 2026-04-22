@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol964")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol966")]
    public dynamic class CampRepairIcon extends MovieClip
    {
       

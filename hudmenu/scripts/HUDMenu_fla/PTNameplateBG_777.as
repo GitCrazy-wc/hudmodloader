@@ -2,11 +2,11 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1565")]
-   public dynamic class Weight_icon_212 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol143")]
+   public dynamic class PTNameplateBG_777 extends MovieClip
    {
       
-      public function Weight_icon_212()
+      public function PTNameplateBG_777()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

@@ -6,7 +6,7 @@ package
    import fl.transitions.easing.*;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol487")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol489")]
    public class HUDActiveEffectClip extends BSUIComponent
    {
       
@@ -32,19 +32,23 @@ package
       
       private var m_IconID:String = "";
       
+      private var m_EffectUID:uint = 0;
+      
       private var m_StackAmount:uint = 0;
       
-      private const TWEEN_END_Y:Number = 0;
+      private var m_RefreshCount:uint = 0;
       
-      private var m_DefaultFillY:Number = 14.5;
+      private const FILL_START_Y:Number = -14.5;
       
-      private var m_RemainingDuration:uint = 0;
+      private const FILL_END_Y:Number = 14.5;
+      
+      private var m_StartingDuration:uint = 0;
+      
+      private var m_ElapsedDuration:uint = 0;
       
       private var m_TotalDuration:uint = 0;
       
       private var m_StartingY:Number = 0;
-      
-      private var m_TweenProgress:Number = 0;
       
       private var m_FillTween:Tween = null;
       
@@ -52,15 +56,31 @@ package
       {
          addFrameScript(0,this.frame1,1,this.frame2);
          super();
-         if(Boolean(this.FillInternal_mc) && Boolean(this.FillInternal_mc.Fill_mc))
-         {
-            this.m_DefaultFillY = this.FillInternal_mc.Fill_mc.y;
-         }
+      }
+      
+      public function get Active() : Boolean
+      {
+         return visible && this.m_FillTween != null;
+      }
+      
+      public function get iconID() : String
+      {
+         return this.m_IconID;
       }
       
       public function set iconID(param1:String) : void
       {
          this.m_IconID = param1;
+      }
+      
+      public function set EffectUID(param1:uint) : void
+      {
+         this.m_EffectUID = param1;
+      }
+      
+      public function get EffectUID() : uint
+      {
+         return this.m_EffectUID;
       }
       
       public function set IconFrame(param1:String) : void
@@ -82,6 +102,20 @@ package
          }
       }
       
+      public function set RefreshCount(param1:uint) : void
+      {
+         if(this.m_RefreshCount != param1)
+         {
+            this.m_RefreshCount = param1;
+            SetIsDirty();
+         }
+      }
+      
+      public function get RefreshCount() : uint
+      {
+         return this.m_RefreshCount;
+      }
+      
       public function set StackAmount(param1:uint) : void
       {
          if(this.m_StackAmount != param1)
@@ -91,33 +125,43 @@ package
          }
       }
       
+      public function get CurrentTime() : uint
+      {
+         return this.m_ElapsedDuration;
+      }
+      
       public function get StackAmount() : uint
       {
          return this.m_StackAmount;
       }
       
+      private function applyTween() : void
+      {
+         this.m_StartingY = this.FILL_START_Y + this.m_StartingDuration / this.m_TotalDuration * (this.FILL_END_Y - this.FILL_START_Y);
+         this.FillInternal_mc.Fill_mc.y = this.m_StartingY;
+         this.m_FillTween = new Tween(this.FillInternal_mc.Fill_mc,"y",None.easeNone,this.m_StartingY,this.FILL_END_Y,(this.m_TotalDuration - this.m_StartingDuration) / 1000,true);
+         this.m_FillTween.addEventListener(TweenEvent.MOTION_CHANGE,this.onTweenChange);
+         this.m_FillTween.addEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
+         this.m_FillTween.start();
+      }
+      
       public function setEffect(param1:String, param2:uint, param3:uint) : void
       {
-         this.m_RemainingDuration = param2;
+         this.m_ElapsedDuration = param2;
+         this.m_StartingDuration = param2;
          this.m_TotalDuration = param3;
-         this.m_TweenProgress = param2;
-         if(!this.FillInternal_mc || !this.FillInternal_mc.Fill_mc)
-         {
-            return;
-         }
+         this.iconID = param1;
          this.clearTween();
-         if(this.m_RemainingDuration < this.m_TotalDuration && this.m_TotalDuration > 0)
+         if(Boolean(this.FillInternal_mc) && Boolean(this.FillInternal_mc.Fill_mc))
          {
-            this.m_StartingY = this.m_DefaultFillY + (1 - this.m_RemainingDuration / this.m_TotalDuration) * (this.TWEEN_END_Y - this.m_DefaultFillY);
-            this.FillInternal_mc.Fill_mc.y = this.m_StartingY;
-            this.m_FillTween = new Tween(this.FillInternal_mc.Fill_mc,"y",None.easeIn,this.m_StartingY,this.m_DefaultFillY,this.m_RemainingDuration / 1000,true);
-            this.m_FillTween.addEventListener(TweenEvent.MOTION_CHANGE,this.onTweenChange);
-            this.m_FillTween.addEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
-            this.m_FillTween.start();
-         }
-         else
-         {
-            this.FillInternal_mc.Fill_mc.y = this.m_DefaultFillY;
+            if(this.m_StartingDuration <= this.m_TotalDuration && this.m_TotalDuration > 0)
+            {
+               this.applyTween();
+            }
+            else
+            {
+               this.FillInternal_mc.Fill_mc.y = this.FILL_END_Y;
+            }
          }
       }
       
@@ -134,12 +178,13 @@ package
       
       private function onTweenChange(param1:TweenEvent) : void
       {
-         this.m_TweenProgress = this.m_RemainingDuration - param1.time * 1000;
+         this.m_ElapsedDuration = this.m_StartingDuration + param1.time * 1000;
       }
       
       private function onTweenFinish(param1:TweenEvent) : void
       {
-         this.m_TweenProgress = 0;
+         this.m_ElapsedDuration = 0;
+         this.m_StartingDuration = 0;
       }
       
       override public function redrawUIComponent() : void
@@ -153,8 +198,7 @@ package
             gotoAndStop("positive");
          }
          this.Icon_mc.gotoAndStop(this.m_IconFrame);
-         this.Stack_mc.visible = false;
-         if(this.m_StackAmount != 0)
+         if(this.m_StackAmount > 0)
          {
             this.Stack_mc.StackAmount_tf.text = this.m_StackAmount.toString();
             this.Stack_mc.BG_mc.width = DEFAULT_STACK_WIDTH + (this.Stack_mc.StackAmount_tf.text.length - 1) * STACK_WITH_PADDING;
@@ -162,7 +206,21 @@ package
             this.Stack_mc.StackAmount_tf.x = this.Stack_mc.BG_mc.x + STACK_SHADOW_AMOUNT;
             this.Stack_mc.visible = true;
          }
+         else
+         {
+            this.Stack_mc.visible = false;
+         }
          visible = this.m_IconFrame != null && this.m_IconFrame.length > 0;
+         if(this.m_FillTween)
+         {
+            this.clearTween();
+            this.m_StartingDuration = this.m_ElapsedDuration;
+            this.applyTween();
+         }
+         else
+         {
+            this.FillInternal_mc.Fill_mc.y = this.FILL_END_Y;
+         }
       }
       
       internal function frame1() : *

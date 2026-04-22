@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol843")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol845")]
    public dynamic class questAnimCatcher_mc_368 extends MovieClip
    {
       

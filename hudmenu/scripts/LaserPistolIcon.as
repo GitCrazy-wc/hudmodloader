@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol522")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol524")]
    public dynamic class LaserPistolIcon extends MovieClip
    {
       

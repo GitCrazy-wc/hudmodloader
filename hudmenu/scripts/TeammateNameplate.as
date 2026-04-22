@@ -225,7 +225,7 @@ package
       
       public function set displayName(param1:String) : void
       {
-         var _loc2_:Array = GlobalFunc.GeneratePlayerNameAndTitleArray(param1);
+         var _loc2_:Array = GlobalFunc.GenerateNameAndTitleArray(param1);
          if(this._Name != _loc2_[0] || _loc2_.length > 1 && this._Title != _loc2_[1] || _loc2_.length == 1 && this._Title != "")
          {
             this._Name = _loc2_[0];

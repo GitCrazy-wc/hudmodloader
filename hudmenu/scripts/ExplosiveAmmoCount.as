@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1692")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1694")]
    public dynamic class ExplosiveAmmoCount extends BSUIComponent
    {
       

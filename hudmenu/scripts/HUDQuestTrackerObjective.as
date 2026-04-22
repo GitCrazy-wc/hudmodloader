@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol691")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol693")]
    public class HUDQuestTrackerObjective extends BSDisplayObject
    {
       
@@ -108,6 +108,10 @@ package
       private var m_IsPrefixSuffixDirty:Boolean = false;
       
       private var m_IsTitleDirty:Boolean = false;
+      
+      public var m_TimestampLow:uint = 4294967295;
+      
+      public var m_TimestampHigh:uint = 4294967295;
       
       public function HUDQuestTrackerObjective()
       {

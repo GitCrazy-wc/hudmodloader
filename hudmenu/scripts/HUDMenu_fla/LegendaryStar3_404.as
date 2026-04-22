@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol930")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol932")]
    public dynamic class LegendaryStar3_404 extends MovieClip
    {
       
@@ -15,12 +15,10 @@ package HUDMenu_fla
       internal function frame1() : *
       {
          stop();
-         stop();
       }
       
       internal function frame64() : *
       {
-         stop();
          stop();
       }
    }

@@ -3,21 +3,19 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol278")]
-   public dynamic class HUDMessagePvpScoreBoard_Internal_726 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol288")]
+   public dynamic class HUDMessagePvpRevenge_Internal_724 extends MovieClip
    {
       
       public var Header_tf:TextField;
       
-      public var PlayerAIcon_mc:PlayerAccountIcon;
+      public var PlayerName_tf:TextField;
       
-      public var PlayerAValue_tf:TextField;
+      public var RewardHeader_tf:TextField;
       
-      public var PlayerBIcon_mc:PlayerAccountIcon;
+      public var RewardValue_tf:TextField;
       
-      public var PlayerBValue_tf:TextField;
-      
-      public function HUDMessagePvpScoreBoard_Internal_726()
+      public function HUDMessagePvpRevenge_Internal_724()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

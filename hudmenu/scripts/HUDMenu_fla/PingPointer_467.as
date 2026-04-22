@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol698")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol700")]
    public dynamic class PingPointer_467 extends MovieClip
    {
       

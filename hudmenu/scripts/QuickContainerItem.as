@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1554")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1556")]
    public dynamic class QuickContainerItem extends BSUIComponent
    {
       
@@ -113,10 +113,6 @@ package
             "visible":this.data.favorite > 0
          });
          _loc1_.push({
-            "clip":this.LegendaryIcon_mc,
-            "visible":this.data.isLegendary
-         });
-         _loc1_.push({
             "clip":this.questItemIcon_mc,
             "visible":this.data.isQuestItem || this.data.isSharedQuestItem
          });
@@ -143,6 +139,7 @@ package
          var _loc4_:Number = NaN;
          var _loc5_:* = undefined;
          var _loc6_:* = undefined;
+         var _loc7_:String = null;
          if(this.data)
          {
             _loc1_ = Number(BSUIDataManager.GetDataFromClient("CharacterInfoData").data.level);
@@ -206,13 +203,14 @@ package
             this.RaritySelector_mc.RarityOverlay_mc.transform.colorTransform = _loc5_;
             this.RarityIndicator_mc.transform.colorTransform = _loc5_;
             this.RarityBorder_mc.transform.colorTransform = _loc5_;
+            _loc7_ = GlobalFunc.BuildLegendaryStarsGlyphString(this.data);
             if(this.data.count > 1)
             {
-               GlobalFunc.SetText(this.ItemName_tf,this.data.text + " (" + this.data.count + ")",false,false,true);
+               GlobalFunc.SetText(this.ItemName_tf,this.data.text + " (" + this.data.count + ")" + _loc7_,false,false,true);
             }
             else
             {
-               GlobalFunc.SetText(this.ItemName_tf,this.data.text,false,false,true);
+               GlobalFunc.SetText(this.ItemName_tf,this.data.text + _loc7_,false,false,true);
             }
             if(this.selected)
             {

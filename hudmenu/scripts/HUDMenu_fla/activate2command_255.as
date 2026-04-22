@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1412")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1414")]
    public dynamic class activate2command_255 extends MovieClip
    {
       

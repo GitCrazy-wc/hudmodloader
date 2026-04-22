@@ -324,7 +324,6 @@ package
          param2.isOrObjective = param1.isOrObjective;
          param2.isOffMap = param1.isOffMap;
          param2.useProvider = false;
-         param2.timer = param1.timer.total_time;
          param2.useCountdownTimer = param1.timer.count_down;
          param2.isTimerPaused = param1.timer.is_paused;
          param2.progress = param1.progress;
@@ -337,6 +336,12 @@ package
          {
             param2.progress = param1.progress;
          }
+         if(param2.m_TimestampLow != param1.timer.timestamp_low || param2.m_TimestampHigh != param1.timer.timestamp_high)
+         {
+            param2.timer = param1.timer.total_time;
+         }
+         param2.m_TimestampLow = param1.timer.timestamp_low;
+         param2.m_TimestampHigh = param1.timer.timestamp_high;
          if(!param2.isTimerPaused)
          {
             this.addTimer(param2.timer,param2.useCountdownTimer);
@@ -363,9 +368,14 @@ package
          param2.isDisplayedToTeam = param1.isDisplayedToTeam;
          param2.isShareable = param1.isShareable;
          param2.useProvider = false;
-         param2.timer = param1.startTime.total_time;
          param2.useCountdownTimer = param1.startTime.count_down;
          param2.isTimerPaused = param1.startTime.is_paused;
+         if(param2.m_TimestampLow != param1.startTime.timestamp_low || param2.m_TimestampHigh != param1.startTime.timestamp_high)
+         {
+            param2.timer = param1.startTime.total_time;
+         }
+         param2.m_TimestampLow = param1.startTime.timestamp_low;
+         param2.m_TimestampHigh = param1.startTime.timestamp_high;
          if(!param2.isTimerPaused)
          {
             this.addTimer(param2.timer,param2.useCountdownTimer);
@@ -468,7 +478,7 @@ package
          var _loc5_:HUDQuestTrackerEntry = null;
          var _loc6_:uint = 0;
          var _loc2_:Number = new Date().getTime() / 1000;
-         if(_loc2_ - this.m_PreviousTime > 1)
+         if(_loc2_ - this.m_PreviousTime >= 1)
          {
             _loc3_ = 0;
             _loc4_ = _loc2_ - this.m_PreviousTime;
