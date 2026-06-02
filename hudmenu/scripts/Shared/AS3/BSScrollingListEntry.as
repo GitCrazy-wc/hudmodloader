@@ -73,9 +73,9 @@ package Shared.AS3
          return this._parentClip;
       }
       
-      public function set parentClip(param1:MovieClip) : *
+      public function set parentClip(aClip:MovieClip) : *
       {
-         this._parentClip = param1;
+         this._parentClip = aClip;
       }
       
       public function get clipIndex() : uint
@@ -83,9 +83,9 @@ package Shared.AS3
          return this._clipIndex;
       }
       
-      public function set clipIndex(param1:uint) : *
+      public function set clipIndex(newIndex:uint) : *
       {
-         this._clipIndex = param1;
+         this._clipIndex = newIndex;
       }
       
       public function get clipRow() : uint
@@ -93,9 +93,9 @@ package Shared.AS3
          return this._clipRow;
       }
       
-      public function set clipRow(param1:uint) : *
+      public function set clipRow(aRow:uint) : *
       {
-         this._clipRow = param1;
+         this._clipRow = aRow;
       }
       
       public function get clipCol() : uint
@@ -103,9 +103,9 @@ package Shared.AS3
          return this._clipCol;
       }
       
-      public function set clipCol(param1:uint) : *
+      public function set clipCol(aCol:uint) : *
       {
-         this._clipCol = param1;
+         this._clipCol = aCol;
       }
       
       public function get itemIndex() : uint
@@ -113,9 +113,9 @@ package Shared.AS3
          return this._itemIndex;
       }
       
-      public function set itemIndex(param1:uint) : *
+      public function set itemIndex(newIndex:uint) : *
       {
-         this._itemIndex = param1;
+         this._itemIndex = newIndex;
       }
       
       public function get selected() : Boolean
@@ -123,9 +123,9 @@ package Shared.AS3
          return this._selected;
       }
       
-      public function set selected(param1:Boolean) : *
+      public function set selected(flag:Boolean) : *
       {
-         this._selected = param1;
+         this._selected = flag;
       }
       
       public function get hasDynamicHeight() : Boolean
@@ -143,33 +143,33 @@ package Shared.AS3
          return this.ORIG_BORDER_WIDTH;
       }
       
-      protected function SetColorTransform(param1:Object, param2:Boolean) : *
+      protected function SetColorTransform(aTarget:Object, abSelected:Boolean) : *
       {
-         var _loc3_:ColorTransform = param1.transform.colorTransform;
-         _loc3_.redOffset = param2 ? -255 : 0;
-         _loc3_.greenOffset = param2 ? -255 : 0;
-         _loc3_.blueOffset = param2 ? -255 : 0;
-         param1.transform.colorTransform = _loc3_;
+         var colorTrans:ColorTransform = aTarget.transform.colorTransform;
+         colorTrans.redOffset = abSelected ? -255 : 0;
+         colorTrans.greenOffset = abSelected ? -255 : 0;
+         colorTrans.blueOffset = abSelected ? -255 : 0;
+         aTarget.transform.colorTransform = colorTrans;
       }
       
-      public function SetEntryText(param1:Object, param2:String) : *
+      public function SetEntryText(aEntryObject:Object, astrTextOption:String) : *
       {
-         var _loc3_:Number = NaN;
-         if(this.textField != null && param1 != null && Boolean(param1.hasOwnProperty("text")))
+         var vertSpacing:Number = NaN;
+         if(this.textField != null && aEntryObject != null && Boolean(aEntryObject.hasOwnProperty("text")))
          {
-            if(param2 == BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT)
+            if(astrTextOption == BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT)
             {
                TextFieldEx.setTextAutoSize(this.textField,"shrink");
             }
-            else if(param2 == BSScrollingList.TEXT_OPTION_MULTILINE)
+            else if(astrTextOption == BSScrollingList.TEXT_OPTION_MULTILINE)
             {
                this.textField.autoSize = TextFieldAutoSize.LEFT;
                this.textField.multiline = true;
                this.textField.wordWrap = true;
             }
-            if(param1.text != undefined)
+            if(aEntryObject.text != undefined)
             {
-               GlobalFunc.SetText(this.textField,param1.text,true);
+               GlobalFunc.SetText(this.textField,aEntryObject.text,true);
             }
             else
             {
@@ -180,10 +180,10 @@ package Shared.AS3
          if(this.border != null)
          {
             this.border.alpha = this.selected ? GlobalFunc.SELECTED_RECT_ALPHA : 0;
-            if(this.textField != null && param2 == BSScrollingList.TEXT_OPTION_MULTILINE && this.textField.numLines > 1)
+            if(this.textField != null && astrTextOption == BSScrollingList.TEXT_OPTION_MULTILINE && this.textField.numLines > 1)
             {
-               _loc3_ = this.textField.y - this.border.y;
-               this.border.height = this.textField.textHeight + _loc3_ * 2 + 5;
+               vertSpacing = this.textField.y - this.border.y;
+               this.border.height = this.textField.textHeight + vertSpacing * 2 + 5;
             }
             else
             {

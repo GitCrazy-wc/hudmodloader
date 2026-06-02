@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol515")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol521")]
    public dynamic class PistolIcon extends MovieClip
    {
       

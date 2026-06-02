@@ -2,11 +2,12 @@ package
 {
    import Shared.GlobalFunc;
    import flash.display.MovieClip;
+   import flash.events.Event;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol319")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol323")]
    public class HUDMessageItem extends HUDMessageItemBase
    {
       
@@ -33,24 +34,24 @@ package
       
       public function CalcIconWidth() : uint
       {
-         var _loc1_:uint = 0;
+         var iconDeltaX:uint = 0;
          if(m_Data.data.isRadioStation)
          {
-            _loc1_ += this.RadioStationIcon_mc.width + 2;
+            iconDeltaX += this.RadioStationIcon_mc.width + 2;
          }
-         return _loc1_;
+         return iconDeltaX;
       }
       
       override public function redrawUIComponent() : void
       {
-         var _loc1_:uint = 0;
+         var iconWidth:uint = 0;
          if(data)
          {
             visible = true;
             this.RadioStationIcon_mc.visible = m_Data.data.isRadioStation;
-            _loc1_ = this.CalcIconWidth();
-            this.MessageText_tf.width = this.BaseTextFieldWidth - _loc1_;
-            this.MessageText_tf.x = _loc1_;
+            iconWidth = this.CalcIconWidth();
+            this.MessageText_tf.width = this.BaseTextFieldWidth - iconWidth;
+            this.MessageText_tf.x = iconWidth;
             TextFieldEx.setNoTranslate(this.MessageText_tf,true);
             GlobalFunc.SetText(this.MessageText_tf,m_Data.data.messageText,true);
          }
@@ -67,13 +68,13 @@ package
       
       internal function frame19() : *
       {
-         OnFadeInComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeInComplete",true,true));
          stop();
       }
       
       internal function frame124() : *
       {
-         OnFadeOutComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeOutComplete",true,true));
          stop();
       }
    }

@@ -1,8 +1,9 @@
 package
 {
    import Shared.GlobalFunc;
+   import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol269")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol273")]
    public class HUDMessageItemUnderAttack extends HUDMessageItemBase
    {
       
@@ -36,13 +37,13 @@ package
       
       internal function frame27() : *
       {
-         OnFadeInComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeInComplete",true));
          stop();
       }
       
       internal function frame773() : *
       {
-         OnFadeOutComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeOutComplete",true));
          stop();
       }
    }

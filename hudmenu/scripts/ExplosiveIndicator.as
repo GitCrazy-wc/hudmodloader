@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol564")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol570")]
    public dynamic class ExplosiveIndicator extends MovieClip
    {
       

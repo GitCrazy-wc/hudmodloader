@@ -7,7 +7,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol597")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol603")]
    public class DoTDamageIcon extends MovieClip
    {
       
@@ -47,14 +47,14 @@ package
          return this.m_TweenProgress;
       }
       
-      public function setType(param1:uint, param2:Boolean, param3:uint, param4:uint) : *
+      public function setType(aDamageType:uint, aPositive:Boolean, aRemainingDuration:uint, aTotalDuration:uint) : *
       {
-         this.m_RemainingDuration = param3;
-         this.m_TotalDuration = param4;
-         this.IconInternal_mc.gotoAndStop(GlobalFunc.NUM_DAMAGE_TYPES + param1);
+         this.m_RemainingDuration = aRemainingDuration;
+         this.m_TotalDuration = aTotalDuration;
+         this.IconInternal_mc.gotoAndStop(GlobalFunc.NUM_DAMAGE_TYPES + aDamageType);
          if(this.m_RemainingDuration != this.m_TotalDuration)
          {
-            this.BGAnim_mc.gotoAndStop(param2 ? "positiveOn" : "negativeOn");
+            this.BGAnim_mc.gotoAndStop(aPositive ? "positiveOn" : "negativeOn");
             this.m_StartingY = this.m_DefaultFillY + (1 - this.m_RemainingDuration / this.m_TotalDuration) * (this.TWEEN_END_Y - this.m_DefaultFillY);
             this.BGAnim_mc.FillInternal_mc.Fill_mc.y = this.m_StartingY;
             gotoAndPlay("rollOn");
@@ -63,7 +63,7 @@ package
          {
             this.m_StartingY = this.m_DefaultFillY;
             gotoAndPlay("rollOn");
-            this.BGAnim_mc.gotoAndPlay(param2 ? "positive" : "negative");
+            this.BGAnim_mc.gotoAndPlay(aPositive ? "positive" : "negative");
             this.clearTween();
          }
          this.m_TweenProgress = this.m_RemainingDuration;
@@ -82,9 +82,9 @@ package
          }
       }
       
-      private function onTweenChange(param1:TweenEvent) : void
+      private function onTweenChange(aEvent:TweenEvent) : void
       {
-         this.m_TweenProgress = this.m_RemainingDuration - param1.time * 1000;
+         this.m_TweenProgress = this.m_RemainingDuration - aEvent.time * 1000;
       }
       
       private function onTweenFinish() : void
@@ -93,7 +93,7 @@ package
          dispatchEvent(new Event(EVENT_DAMAGE_COMPLETE,true,true));
       }
       
-      private function onRollOnComplete(param1:Event) : void
+      private function onRollOnComplete(aEvent:Event) : void
       {
          this.m_FillTween = new Tween(this.BGAnim_mc.FillInternal_mc.Fill_mc,"y",None.easeIn,this.m_StartingY,this.TWEEN_END_Y,this.m_RemainingDuration / 1000,true);
          this.m_FillTween.addEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish,false,0,true);

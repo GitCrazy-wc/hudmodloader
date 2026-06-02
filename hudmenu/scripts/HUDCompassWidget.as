@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.utils.getDefinitionByName;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1647")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1654")]
    public dynamic class HUDCompassWidget extends BSUIComponent
    {
       
@@ -37,9 +37,9 @@ package
          BSUIDataManager.Subscribe("CompassData",this.onDataChanged);
       }
       
-      public function set isPowerArmor(param1:Boolean) : *
+      public function set isPowerArmor(aVal:Boolean) : *
       {
-         this.m_IsPowerArmor = param1;
+         this.m_IsPowerArmor = aVal;
          this.AreaQuest_WithinClip_mc.visible = !this.m_IsPowerArmor;
          this.AreaQuest_WithinClipPA_mc.visible = this.m_IsPowerArmor;
          if(this.m_IsPowerArmor)
@@ -51,9 +51,9 @@ package
          }
       }
       
-      private function onDataChanged(param1:FromClientDataEvent) : *
+      private function onDataChanged(aEvent:FromClientDataEvent) : *
       {
-         if(param1.fromClient.data.withinAreaMarker)
+         if(aEvent.fromClient.data.withinAreaMarker)
          {
             if(!this.WithinClipVisibility)
             {
@@ -86,10 +86,9 @@ package
          BSUIDataManager.Subscribe("CompassData",this.onDataChanged);
       }
       
-      public function IsValidCompassMarker(param1:String) : Boolean
+      public function IsValidCompassMarker(aMarkerType:String) : Boolean
       {
          var clipClass:Class = null;
-         var aMarkerType:String = param1;
          try
          {
             clipClass = getDefinitionByName(aMarkerType) as Class;

@@ -2,6 +2,8 @@ package
 {
    import Shared.AS3.BSUIComponent;
    import flash.events.Event;
+   import flash.events.TimerEvent;
+   import flash.utils.Timer;
    
    public dynamic class HUDFadingListItem extends BSUIComponent
    {
@@ -24,34 +26,61 @@ package
       
       protected var _fullyFadedOut:Boolean = false;
       
+      private var m_FadeTimer:Timer;
+      
+      private const MILLISECOND_CONVERSION:Number = 1000;
+      
       private var _requestedFadeState:int = 0;
       
       private var m_EndAnimFrame:int = 1;
       
       public function HUDFadingListItem()
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super();
          this._fadeInStarted = false;
          this._fullyFadedIn = false;
          this._fastFadeOutStarted = false;
          this._fadeOutStarted = false;
          this._fullyFadedOut = false;
-         this.m_EndAnimFrame = this.totalFrames;
-         while(_loc1_ < this.currentLabels.length)
+         for(this.m_EndAnimFrame = this.totalFrames; i < this.currentLabels.length; )
          {
-            if(this.currentLabels[_loc1_].name == "endAnim")
+            if(this.currentLabels[i].name == "endAnim")
             {
-               this.m_EndAnimFrame = this.currentLabels[_loc1_].frame;
+               this.m_EndAnimFrame = this.currentLabels[i].frame;
                break;
             }
-            _loc1_++;
+            i++;
          }
+         addEventListener(HUDFadingListItem.EVENT_FADE_IN_COMPLETE,this.OnFadeInComplete);
+         addEventListener(HUDFadingListItem.EVENT_FADE_OUT_COMPLETE,this.OnFadeOutComplete);
       }
       
       public function get endAnimFrame() : int
       {
          return this.m_EndAnimFrame;
+      }
+      
+      public function FadeOutCustomLength(aFadeLengthInSeconds:uint) : *
+      {
+         if(!this.m_FadeTimer)
+         {
+            this._fadeOutStarted = true;
+            this.m_FadeTimer = new Timer(this.MILLISECOND_CONVERSION * aFadeLengthInSeconds,0);
+            this.m_FadeTimer.addEventListener(TimerEvent.TIMER,this.onFadeTick);
+            this.m_FadeTimer.start();
+         }
+      }
+      
+      private function onFadeTick(aEvent:Event) : void
+      {
+         if(this.m_FadeTimer)
+         {
+            this.m_FadeTimer.removeEventListener(TimerEvent.TIMER,this.onFadeTick);
+            this.m_FadeTimer.stop();
+            this.m_FadeTimer = null;
+            this.FastFadeOut();
+         }
       }
       
       public function FadeIn() : *
@@ -131,17 +160,17 @@ package
          return this._fullyFadedIn && !this._fadeOutStarted && !bIsDirty;
       }
       
-      protected function OnFastFadeOutStarted(param1:Event = null) : *
+      protected function OnFastFadeOutStarted(aEvent:Event = null) : *
       {
          this._fastFadeOutStarted = true;
       }
       
-      protected function OnFadeInComplete(param1:Event = null) : *
+      protected function OnFadeInComplete(aEvent:Event = null) : *
       {
          this._fullyFadedIn = true;
       }
       
-      protected function OnFadeOutComplete(param1:Event = null) : *
+      protected function OnFadeOutComplete(aEvent:Event = null) : *
       {
          visible = false;
          this._fullyFadedOut = true;

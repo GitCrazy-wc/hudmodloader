@@ -9,7 +9,7 @@ package
    import flash.net.URLRequest;
    import flash.utils.Timer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1360")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1367")]
    public class VOFlyoutManager extends MovieClip
    {
       
@@ -77,17 +77,17 @@ package
          this.m_ActiveFlyoutClip = this.DOVOFlyoutGraphic_mc;
       }
       
-      public function set speakerName(param1:String) : void
+      public function set speakerName(aName:String) : void
       {
          this.m_HideTimer.stop();
          this.m_UnloadTimer.stop();
-         if(!param1)
+         if(!aName)
          {
-            param1 = "";
+            aName = "";
          }
-         if(param1 != this.m_SpeakerName)
+         if(aName != this.m_SpeakerName)
          {
-            this.m_SpeakerName = param1;
+            this.m_SpeakerName = aName;
             if(this.m_SpeakerName == "")
             {
                this.HideVOFlyout();
@@ -105,7 +105,7 @@ package
       
       public function LoadPortraits() : *
       {
-         var _loc1_:URLRequest = null;
+         var portraitLoadRequest:URLRequest = null;
          if(this.PortraitLoader == null)
          {
             if(this.m_VOCharacterAnim_mc == null)
@@ -114,9 +114,9 @@ package
                this.m_VOCharacterAnim_mc.name = "m_VOCharacterAnim_mc";
             }
             this.PortraitLoader = new Loader();
-            _loc1_ = new URLRequest(PORTRAIT_PATH);
+            portraitLoadRequest = new URLRequest(PORTRAIT_PATH);
             this.PortraitLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onPortraitLoadComplete);
-            this.PortraitLoader.load(_loc1_);
+            this.PortraitLoader.load(portraitLoadRequest);
          }
       }
       
@@ -141,13 +141,13 @@ package
          this.m_PortraitsLoaded = false;
       }
       
-      private function onPortraitLoadComplete(param1:Event) : *
+      private function onPortraitLoadComplete(loadCompleteEvent:Event) : *
       {
          if(this.PortraitLoader != null)
          {
             if(this.m_VOCharacterAnim_mc != null)
             {
-               this.m_VOCharacterAnim_mc.addChild(param1.currentTarget.content);
+               this.m_VOCharacterAnim_mc.addChild(loadCompleteEvent.currentTarget.content);
                this.m_Portraits = this.m_VOCharacterAnim_mc.getChildAt(0) as MovieClip;
                this.m_Portraits.x = PORTRAIT_X;
                this.m_Portraits.y = PORTRAIT_Y;
@@ -221,16 +221,16 @@ package
          this.m_UnloadTimer.start();
       }
       
-      private function onHUDVOFlyoutData(param1:FromClientDataEvent) : void
+      private function onHUDVOFlyoutData(aEvent:FromClientDataEvent) : void
       {
-         if(Boolean(param1) && Boolean(param1.data))
+         if(Boolean(aEvent) && Boolean(aEvent.data))
          {
-            this.m_SpeakerEditorID = param1.data.speakerEditorID;
-            this.speakerName = param1.data.speakerName;
+            this.m_SpeakerEditorID = aEvent.data.speakerEditorID;
+            this.speakerName = aEvent.data.speakerName;
          }
       }
       
-      private function onHideTimerEvent(param1:Event) : void
+      private function onHideTimerEvent(aEvent:Event) : void
       {
          if(this.m_SpeakerName == "" && Boolean(this.m_ActiveFlyoutClip))
          {
@@ -239,7 +239,7 @@ package
          this.m_HideTimer.reset();
       }
       
-      private function onUnloadTimerEvent(param1:Event) : void
+      private function onUnloadTimerEvent(aEvent:Event) : void
       {
          this.m_UnloadTimer.reset();
          this.RemovePortraits();

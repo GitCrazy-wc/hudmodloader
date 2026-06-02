@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1705")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1712")]
    public dynamic class HUDActiveEffectsWidget extends BSUIComponent
    {
       
@@ -34,90 +34,86 @@ package
          return this._bInPowerArmorMode;
       }
       
-      public function set bInPowerArmorMode(param1:Boolean) : void
+      public function set bInPowerArmorMode(value:Boolean) : void
       {
-         if(this._bInPowerArmorMode != param1)
+         if(this._bInPowerArmorMode != value)
          {
-            this._bInPowerArmorMode = param1;
+            this._bInPowerArmorMode = value;
             SetIsDirty();
          }
       }
       
       private function instantiateClips() : void
       {
-         var _loc3_:HUDActiveEffectClip = null;
+         var newClip:HUDActiveEffectClip = null;
          this.ClipHolderInternal_mc = new MovieClip();
          addChild(this.ClipHolderInternal_mc);
-         var _loc1_:Number = 0;
-         var _loc2_:* = 0;
-         while(_loc2_ < MAX_NUM_CLIPS)
+         var position:Number = 0;
+         for(var i:* = 0; i < MAX_NUM_CLIPS; i++)
          {
-            _loc1_ -= CLIP_WIDTH;
-            _loc3_ = new HUDActiveEffectClip();
-            _loc3_.x = _loc1_;
-            _loc3_.visible = false;
-            this.ClipHolderInternal_mc.addChild(_loc3_);
-            this.m_EffectClipsA.push(_loc3_);
-            _loc1_ -= CLIP_SPACER;
-            _loc2_++;
+            position -= CLIP_WIDTH;
+            newClip = new HUDActiveEffectClip();
+            newClip.x = position;
+            newClip.visible = false;
+            this.ClipHolderInternal_mc.addChild(newClip);
+            this.m_EffectClipsA.push(newClip);
+            position -= CLIP_SPACER;
          }
       }
       
-      public function onDataUpdate(param1:Array) : void
+      public function onDataUpdate(aData:Array) : void
       {
-         var _loc4_:Object = null;
-         var _loc5_:Object = null;
-         var _loc6_:HUDActiveEffectClip = null;
-         var _loc7_:HUDActiveEffectClip = null;
-         var _loc8_:uint = 0;
-         var _loc9_:uint = 0;
-         var _loc10_:uint = 0;
-         var _loc2_:* = 0;
-         var _loc3_:* = 0;
-         for(_loc4_ in param1)
+         var dataClip:Object = null;
+         var curData:Object = null;
+         var indexedEffect:HUDActiveEffectClip = null;
+         var clip:HUDActiveEffectClip = null;
+         var totalDuration:uint = 0;
+         var elapsedDuration:uint = 0;
+         var curElapsed:uint = 0;
+         var dataIndex:* = 0;
+         var clipIndex:* = 0;
+         for(dataClip in aData)
          {
-            _loc5_ = param1[_loc4_];
-            _loc3_ = 0;
-            while(_loc3_ < this.m_EffectClipsA.length)
+            curData = aData[dataClip];
+            for(clipIndex = 0; clipIndex < this.m_EffectClipsA.length; clipIndex++)
             {
-               _loc6_ = this.m_EffectClipsA[_loc3_];
-               if(_loc6_.iconID == _loc5_.iconID && _loc6_.EffectUID == _loc5_.effectUID && _loc6_.RefreshCount == _loc5_.refreshCount && _loc6_.Active)
+               indexedEffect = this.m_EffectClipsA[clipIndex];
+               if(indexedEffect.iconID == curData.iconID && indexedEffect.EffectUID == curData.effectUID && indexedEffect.RefreshCount == curData.refreshCount && indexedEffect.Active)
                {
-                  _loc5_.elapsed = _loc6_.CurrentTime;
+                  curData.elapsed = indexedEffect.CurrentTime;
                   break;
                }
-               _loc3_++;
             }
          }
-         _loc2_ = param1.length - 1;
-         _loc3_ = 0;
-         while(_loc3_ < this.m_EffectClipsA.length)
+         dataIndex = aData.length - 1;
+         clipIndex = 0;
+         while(clipIndex < this.m_EffectClipsA.length)
          {
-            _loc7_ = this.m_EffectClipsA[_loc3_];
-            _loc5_ = param1[_loc2_];
-            if(_loc3_ < param1.length)
+            clip = this.m_EffectClipsA[clipIndex];
+            curData = aData[dataIndex];
+            if(clipIndex < aData.length)
             {
-               _loc7_.IconFrame = _loc5_.iconID;
-               _loc7_.IconColor = _loc5_.iconColor;
-               _loc7_.StackAmount = _loc5_.stackAmount;
-               _loc7_.RefreshCount = _loc5_.refreshCount;
-               _loc7_.EffectUID = _loc5_.effectUID;
-               _loc8_ = 0;
-               _loc9_ = 0;
-               if(Boolean(_loc5_.hasOwnProperty("duration")) && _loc5_.duration > 0)
+               clip.IconFrame = curData.iconID;
+               clip.IconColor = curData.iconColor;
+               clip.StackAmount = curData.stackAmount;
+               clip.RefreshCount = curData.refreshCount;
+               clip.EffectUID = curData.effectUID;
+               totalDuration = 0;
+               elapsedDuration = 0;
+               if(Boolean(curData.hasOwnProperty("duration")) && curData.duration > 0)
                {
-                  _loc8_ = uint(_loc5_.duration);
-                  _loc10_ = _loc5_.hasOwnProperty("elapsed") ? uint(_loc5_.elapsed) : 0;
-                  _loc9_ = _loc8_ > _loc10_ ? _loc10_ : 0;
+                  totalDuration = uint(curData.duration);
+                  curElapsed = curData.hasOwnProperty("elapsed") ? uint(curData.elapsed) : 0;
+                  elapsedDuration = totalDuration > curElapsed ? curElapsed : 0;
                }
-               _loc7_.setEffect(_loc5_.iconID,_loc9_,_loc8_);
+               clip.setEffect(curData.iconID,elapsedDuration,totalDuration);
             }
             else
             {
-               _loc7_.IconFrame = "";
+               clip.IconFrame = "";
             }
-            _loc3_++;
-            _loc2_--;
+            clipIndex++;
+            dataIndex--;
          }
          SetIsDirty();
       }
@@ -134,17 +130,15 @@ package
             this.ClipHolderInternal_mc.x = 0;
             this.ClipHolderInternal_mc.y = 0;
          }
-         var _loc1_:Number = this.m_EffectClipsA[0].x - CLIP_SPACER;
-         var _loc2_:* = 1;
-         while(_loc2_ < this.m_EffectClipsA.length)
+         var position:Number = this.m_EffectClipsA[0].x - CLIP_SPACER;
+         for(var i:* = 1; i < this.m_EffectClipsA.length; i++)
          {
-            if(this.m_EffectClipsA[_loc2_].visible)
+            if(this.m_EffectClipsA[i].visible)
             {
-               _loc1_ -= this.m_EffectClipsA[_loc2_].StackAmount > 0 ? CLIP_WIDTH + this.m_EffectClipsA[_loc2_].Stack_mc.width - STACK_OVERLAP : CLIP_WIDTH;
-               this.m_EffectClipsA[_loc2_].x = _loc1_;
-               _loc1_ -= CLIP_SPACER;
+               position -= this.m_EffectClipsA[i].StackAmount > 0 ? CLIP_WIDTH + this.m_EffectClipsA[i].Stack_mc.width - STACK_OVERLAP : CLIP_WIDTH;
+               this.m_EffectClipsA[i].x = position;
+               position -= CLIP_SPACER;
             }
-            _loc2_++;
          }
       }
    }

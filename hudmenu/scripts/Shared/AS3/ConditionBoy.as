@@ -7,7 +7,7 @@ package Shared.AS3
    import flash.net.URLRequest;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1061")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1068")]
    public dynamic class ConditionBoy extends BSUIComponent
    {
       
@@ -77,41 +77,41 @@ package Shared.AS3
          this.LoadHead();
       }
       
-      public function set isMenuInstance(param1:Boolean) : *
+      public function set isMenuInstance(aIsMenuInstance:Boolean) : *
       {
-         this.IsMenuInstance = param1;
+         this.IsMenuInstance = aIsMenuInstance;
       }
       
       public function PreloadConditions() : *
       {
-         var _loc1_:* = undefined;
-         var _loc2_:Loader = null;
-         var _loc3_:URLRequest = null;
+         var id:* = undefined;
+         var cachedBodyLoader:Loader = null;
+         var bodyLoadRequest:URLRequest = null;
          if(!this.PreloadedBodyClips)
          {
             this.PreloadedBodyClips = new Vector.<Loader>(NUM_BODY_CLIPS,true);
-            for(_loc1_ in this.PreloadedBodyClips)
+            for(id in this.PreloadedBodyClips)
             {
-               _loc2_ = new Loader();
-               this.PreloadedBodyClips[_loc1_] = _loc2_;
-               _loc3_ = new URLRequest(this.GetPathForCondition(_loc1_));
-               _loc2_.load(_loc3_);
+               cachedBodyLoader = new Loader();
+               this.PreloadedBodyClips[id] = cachedBodyLoader;
+               bodyLoadRequest = new URLRequest(this.GetPathForCondition(id));
+               cachedBodyLoader.load(bodyLoadRequest);
             }
          }
       }
       
-      private function GetPathForCondition(param1:int) : *
+      private function GetPathForCondition(aBodyId:int) : *
       {
-         return CLIP_BODY_TEMPLATE_PATH + this.ColorFileText + param1 + ".swf";
+         return CLIP_BODY_TEMPLATE_PATH + this.ColorFileText + aBodyId + ".swf";
       }
       
-      public function SetData(param1:Object) : *
+      public function SetData(data:Object) : *
       {
-         this.m_IsGhoul = param1.isGhoul;
-         this.UpdatePrimaryCondition(param1);
+         this.m_IsGhoul = data.isGhoul;
+         this.UpdatePrimaryCondition(data);
          if(!this.IsMenuInstance)
          {
-            this.UpdateSecondaryConditions(param1);
+            this.UpdateSecondaryConditions(data);
          }
          if(this.IsReadyForNextCondition)
          {
@@ -119,103 +119,103 @@ package Shared.AS3
          }
       }
       
-      private function UpdatePrimaryCondition(param1:Object) : *
+      private function UpdatePrimaryCondition(data:Object) : *
       {
-         var _loc2_:Boolean = Boolean(param1.isHeadDamaged);
-         var _loc3_:String = "Normal";
+         var isHeadDamaged:Boolean = Boolean(data.isHeadDamaged);
+         var headFrame:String = "Normal";
          if(this.m_IsGhoul)
          {
-            _loc3_ = _loc2_ ? "GhoulDamaged" : "Ghoul";
+            headFrame = isHeadDamaged ? "GhoulDamaged" : "Ghoul";
          }
-         else if(param1.isIrradiated)
+         else if(data.isIrradiated)
          {
-            _loc3_ = _loc2_ ? "IrradiatedDamaged" : "Irradiated";
+            headFrame = isHeadDamaged ? "IrradiatedDamaged" : "Irradiated";
          }
-         else if(param1.isDrugged)
+         else if(data.isDrugged)
          {
-            _loc3_ = _loc2_ ? "DruggedDamaged" : "Drugged";
+            headFrame = isHeadDamaged ? "DruggedDamaged" : "Drugged";
          }
-         else if(param1.isAddicted || _loc2_ || param1.bodyFlags != 0)
+         else if(data.isAddicted || isHeadDamaged || data.bodyFlags != 0)
          {
-            _loc3_ = _loc2_ ? "NegativeDamaged" : "Negative";
+            headFrame = isHeadDamaged ? "NegativeDamaged" : "Negative";
          }
-         this.PrimaryCondition.isPersistent = _loc2_ || param1.bodyFlags != 0;
-         if(this.PrimaryCondition.headFrame != _loc3_ || this.PrimaryCondition.bodyId != param1.bodyFlags)
+         this.PrimaryCondition.isPersistent = isHeadDamaged || data.bodyFlags != 0;
+         if(this.PrimaryCondition.headFrame != headFrame || this.PrimaryCondition.bodyId != data.bodyFlags)
          {
-            this.PrimaryCondition.headFrame = _loc3_;
-            this.PrimaryCondition.bodyId = param1.bodyFlags;
+            this.PrimaryCondition.headFrame = headFrame;
+            this.PrimaryCondition.bodyId = data.bodyFlags;
             this.PrimaryConditionChanged = true;
          }
       }
       
-      private function UpdateSecondaryConditions(param1:Object) : *
+      private function UpdateSecondaryConditions(data:Object) : *
       {
-         var _loc2_:Boolean = Boolean(param1.isHeadDamaged);
-         if(!this.IsMutated && Boolean(param1.isMutated))
+         var isHeadDamaged:Boolean = Boolean(data.isHeadDamaged);
+         if(!this.IsMutated && Boolean(data.isMutated))
          {
             this.SecondaryConditions.push({
-               "headFrame":(this.m_IsGhoul ? "Ghoul" : ("" + _loc2_ ? "MutatedDamaged" : "Mutated")),
+               "headFrame":(this.m_IsGhoul ? "Ghoul" : ("" + isHeadDamaged ? "MutatedDamaged" : "Mutated")),
                "bodyId":CLIP_BODY_MUTATION_ID
             });
          }
-         this.IsMutated = param1.isMutated;
-         if(!this.IsDiseased && Boolean(param1.isDiseased))
+         this.IsMutated = data.isMutated;
+         if(!this.IsDiseased && Boolean(data.isDiseased))
          {
             this.SecondaryConditions.push({
-               "headFrame":(_loc2_ ? "DiseasedDamaged" : "Diseased"),
+               "headFrame":(isHeadDamaged ? "DiseasedDamaged" : "Diseased"),
                "bodyId":CLIP_BODY_DISEASE_ID
             });
          }
-         this.IsDiseased = param1.isDiseased;
-         if(Boolean(param1.isThirstStateNegative) && !this.IsThirstStateNegative)
+         this.IsDiseased = data.isDiseased;
+         if(Boolean(data.isThirstStateNegative) && !this.IsThirstStateNegative)
          {
             this.SecondaryConditions.push({
                "headFrame":HEAD_THIRST_FRAME,
                "bodyId":CLIP_BODY_THIRST_ID
             });
          }
-         this.IsThirstStateNegative = param1.isThirstStateNegative;
-         if(Boolean(param1.isHungerStateNegative) && !this.IsHungerStateNegative)
+         this.IsThirstStateNegative = data.isThirstStateNegative;
+         if(Boolean(data.isHungerStateNegative) && !this.IsHungerStateNegative)
          {
             this.SecondaryConditions.push({
                "headFrame":HEAD_HUNGER_FRAME,
                "bodyId":CLIP_BODY_HUNGER_ID
             });
          }
-         this.IsHungerStateNegative = param1.isHungerStateNegative;
-         if(Boolean(param1.isFeralStateNegative) && !this.IsFeralStateNegative)
+         this.IsHungerStateNegative = data.isHungerStateNegative;
+         if(Boolean(data.isFeralStateNegative) && !this.IsFeralStateNegative)
          {
             this.SecondaryConditions.push({
                "headFrame":HEAD_FERAL_FRAME,
                "bodyId":CLIP_BODY_FERAL_ID
             });
          }
-         this.IsFeralStateNegative = param1.isFeralStateNegative;
+         this.IsFeralStateNegative = data.isFeralStateNegative;
       }
       
       private function ShowNextCondition() : *
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:URLRequest = null;
-         var _loc1_:Object = null;
+         var showingPersistentCondition:Boolean = false;
+         var bodyLoadRequest:URLRequest = null;
+         var conditionData:Object = null;
          if(this.SecondaryConditions.length > 0)
          {
-            _loc1_ = this.SecondaryConditions.pop();
+            conditionData = this.SecondaryConditions.pop();
          }
          else if(this.PrimaryConditionChanged || Boolean(this.PrimaryCondition.isPersistent))
          {
-            _loc1_ = this.PrimaryCondition;
+            conditionData = this.PrimaryCondition;
             this.PrimaryConditionChanged = false;
          }
-         if(_loc1_)
+         if(conditionData)
          {
-            _loc2_ = this.IsShowingCondition(_loc1_) && Boolean(_loc1_.isPersistent);
-            if(!_loc2_)
+            showingPersistentCondition = this.IsShowingCondition(conditionData) && Boolean(conditionData.isPersistent);
+            if(!showingPersistentCondition)
             {
                this.UnloadBody();
                this.LoadHead();
-               this.CurrentlyShownCondition.headFrame = _loc1_.headFrame;
-               this.CurrentlyShownCondition.bodyId = _loc1_.bodyId;
+               this.CurrentlyShownCondition.headFrame = conditionData.headFrame;
+               this.CurrentlyShownCondition.bodyId = conditionData.bodyId;
                if(this.PreloadedBodyClips != null)
                {
                   this.onConditionBodyLoadComplete(null);
@@ -225,8 +225,8 @@ package Shared.AS3
                   this.BodyLoader = new Loader();
                   this.BodyLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onConditionBodyLoadComplete);
                   this.BodyLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.onConditionBodyLoadFailed);
-                  _loc3_ = new URLRequest(this.GetPathForCondition(_loc1_.bodyId));
-                  this.BodyLoader.load(_loc3_);
+                  bodyLoadRequest = new URLRequest(this.GetPathForCondition(conditionData.bodyId));
+                  this.BodyLoader.load(bodyLoadRequest);
                }
             }
          }
@@ -237,9 +237,9 @@ package Shared.AS3
          }
       }
       
-      private function IsShowingCondition(param1:Object) : *
+      private function IsShowingCondition(conditionData:Object) : *
       {
-         return param1 && this.CurrentlyShownCondition && param1.headFrame == this.CurrentlyShownCondition.headFrame && param1.bodyId == this.CurrentlyShownCondition.bodyId;
+         return conditionData && this.CurrentlyShownCondition && conditionData.headFrame == this.CurrentlyShownCondition.headFrame && conditionData.bodyId == this.CurrentlyShownCondition.bodyId;
       }
       
       private function LoadHead() : *
@@ -249,9 +249,9 @@ package Shared.AS3
             this.HeadLoader.unloadAndStop();
          }
          this.HeadLoader = new Loader();
-         var _loc1_:URLRequest = new URLRequest("Components/ConditionClips/Condition_Head.swf");
+         var loadRequest:URLRequest = new URLRequest("Components/ConditionClips/Condition_Head.swf");
          this.HeadLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onConditionHeadLoadComplete);
-         this.HeadLoader.load(_loc1_);
+         this.HeadLoader.load(loadRequest);
       }
       
       private function UnloadBody() : *
@@ -305,12 +305,12 @@ package Shared.AS3
          }
       }
       
-      private function onConditionBodyLoadComplete(param1:Event) : *
+      private function onConditionBodyLoadComplete(loadCompleteEvent:Event) : *
       {
          if(this.BodyLoader)
          {
-            param1.target.removeEventListener(Event.COMPLETE,this.onConditionBodyLoadComplete);
-            param1.target.removeEventListener(IOErrorEvent.IO_ERROR,this.onConditionBodyLoadFailed);
+            loadCompleteEvent.target.removeEventListener(Event.COMPLETE,this.onConditionBodyLoadComplete);
+            loadCompleteEvent.target.removeEventListener(IOErrorEvent.IO_ERROR,this.onConditionBodyLoadFailed);
             this.BodyClip = this.BodyLoader.contentLoaderInfo.content as MovieClip;
          }
          else
@@ -325,19 +325,19 @@ package Shared.AS3
          SetIsDirty();
       }
       
-      private function onConditionBodyLoadFailed(param1:IOErrorEvent) : *
+      private function onConditionBodyLoadFailed(event:IOErrorEvent) : *
       {
-         param1.target.removeEventListener(Event.COMPLETE,this.onConditionBodyLoadComplete);
-         param1.target.removeEventListener(IOErrorEvent.IO_ERROR,this.onConditionBodyLoadFailed);
+         event.target.removeEventListener(Event.COMPLETE,this.onConditionBodyLoadComplete);
+         event.target.removeEventListener(IOErrorEvent.IO_ERROR,this.onConditionBodyLoadFailed);
          trace("failed to load body: " + this.GetPathForCondition(this.CurrentlyShownCondition.bodyId));
          this.UnloadBody();
       }
       
-      private function onConditionHeadLoadComplete(param1:Event) : *
+      private function onConditionHeadLoadComplete(loadCompleteEvent:Event) : *
       {
          if(this.HeadLoader)
          {
-            param1.target.removeEventListener(Event.COMPLETE,this.onConditionHeadLoadComplete);
+            loadCompleteEvent.target.removeEventListener(Event.COMPLETE,this.onConditionHeadLoadComplete);
             this.HeadClip = this.HeadLoader.contentLoaderInfo.content as MovieClip;
             this.HeadLoader = null;
          }

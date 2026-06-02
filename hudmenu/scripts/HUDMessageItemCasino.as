@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol301")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol305")]
    public class HUDMessageItemCasino extends HUDMessageItemBase
    {
       
@@ -30,20 +30,6 @@ package
          return this.useCasinoHUDWidget() ? this.CasinoHUDWidget_mc.totalFrames : int(this.CasinoFanfare_mc.endAnimFrame);
       }
       
-      override public function onAddedToStage() : void
-      {
-         super.onAddedToStage();
-         addEventListener(HUDFadingListItem.EVENT_FADE_IN_COMPLETE,OnFadeInComplete);
-         addEventListener(HUDFadingListItem.EVENT_FADE_OUT_COMPLETE,OnFadeOutComplete);
-      }
-      
-      override public function onRemovedFromStage() : void
-      {
-         super.onRemovedFromStage();
-         removeEventListener(HUDFadingListItem.EVENT_FADE_IN_COMPLETE,OnFadeInComplete);
-         removeEventListener(HUDFadingListItem.EVENT_FADE_OUT_COMPLETE,OnFadeOutComplete);
-      }
-      
       override public function redrawUIComponent() : void
       {
          if(this.hasValidData)
@@ -60,6 +46,12 @@ package
                this.CasinoFanfare_mc.init(this.casinoData);
             }
          }
+      }
+      
+      override public function CanFadeOut() : Boolean
+      {
+         var winStateDisplayed:Boolean = this.useCasinoHUDWidget() ? this.CasinoHUDWidget_mc.winStateDisplayed : true;
+         return _fullyFadedIn && !_fadeOutStarted && !bIsDirty && winStateDisplayed;
       }
       
       override public function FadeIn() : *
@@ -115,22 +107,22 @@ package
          return this.getFanfareClipFromGameType(this.casinoData.casinoGameType) is CasinoHUDWidget;
       }
       
-      private function getFanfareClipFromGameType(param1:uint) : MovieClip
+      private function getFanfareClipFromGameType(aGameType:uint) : MovieClip
       {
-         var _loc2_:MovieClip = null;
-         switch(param1)
+         var returnClip:MovieClip = null;
+         switch(aGameType)
          {
             case CasinoShared.CASINO_GAME_TYPE_DERBY_RACE:
             case CasinoShared.CASINO_GAME_TYPE_SLOTS_1:
             case CasinoShared.CASINO_GAME_TYPE_SLOTS_2:
             case CasinoShared.CASINO_GAME_TYPE_SLOTS_BIG:
-               _loc2_ = this.CasinoFanfare_mc;
+               returnClip = this.CasinoFanfare_mc;
                break;
             case CasinoShared.CASINO_GAME_TYPE_LUCKY_DICE:
             case CasinoShared.CASINO_GAME_TYPE_ROULETTE:
-               _loc2_ = this.CasinoHUDWidget_mc;
+               returnClip = this.CasinoHUDWidget_mc;
          }
-         return _loc2_;
+         return returnClip;
       }
    }
 }

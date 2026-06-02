@@ -9,19 +9,19 @@ package aze.motion.specials
       
       public var next:EazeSpecial;
       
-      public function EazeSpecial(param1:Object, param2:*, param3:*, param4:EazeSpecial)
+      public function EazeSpecial(target:Object, property:*, value:*, next:EazeSpecial)
       {
          super();
-         this.target = param1;
-         this.property = param2;
-         this.next = param4;
+         this.target = target;
+         this.property = property;
+         this.next = next;
       }
       
-      public function init(param1:Boolean) : void
+      public function init(reverse:Boolean) : void
       {
       }
       
-      public function update(param1:Number, param2:Boolean) : void
+      public function update(ke:Number, isComplete:Boolean) : void
       {
       }
       

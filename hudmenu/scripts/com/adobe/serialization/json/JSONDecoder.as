@@ -11,14 +11,14 @@ package com.adobe.serialization.json
       
       private var token:JSONToken;
       
-      public function JSONDecoder(param1:String, param2:Boolean)
+      public function JSONDecoder(s:String, strict:Boolean)
       {
          super();
-         this.strict = param2;
-         this.tokenizer = new JSONTokenizer(param1,param2);
+         this.strict = strict;
+         this.tokenizer = new JSONTokenizer(s,strict);
          this.nextToken();
          this.value = this.parseValue();
-         if(param2 && this.nextToken() != null)
+         if(strict && this.nextToken() != null)
          {
             this.tokenizer.parseError("Unexpected characters left in input stream");
          }
@@ -51,24 +51,24 @@ package com.adobe.serialization.json
       
       final private function parseArray() : Array
       {
-         var _loc1_:Array = new Array();
+         var a:Array = new Array();
          this.nextValidToken();
          if(this.token.type == JSONTokenType.RIGHT_BRACKET)
          {
-            return _loc1_;
+            return a;
          }
          if(!this.strict && this.token.type == JSONTokenType.COMMA)
          {
             this.nextValidToken();
             if(this.token.type == JSONTokenType.RIGHT_BRACKET)
             {
-               return _loc1_;
+               return a;
             }
             this.tokenizer.parseError("Leading commas are not supported.  Expecting \']\' but found " + this.token.value);
          }
          while(true)
          {
-            _loc1_.push(this.parseValue());
+            a.push(this.parseValue());
             this.nextValidToken();
             if(this.token.type == JSONTokenType.RIGHT_BRACKET)
             {
@@ -82,7 +82,7 @@ package com.adobe.serialization.json
                   this.checkValidToken();
                   if(this.token.type == JSONTokenType.RIGHT_BRACKET)
                   {
-                     return _loc1_;
+                     return a;
                   }
                }
             }
@@ -91,24 +91,24 @@ package com.adobe.serialization.json
                this.tokenizer.parseError("Expecting ] or , but found " + this.token.value);
             }
          }
-         return _loc1_;
+         return a;
       }
       
       final private function parseObject() : Object
       {
-         var _loc2_:String = null;
-         var _loc1_:Object = new Object();
+         var key:String = null;
+         var o:Object = new Object();
          this.nextValidToken();
          if(this.token.type == JSONTokenType.RIGHT_BRACE)
          {
-            return _loc1_;
+            return o;
          }
          if(!this.strict && this.token.type == JSONTokenType.COMMA)
          {
             this.nextValidToken();
             if(this.token.type == JSONTokenType.RIGHT_BRACE)
             {
-               return _loc1_;
+               return o;
             }
             this.tokenizer.parseError("Leading commas are not supported.  Expecting \'}\' but found " + this.token.value);
          }
@@ -116,12 +116,12 @@ package com.adobe.serialization.json
          {
             if(this.token.type == JSONTokenType.STRING)
             {
-               _loc2_ = String(this.token.value);
+               key = String(this.token.value);
                this.nextValidToken();
                if(this.token.type == JSONTokenType.COLON)
                {
                   this.nextToken();
-                  _loc1_[_loc2_] = this.parseValue();
+                  o[key] = this.parseValue();
                   this.nextValidToken();
                   if(this.token.type == JSONTokenType.RIGHT_BRACE)
                   {
@@ -135,7 +135,7 @@ package com.adobe.serialization.json
                         this.checkValidToken();
                         if(this.token.type == JSONTokenType.RIGHT_BRACE)
                         {
-                           return _loc1_;
+                           return o;
                         }
                      }
                   }
@@ -154,7 +154,7 @@ package com.adobe.serialization.json
                this.tokenizer.parseError("Expecting string but found " + this.token.value);
             }
          }
-         return _loc1_;
+         return o;
       }
       
       final private function parseValue() : Object

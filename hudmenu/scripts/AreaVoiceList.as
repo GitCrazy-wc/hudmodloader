@@ -5,7 +5,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol951")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol957")]
    public class AreaVoiceList extends MovieClip
    {
       
@@ -17,7 +17,7 @@ package
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(aEvent:Event) : void
       {
          this.List_mc.itemRendererClassName_Inspectable = "AreaVoiceEntry";
          this.List_mc.disableSelection_Inspectable = true;
@@ -29,9 +29,9 @@ package
          BSUIDataManager.Subscribe("VoiceChatAreaData",this.onAreaVoiceUpdate);
       }
       
-      private function onAreaVoiceUpdate(param1:FromClientDataEvent) : void
+      private function onAreaVoiceUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.List_mc.List_mc.MenuListData = param1.data.participants;
+         this.List_mc.List_mc.MenuListData = arEvent.data.participants;
          this.List_mc.SetIsDirty();
       }
    }

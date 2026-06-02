@@ -19,7 +19,7 @@ package Shared.AS3
       
       private var _uiPlatform:uint;
       
-      private var _bPS3Switch:Boolean;
+      private var _bIsGen9:Boolean;
       
       private var _uiController:uint;
       
@@ -49,7 +49,7 @@ package Shared.AS3
       {
          super();
          this._uiPlatform = PlatformChangeEvent.PLATFORM_INVALID;
-         this._bPS3Switch = false;
+         this._bIsGen9 = false;
          this._bRestoreLostFocus = false;
          this._bNuclearWinterMode = false;
          GlobalFunc.MaintainTextFormat();
@@ -61,9 +61,9 @@ package Shared.AS3
          return this._uiPlatform;
       }
       
-      public function get bPS3Switch() : Boolean
+      public function get bIsGen9() : Boolean
       {
-         return this._bPS3Switch;
+         return this._bIsGen9;
       }
       
       public function get uiController() : uint
@@ -96,14 +96,14 @@ package Shared.AS3
          return this._ButtonHintBar;
       }
       
-      public function set buttonHintBar(param1:BSButtonHintBar) : *
+      public function set buttonHintBar(aObj:BSButtonHintBar) : *
       {
-         this._ButtonHintBar = param1;
+         this._ButtonHintBar = aObj;
       }
       
-      public function set overrideColors(param1:Boolean) : *
+      public function set overrideColors(aOverride:Boolean) : *
       {
-         this.bOverrideColors = param1;
+         this.bOverrideColors = aOverride;
       }
       
       public function get overrideColors() : Boolean
@@ -111,11 +111,11 @@ package Shared.AS3
          return this.bOverrideColors;
       }
       
-      protected function onPlatformRequestEvent(param1:Event) : *
+      protected function onPlatformRequestEvent(arEvent:Event) : *
       {
          if(this.uiPlatform != PlatformChangeEvent.PLATFORM_INVALID)
          {
-            (param1 as PlatformRequestEvent).RespondToRequest(this.uiPlatform,this.bPS3Switch,this.uiController,this.uiKeyboard);
+            (arEvent as PlatformRequestEvent).RespondToRequest(this.uiPlatform,this.bIsGen9,this.uiController,this.uiKeyboard);
          }
       }
       
@@ -127,24 +127,24 @@ package Shared.AS3
          stage.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE,this.onMouseFocusEvent);
          stage.addEventListener(MenuComponentLoadedEvent.MENU_COMPONENT_LOADED,this.OnMenuComponentLoadedEvent);
          menu = this;
-         BSUIDataManager.Subscribe("HUDColors",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("HUDColors",function(arEvent:FromClientDataEvent):*
          {
             if(!overrideColors)
             {
                return;
             }
-            var _loc2_:* = param1.data;
-            if(_loc2_.hue == 0 && _loc2_.saturation == 0 && _loc2_.value == 0 && _loc2_.contrast == 0)
+            var colors:* = arEvent.data;
+            if(colors.hue == 0 && colors.saturation == 0 && colors.value == 0 && colors.contrast == 0)
             {
                menu.filters = null;
             }
             else
             {
                colorFilter = new AdjustColor();
-               colorFilter.hue = _loc2_.hue;
-               colorFilter.saturation = _loc2_.saturation;
-               colorFilter.brightness = _loc2_.value;
-               colorFilter.contrast = _loc2_.contrast;
+               colorFilter.hue = colors.hue;
+               colorFilter.saturation = colors.saturation;
+               colorFilter.brightness = colors.value;
+               colorFilter.contrast = colors.contrast;
                mMatrix = colorFilter.CalculateFinalFlatArray();
                mColorMatrix = new ColorMatrixFilter(mMatrix);
                menu.filters = [mColorMatrix];
@@ -159,29 +159,29 @@ package Shared.AS3
          stage.removeEventListener(MenuComponentLoadedEvent.MENU_COMPONENT_LOADED,this.OnMenuComponentLoadedEvent);
       }
       
-      private function OnMenuComponentLoadedEvent(param1:MenuComponentLoadedEvent) : *
+      private function OnMenuComponentLoadedEvent(arEvent:MenuComponentLoadedEvent) : *
       {
-         param1.RespondToEvent(this);
+         arEvent.RespondToEvent(this);
       }
       
-      public function SetPlatform(param1:uint, param2:Boolean, param3:uint, param4:uint) : *
+      public function SetPlatform(auiPlatform:uint, abIsGen9:Boolean, auiController:uint, auiKeyboard:uint) : *
       {
-         this._uiPlatform = param1;
-         this._bPS3Switch = this.bPS3Switch;
-         this._uiController = param3;
-         this._uiKeyboard = param4;
-         dispatchEvent(new PlatformChangeEvent(this.uiPlatform,this.bPS3Switch,this.uiController,this.uiKeyboard));
+         this._uiPlatform = auiPlatform;
+         this._bIsGen9 = abIsGen9;
+         this._uiController = auiController;
+         this._uiKeyboard = auiKeyboard;
+         dispatchEvent(new PlatformChangeEvent(this.uiPlatform,this.bIsGen9,this.uiController,this.uiKeyboard));
       }
       
-      public function SetNuclearWinterMode(param1:Boolean) : *
+      public function SetNuclearWinterMode(abNuclearWinterMode:Boolean) : *
       {
-         this._bNuclearWinterMode = param1;
+         this._bNuclearWinterMode = abNuclearWinterMode;
       }
       
-      public function SetSafeRect(param1:Number, param2:Number) : *
+      public function SetSafeRect(aSafeX:Number, aSafeY:Number) : *
       {
-         this.safeX = param1;
-         this.safeY = param2;
+         this.safeX = aSafeX;
+         this.safeY = aSafeY;
          this.onSetSafeRect();
       }
       
@@ -189,23 +189,23 @@ package Shared.AS3
       {
       }
       
-      private function onFocusLostEvent(param1:FocusEvent) : *
+      private function onFocusLostEvent(event:FocusEvent) : *
       {
          if(this._bRestoreLostFocus)
          {
             this._bRestoreLostFocus = false;
-            stage.focus = param1.target as InteractiveObject;
+            stage.focus = event.target as InteractiveObject;
          }
-         this.onFocusLost(param1);
+         this.onFocusLost(event);
       }
       
-      public function onFocusLost(param1:FocusEvent) : *
+      public function onFocusLost(event:FocusEvent) : *
       {
       }
       
-      protected function onMouseFocusEvent(param1:FocusEvent) : *
+      protected function onMouseFocusEvent(event:FocusEvent) : *
       {
-         if(param1.target == null || !(param1.target is InteractiveObject))
+         if(event.target == null || !(event.target is InteractiveObject))
          {
             stage.focus = null;
          }
@@ -215,23 +215,23 @@ package Shared.AS3
          }
       }
       
-      public function ShrinkFontToFit(param1:TextField, param2:int) : *
+      public function ShrinkFontToFit(textField:TextField, amaxScrollV:int) : *
       {
-         var _loc5_:int = 0;
-         var _loc3_:TextFormat = param1.getTextFormat();
-         if(this.textFieldSizeMap[param1] == null)
+         var tfSize:int = 0;
+         var textFormat:TextFormat = textField.getTextFormat();
+         if(this.textFieldSizeMap[textField] == null)
          {
-            this.textFieldSizeMap[param1] = _loc3_.size;
+            this.textFieldSizeMap[textField] = textFormat.size;
          }
-         _loc3_.size = this.textFieldSizeMap[param1];
-         param1.setTextFormat(_loc3_);
-         var _loc4_:int = param1.maxScrollV;
-         while(_loc4_ > param2 && _loc3_.size > 4)
+         textFormat.size = this.textFieldSizeMap[textField];
+         textField.setTextFormat(textFormat);
+         var maxVScroll:int = textField.maxScrollV;
+         while(maxVScroll > amaxScrollV && textFormat.size > 4)
          {
-            _loc5_ = _loc3_.size as int;
-            _loc3_.size = _loc5_ - 1;
-            param1.setTextFormat(_loc3_);
-            _loc4_ = param1.maxScrollV;
+            tfSize = textFormat.size as int;
+            textFormat.size = tfSize - 1;
+            textField.setTextFormat(textFormat);
+            maxVScroll = textField.maxScrollV;
          }
       }
    }

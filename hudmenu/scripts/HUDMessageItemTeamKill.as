@@ -3,7 +3,7 @@ package
    import Shared.GlobalFunc;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol244")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol248")]
    public class HUDMessageItemTeamKill extends HUDMessageItemBase
    {
       
@@ -19,34 +19,30 @@ package
       
       override public function redrawUIComponent() : void
       {
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
-         var _loc3_:MovieClip = null;
+         var teamIndex:uint = 0;
+         var playerIndex:uint = 0;
+         var playerImage:MovieClip = null;
          if(data != null)
          {
             Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
             GlobalFunc.SetText(Internal_mc.Header_tf,m_Data.data.headerText,true);
-            _loc1_ = 0;
-            while(_loc1_ < MAX_TEAMS)
+            for(teamIndex = 0; teamIndex < MAX_TEAMS; teamIndex++)
             {
-               GlobalFunc.SetText(Internal_mc["Team" + _loc1_ + "Score_tf"],m_Data.data.scores[_loc1_],true);
-               _loc2_ = 0;
-               while(_loc2_ < MAX_PLAYERS)
+               GlobalFunc.SetText(Internal_mc["Team" + teamIndex + "Score_tf"],m_Data.data.scores[teamIndex],true);
+               for(playerIndex = 0; playerIndex < MAX_PLAYERS; playerIndex++)
                {
-                  _loc3_ = Internal_mc["Team" + _loc1_ + "Player" + _loc2_ + "Image_mc"];
-                  if(m_Data.data.teams[_loc1_].players[_loc2_] != null && m_Data.data.teams[_loc1_].players.length > 0 && _loc2_ < m_Data.data.teams[_loc1_].players.length)
+                  playerImage = Internal_mc["Team" + teamIndex + "Player" + playerIndex + "Image_mc"];
+                  if(m_Data.data.teams[teamIndex].players[playerIndex] != null && m_Data.data.teams[teamIndex].players.length > 0 && playerIndex < m_Data.data.teams[teamIndex].players.length)
                   {
-                     _loc3_.visible = true;
-                     _loc3_.gotoAndStop(GlobalFunc.ImageFrameFromCharacter(m_Data.data.teams[_loc1_].players[_loc2_].name));
+                     playerImage.visible = true;
+                     playerImage.gotoAndStop(GlobalFunc.ImageFrameFromCharacter(m_Data.data.teams[teamIndex].players[playerIndex].name));
                   }
                   else
                   {
-                     _loc3_.visible = false;
+                     playerImage.visible = false;
                   }
-                  _loc2_++;
                }
-               _loc1_++;
             }
          }
          else

@@ -19,7 +19,7 @@ package Shared.AS3.COMPANIONAPP
          addEventListener(MouseEvent.MOUSE_DOWN,this.onButtonPress);
       }
       
-      private function onButtonPress(param1:MouseEvent) : void
+      private function onButtonPress(e:MouseEvent) : void
       {
          if(!ButtonDisabled && ButtonVisible)
          {
@@ -27,18 +27,18 @@ package Shared.AS3.COMPANIONAPP
          }
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : *
+      override protected function onMouseOut(event:MouseEvent) : *
       {
-         super.onMouseOut(param1);
+         super.onMouseOut(event);
          if(!ButtonDisabled && ButtonVisible)
          {
             this.setNormalState();
          }
       }
       
-      override public function onTextClick(param1:Event) : void
+      override public function onTextClick(MouseEvent:Event) : void
       {
-         super.onTextClick(param1);
+         super.onTextClick(MouseEvent);
          if(!ButtonDisabled && ButtonVisible)
          {
             this.setNormalState();
@@ -82,11 +82,11 @@ package Shared.AS3.COMPANIONAPP
       protected function setNormalState() : void
       {
          this.background.gotoAndPlay("normal");
-         var _loc1_:ColorTransform = textField_tf.transform.colorTransform;
-         _loc1_.redOffset = 0;
-         _loc1_.greenOffset = 0;
-         _loc1_.blueOffset = 0;
-         textField_tf.transform.colorTransform = _loc1_;
+         var colorTrans:ColorTransform = textField_tf.transform.colorTransform;
+         colorTrans.redOffset = 0;
+         colorTrans.greenOffset = 0;
+         colorTrans.blueOffset = 0;
+         textField_tf.transform.colorTransform = colorTrans;
       }
       
       protected function setDisableState() : void
@@ -98,11 +98,11 @@ package Shared.AS3.COMPANIONAPP
       protected function setPressState() : void
       {
          this.background.gotoAndPlay("press");
-         var _loc1_:ColorTransform = textField_tf.transform.colorTransform;
-         _loc1_.redOffset = 255;
-         _loc1_.greenOffset = 255;
-         _loc1_.blueOffset = 255;
-         textField_tf.transform.colorTransform = _loc1_;
+         var colorTrans:ColorTransform = textField_tf.transform.colorTransform;
+         colorTrans.redOffset = 255;
+         colorTrans.greenOffset = 255;
+         colorTrans.blueOffset = 255;
+         textField_tf.transform.colorTransform = colorTrans;
       }
    }
 }

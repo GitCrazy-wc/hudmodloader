@@ -5,7 +5,7 @@ package
    import Shared.AS3.Data.FromClientDataEvent;
    import scaleform.gfx.Extensions;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol732")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol738")]
    public class HUDWorkshopMarkers extends BSUIComponent
    {
       
@@ -28,46 +28,42 @@ package
          BSUIDataManager.Subscribe(DATA_PROVIDER_KEY,this.onMarkersUpdated);
       }
       
-      public function onMarkersUpdated(param1:FromClientDataEvent) : void
+      public function onMarkersUpdated(arEvent:FromClientDataEvent) : void
       {
-         this.MarkersData = param1.data.markersA;
+         this.MarkersData = arEvent.data.markersA;
          SetIsDirty();
       }
       
       override public function redrawUIComponent() : void
       {
-         var _loc3_:WorkshopMarker = null;
-         var _loc4_:Object = null;
+         var markerMC:WorkshopMarker = null;
+         var markerData:Object = null;
          if(this.MarkersData == null)
          {
             return;
          }
-         var _loc1_:int = 0;
-         while(_loc1_ < this.MarkersData.length)
+         for(var idx:int = 0; idx < this.MarkersData.length; idx++)
          {
-            if(_loc1_ < this.MarkerMCs.length)
+            if(idx < this.MarkerMCs.length)
             {
-               _loc3_ = this.MarkerMCs[_loc1_];
+               markerMC = this.MarkerMCs[idx];
             }
             else
             {
-               _loc3_ = new WorkshopMarker();
-               addChild(_loc3_);
-               this.MarkerMCs.push(_loc3_);
+               markerMC = new WorkshopMarker();
+               addChild(markerMC);
+               this.MarkerMCs.push(markerMC);
             }
-            _loc4_ = this.MarkersData[_loc1_];
-            _loc3_.x = _loc4_.fScreenX;
-            _loc3_.y = _loc4_.fScreenY;
-            _loc3_.Update(_loc4_.strDisplayName,_loc4_.strStateName,_loc4_.fCapturePct,_loc4_.bIsOffScreen,_loc4_.bPlayerInContestRadius);
-            _loc1_++;
+            markerData = this.MarkersData[idx];
+            markerMC.x = markerData.fScreenX;
+            markerMC.y = markerData.fScreenY;
+            markerMC.Update(markerData.strDisplayName,markerData.strStateName,markerData.fCapturePct,markerData.bIsOffScreen,markerData.bPlayerInContestRadius);
          }
-         var _loc2_:int = _loc1_;
-         while(_loc2_ < this.MarkerMCs.length)
+         for(var iMC:int = idx; iMC < this.MarkerMCs.length; iMC++)
          {
-            removeChild(this.MarkerMCs[_loc2_]);
-            _loc2_++;
+            removeChild(this.MarkerMCs[iMC]);
          }
-         this.MarkerMCs.length = _loc1_;
+         this.MarkerMCs.length = idx;
       }
    }
 }

@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol788")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol794")]
    public class EventHUDNotification extends MovieClip
    {
       
@@ -30,47 +30,47 @@ package
          TextFieldEx.setTextAutoSize(this.STWEventType_mc.ENDynamicText_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
       }
       
-      public function isEventNotification(param1:String) : Boolean
+      public function isEventNotification(aText:String) : Boolean
       {
-         return param1.indexOf(EVENT_STW_COMBAT_TAG) != -1 || param1.indexOf(EVENT_STW_TWIST_TAG) != -1 || param1.indexOf(EVENT_STW_BOSS_TAG) != -1 || param1.indexOf(EVENT_STW_COMPLETE_TAG) != -1 || param1.indexOf(EVENT_STW_FREEBIE_TAG) != -1;
+         return aText.indexOf(EVENT_STW_COMBAT_TAG) != -1 || aText.indexOf(EVENT_STW_TWIST_TAG) != -1 || aText.indexOf(EVENT_STW_BOSS_TAG) != -1 || aText.indexOf(EVENT_STW_COMPLETE_TAG) != -1 || aText.indexOf(EVENT_STW_FREEBIE_TAG) != -1;
       }
       
-      public function setData(param1:Object) : void
+      public function setData(aEvent:Object) : void
       {
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc4_:String = null;
-         var _loc5_:String = null;
-         var _loc6_:String = null;
-         if(param1.messageText.indexOf(EVENT_STW_COMBAT_TAG) != -1)
+         var markupRemovedCombatText:String = null;
+         var markupRemovedTwistText:String = null;
+         var markupRemovedBossText:String = null;
+         var markupRemovedCompleteText:String = null;
+         var markupRemovedFreebieText:String = null;
+         if(aEvent.messageText.indexOf(EVENT_STW_COMBAT_TAG) != -1)
          {
             this.STWEventType_mc.gotoAndStop("STW_Combat");
-            _loc2_ = param1.messageText.replace(EVENT_STW_COMBAT_TAG,"");
-            this.STWEventType_mc.ENDynamicText_tf.text = _loc2_;
+            markupRemovedCombatText = aEvent.messageText.replace(EVENT_STW_COMBAT_TAG,"");
+            this.STWEventType_mc.ENDynamicText_tf.text = markupRemovedCombatText;
          }
-         else if(param1.messageText.indexOf(EVENT_STW_TWIST_TAG) != -1)
+         else if(aEvent.messageText.indexOf(EVENT_STW_TWIST_TAG) != -1)
          {
             this.STWEventType_mc.gotoAndStop("STW_Twist");
-            _loc3_ = param1.messageText.replace(EVENT_STW_TWIST_TAG,"");
-            this.STWEventType_mc.ENDynamicText_tf.text = _loc3_;
+            markupRemovedTwistText = aEvent.messageText.replace(EVENT_STW_TWIST_TAG,"");
+            this.STWEventType_mc.ENDynamicText_tf.text = markupRemovedTwistText;
          }
-         else if(param1.messageText.indexOf(EVENT_STW_BOSS_TAG) != -1)
+         else if(aEvent.messageText.indexOf(EVENT_STW_BOSS_TAG) != -1)
          {
             this.STWEventType_mc.gotoAndStop("STW_Boss");
-            _loc4_ = param1.messageText.replace(EVENT_STW_BOSS_TAG,"");
-            this.STWEventType_mc.ENDynamicText_tf.text = _loc4_;
+            markupRemovedBossText = aEvent.messageText.replace(EVENT_STW_BOSS_TAG,"");
+            this.STWEventType_mc.ENDynamicText_tf.text = markupRemovedBossText;
          }
-         else if(param1.messageText.indexOf(EVENT_STW_COMPLETE_TAG) != -1)
+         else if(aEvent.messageText.indexOf(EVENT_STW_COMPLETE_TAG) != -1)
          {
             this.STWEventType_mc.gotoAndStop("STW_Complete");
-            _loc5_ = param1.messageText.replace(EVENT_STW_COMPLETE_TAG,"");
-            this.STWEventType_mc.ENDynamicText_tf.text = _loc5_;
+            markupRemovedCompleteText = aEvent.messageText.replace(EVENT_STW_COMPLETE_TAG,"");
+            this.STWEventType_mc.ENDynamicText_tf.text = markupRemovedCompleteText;
          }
-         else if(param1.messageText.indexOf(EVENT_STW_FREEBIE_TAG) != -1)
+         else if(aEvent.messageText.indexOf(EVENT_STW_FREEBIE_TAG) != -1)
          {
             this.STWEventType_mc.gotoAndStop("STW_Freebie");
-            _loc6_ = param1.messageText.replace(EVENT_STW_FREEBIE_TAG,"");
-            this.STWEventType_mc.ENDynamicText_tf.text = _loc6_;
+            markupRemovedFreebieText = aEvent.messageText.replace(EVENT_STW_FREEBIE_TAG,"");
+            this.STWEventType_mc.ENDynamicText_tf.text = markupRemovedFreebieText;
          }
       }
       

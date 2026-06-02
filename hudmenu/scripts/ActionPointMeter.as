@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1702")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1709")]
    public class ActionPointMeter extends MovieClip
    {
       
@@ -36,31 +36,29 @@ package
          this.__setProp_MeterBar_mc_ActionPointMeter_MeterBar_mc_0();
       }
       
-      public function AddSegments(param1:Array) : *
+      public function AddSegments(aSegmentWidths:Array) : *
       {
-         var _loc4_:ActionPointBarSegment = null;
-         var _loc5_:Number = NaN;
+         var newSegment:ActionPointBarSegment = null;
+         var totalSegmentWidth:Number = NaN;
          while(this.ActionPointSegments_mc.numChildren > 0)
          {
             this.ActionPointSegments_mc.removeChildAt(0);
          }
-         var _loc2_:Number = 0;
-         var _loc3_:uint = 0;
-         while(_loc3_ < param1.length)
+         var segmentStartX:Number = 0;
+         for(var i:uint = 0; i < aSegmentWidths.length; i++)
          {
-            _loc4_ = new ActionPointBarSegment();
-            _loc5_ = param1[_loc3_] * this.TotalBarWidth;
-            _loc4_.width = _loc5_ - 2 * this.SegmentBorder;
-            _loc4_.x = _loc2_ + this.SegmentBorder;
-            this.ActionPointSegments_mc.addChild(_loc4_);
-            _loc2_ += _loc5_;
-            _loc3_++;
+            newSegment = new ActionPointBarSegment();
+            totalSegmentWidth = aSegmentWidths[i] * this.TotalBarWidth;
+            newSegment.width = totalSegmentWidth - 2 * this.SegmentBorder;
+            newSegment.x = segmentStartX + this.SegmentBorder;
+            this.ActionPointSegments_mc.addChild(newSegment);
+            segmentStartX += totalSegmentWidth;
          }
       }
       
-      public function SetMeterPercent(param1:Number) : *
+      public function SetMeterPercent(afPercent:Number) : *
       {
-         this.MeterBar_mc.Percent = param1 / 100;
+         this.MeterBar_mc.Percent = afPercent / 100;
          this.OnMeterUpdated();
       }
       

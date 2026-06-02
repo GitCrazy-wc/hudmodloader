@@ -6,7 +6,7 @@ package
    import fl.transitions.easing.*;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol489")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol495")]
    public class HUDActiveEffectClip extends BSUIComponent
    {
       
@@ -68,14 +68,14 @@ package
          return this.m_IconID;
       }
       
-      public function set iconID(param1:String) : void
+      public function set iconID(aID:String) : void
       {
-         this.m_IconID = param1;
+         this.m_IconID = aID;
       }
       
-      public function set EffectUID(param1:uint) : void
+      public function set EffectUID(aUID:uint) : void
       {
-         this.m_EffectUID = param1;
+         this.m_EffectUID = aUID;
       }
       
       public function get EffectUID() : uint
@@ -83,30 +83,30 @@ package
          return this.m_EffectUID;
       }
       
-      public function set IconFrame(param1:String) : void
+      public function set IconFrame(aValue:String) : void
       {
-         if(this.m_IconFrame != param1)
+         if(this.m_IconFrame != aValue)
          {
-            this.m_IconFrame = param1;
+            this.m_IconFrame = aValue;
             SetIsDirty();
          }
       }
       
-      public function set IconColor(param1:uint) : *
+      public function set IconColor(aValue:uint) : *
       {
-         var _loc2_:* = param1 == this.COLOR_GREEN ? this.COLOR_GREEN : this.COLOR_RED;
-         if(this.m_IconColor != _loc2_)
+         var newValue:* = aValue == this.COLOR_GREEN ? this.COLOR_GREEN : this.COLOR_RED;
+         if(this.m_IconColor != newValue)
          {
-            this.m_IconColor = _loc2_;
+            this.m_IconColor = newValue;
             SetIsDirty();
          }
       }
       
-      public function set RefreshCount(param1:uint) : void
+      public function set RefreshCount(aValue:uint) : void
       {
-         if(this.m_RefreshCount != param1)
+         if(this.m_RefreshCount != aValue)
          {
-            this.m_RefreshCount = param1;
+            this.m_RefreshCount = aValue;
             SetIsDirty();
          }
       }
@@ -116,11 +116,11 @@ package
          return this.m_RefreshCount;
       }
       
-      public function set StackAmount(param1:uint) : void
+      public function set StackAmount(aValue:uint) : void
       {
-         if(this.m_StackAmount != param1)
+         if(this.m_StackAmount != aValue)
          {
-            this.m_StackAmount = param1;
+            this.m_StackAmount = aValue;
             SetIsDirty();
          }
       }
@@ -145,12 +145,12 @@ package
          this.m_FillTween.start();
       }
       
-      public function setEffect(param1:String, param2:uint, param3:uint) : void
+      public function setEffect(aIconID:String, elapsed:uint, total:uint) : void
       {
-         this.m_ElapsedDuration = param2;
-         this.m_StartingDuration = param2;
-         this.m_TotalDuration = param3;
-         this.iconID = param1;
+         this.m_ElapsedDuration = elapsed;
+         this.m_StartingDuration = elapsed;
+         this.m_TotalDuration = total;
+         this.iconID = aIconID;
          this.clearTween();
          if(Boolean(this.FillInternal_mc) && Boolean(this.FillInternal_mc.Fill_mc))
          {
@@ -176,12 +176,12 @@ package
          }
       }
       
-      private function onTweenChange(param1:TweenEvent) : void
+      private function onTweenChange(e:TweenEvent) : void
       {
-         this.m_ElapsedDuration = this.m_StartingDuration + param1.time * 1000;
+         this.m_ElapsedDuration = this.m_StartingDuration + e.time * 1000;
       }
       
-      private function onTweenFinish(param1:TweenEvent) : void
+      private function onTweenFinish(e:TweenEvent) : void
       {
          this.m_ElapsedDuration = 0;
          this.m_StartingDuration = 0;

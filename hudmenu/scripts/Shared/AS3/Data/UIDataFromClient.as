@@ -11,11 +11,11 @@ package Shared.AS3.Data
       
       private var m_IsTest:Boolean = false;
       
-      public function UIDataFromClient(param1:Object)
+      public function UIDataFromClient(aPayload:Object)
       {
          super();
          this.m_Ready = false;
-         this.m_Payload = param1;
+         this.m_Payload = aPayload;
          this.m_IsTest = false;
       }
       
@@ -24,12 +24,12 @@ package Shared.AS3.Data
          dispatchEvent(new FromClientDataEvent(this));
       }
       
-      public function SetReady(param1:Boolean) : void
+      public function SetReady(aDoDispatch:Boolean) : void
       {
          if(!this.m_Ready)
          {
             this.m_Ready = true;
-            if(param1)
+            if(aDoDispatch)
             {
                this.DispatchChange();
             }
@@ -51,9 +51,9 @@ package Shared.AS3.Data
          return this.m_IsTest;
       }
       
-      public function set isTest(param1:Boolean) : *
+      public function set isTest(value:Boolean) : *
       {
-         this.m_IsTest = param1;
+         this.m_IsTest = value;
       }
    }
 }

@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1669")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1676")]
    public dynamic class GlowMeterFill_98 extends MovieClip
    {
       

@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1419")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1426")]
    public dynamic class BracketPairFadeHolder extends BSUIComponent
    {
       

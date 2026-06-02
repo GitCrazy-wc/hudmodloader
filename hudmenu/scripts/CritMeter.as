@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1582")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1589")]
    public class CritMeter extends BSUIComponent
    {
       
@@ -19,9 +19,9 @@ package
          addFrameScript(0,this.frame1,15,this.frame16);
       }
       
-      public function SetMeterPercent(param1:Number) : *
+      public function SetMeterPercent(afPercent:Number) : *
       {
-         this.MeterBar_mc.Percent = param1 / 100;
+         this.MeterBar_mc.Percent = afPercent / 100;
       }
       
       internal function frame1() : *

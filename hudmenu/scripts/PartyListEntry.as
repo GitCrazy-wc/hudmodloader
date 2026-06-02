@@ -156,20 +156,20 @@ package
          this._queuePerkAnim = false;
       }
       
-      public function set showSharedPerk(param1:Boolean) : void
+      public function set showSharedPerk(aShow:Boolean) : void
       {
-         if(param1 != this._showSharedPerk)
+         if(aShow != this._showSharedPerk)
          {
-            this._showSharedPerk = param1;
+            this._showSharedPerk = aShow;
             this._queuePerkAnim = true;
          }
       }
       
-      public function set perkID(param1:Number) : void
+      public function set perkID(aNewID:Number) : void
       {
-         if(param1 != this._perkID)
+         if(aNewID != this._perkID)
          {
-            this._perkID = param1;
+            this._perkID = aNewID;
             this._queuePerkAnim = true;
          }
       }
@@ -179,11 +179,11 @@ package
          return this._showExpeditionFlare;
       }
       
-      public function set showExpeditionFlare(param1:Boolean) : void
+      public function set showExpeditionFlare(aBool:Boolean) : void
       {
-         if(this._showExpeditionFlare != param1)
+         if(this._showExpeditionFlare != aBool)
          {
-            this._showExpeditionFlare = param1;
+            this._showExpeditionFlare = aBool;
             if(this._showExpeditionFlare)
             {
                this.expFlare_mc.gotoAndStop("off");
@@ -196,7 +196,7 @@ package
          return this.expFlare_mc.currentLabel == "on";
       }
       
-      override public function SetEntryText(param1:Object, param2:String) : *
+      override public function SetEntryText(aEntryObject:Object, astrTextOption:String) : *
       {
          this.AccountIcon_mc.mouseEnabled = false;
          this.Background_mc.mouseEnabled = false;
@@ -205,15 +205,15 @@ package
          this.LevelText_mc.mouseEnabled = false;
          textField.mouseEnabled = false;
          this.GlowMeter_mc.mouseEnabled = false;
-         this._EntityID = param1.entityId;
-         this.Emote_mc.entityID = param1.entityId;
+         this._EntityID = aEntryObject.entityId;
+         this.Emote_mc.entityID = aEntryObject.entityId;
          textField.text = "";
-         if(param1.isDead)
+         if(aEntryObject.isDead)
          {
             this.nameField_mc.textField.textColor = GlobalFunc.COLOR_TEXT_UNAVAILABLE;
             this.TeammateStatus_mc.gotoAndStop("dead");
          }
-         else if(param1.isBleedout)
+         else if(aEntryObject.isBleedout)
          {
             this.nameField_mc.textField.textColor = GlobalFunc.COOR_WARNING;
             this.TeammateStatus_mc.gotoAndStop("down");
@@ -223,7 +223,7 @@ package
             this.nameField_mc.textField.textColor = GlobalFunc.COLOR_TEXT_HEADER;
             this.TeammateStatus_mc.gotoAndStop("off");
          }
-         if(param1.showDetails)
+         if(aEntryObject.showDetails)
          {
             this.Meter_mc.visible = true;
          }
@@ -231,11 +231,11 @@ package
          {
             this.Meter_mc.visible = false;
          }
-         this.GlowMeter_mc.visible = param1.isGlow;
-         if(param1.level > 0)
+         this.GlowMeter_mc.visible = aEntryObject.isGlow;
+         if(aEntryObject.level > 0)
          {
             TextFieldEx.setTextAutoSize(this.LevelText_mc.LevelText_tf,"shrink");
-            this.LevelText_mc.LevelText_tf.text = param1.level;
+            this.LevelText_mc.LevelText_tf.text = aEntryObject.level;
             this.LevelText_mc.visible = true;
          }
          else
@@ -243,9 +243,9 @@ package
             this.LevelText_mc.LevelText_tf.text = "";
             this.LevelText_mc.visible = false;
          }
-         if(param1.overseerRank >= 0)
+         if(aEntryObject.overseerRank >= 0)
          {
-            GlobalFunc.SetText(this.OverseerRank_mc.RankText_tf,param1.overseerRank);
+            GlobalFunc.SetText(this.OverseerRank_mc.RankText_tf,aEntryObject.overseerRank);
             this.OverseerRank_mc.visible = true;
          }
          else
@@ -253,59 +253,59 @@ package
             this.OverseerRank_mc.RankText_tf.text = "";
             this.OverseerRank_mc.visible = false;
          }
-         this.LeaderIcon_mc.visible = param1.isLeader;
-         var _loc3_:String = "";
-         if(param1.isInExpedition)
+         this.LeaderIcon_mc.visible = aEntryObject.isLeader;
+         var appendedStatus:String = "";
+         if(aEntryObject.isInExpedition)
          {
-            _loc3_ = " " + param1.expeditionName.toUpperCase();
+            appendedStatus = " " + aEntryObject.expeditionName.toUpperCase();
          }
-         else if(Boolean(param1.isLeader) && Boolean(param1.isInConversation))
+         else if(Boolean(aEntryObject.isLeader) && Boolean(aEntryObject.isInConversation))
          {
-            _loc3_ = GlobalFunc.LocalizeFormattedString("$InConversation");
+            appendedStatus = GlobalFunc.LocalizeFormattedString("$InConversation");
          }
-         else if(param1.isInRaid)
+         else if(aEntryObject.isInRaid)
          {
-            _loc3_ = GlobalFunc.LocalizeFormattedString("$InRaid");
+            appendedStatus = GlobalFunc.LocalizeFormattedString("$InRaid");
          }
-         else if(param1.isInDailyOp)
+         else if(aEntryObject.isInDailyOp)
          {
-            _loc3_ = GlobalFunc.LocalizeFormattedString("$InDailyOp");
+            appendedStatus = GlobalFunc.LocalizeFormattedString("$InDailyOp");
          }
-         GlobalFunc.SetText(this.nameField_mc.textField,this.generateName(param1.name,_loc3_),true);
+         GlobalFunc.SetText(this.nameField_mc.textField,this.generateName(aEntryObject.name,appendedStatus),true);
          GlobalFunc.TruncateSingleLineText(this.nameField_mc.textField);
-         if(param1.voiceChatStatus != null)
+         if(aEntryObject.voiceChatStatus != null)
          {
-            this.SpeakerIcon_mc.visible = param1.voiceChatStatus > GlobalFunc.VOICE_STATUS_UNAVAILABLE;
+            this.SpeakerIcon_mc.visible = aEntryObject.voiceChatStatus > GlobalFunc.VOICE_STATUS_UNAVAILABLE;
          }
-         var _loc4_:Number = this.nameField_mc.x + this.nameField_mc.textField.getLineMetrics(0).width;
+         var nameFieldMaxPos:Number = this.nameField_mc.x + this.nameField_mc.textField.getLineMetrics(0).width;
          if(this.SpeakerIcon_mc.visible)
          {
-            if(param1.voiceChatStatus != null)
+            if(aEntryObject.voiceChatStatus != null)
             {
-               GlobalFunc.updateVoiceIndicator(this.SpeakerIcon_mc,param1.voiceChatStatus > GlobalFunc.VOICE_STATUS_UNAVAILABLE,param1.voiceChatStatus == GlobalFunc.VOICE_STATUS_SPEAKING,param1.isSpeakingInSameChannel,true,false);
+               GlobalFunc.updateVoiceIndicator(this.SpeakerIcon_mc,aEntryObject.voiceChatStatus > GlobalFunc.VOICE_STATUS_UNAVAILABLE,aEntryObject.voiceChatStatus == GlobalFunc.VOICE_STATUS_SPEAKING,aEntryObject.isSpeakingInSameChannel,true,false);
             }
-            if(_loc4_ + SPEAKER_ICON_SPACING > this._SpeakerIconMinX)
+            if(nameFieldMaxPos + SPEAKER_ICON_SPACING > this._SpeakerIconMinX)
             {
-               this.SpeakerIcon_mc.x = _loc4_ + SPEAKER_ICON_SPACING;
+               this.SpeakerIcon_mc.x = nameFieldMaxPos + SPEAKER_ICON_SPACING;
             }
             else
             {
                this.SpeakerIcon_mc.x = this._SpeakerIconMinX;
             }
          }
-         this.Emote_mc.x = Math.max(EMOTE_MIN_X,_loc4_ + EMOTE_ICON_SPACING);
-         this.Meter_mc.gotoAndStop(param1.healthPercentage / 100 * this._hpMeterFrames);
-         this.RadsMeter_mc.gotoAndStop(param1.radsPercentage / 100 * this._radsMeterFrames);
-         this.GlowMeter_mc.Meter_mc.gotoAndStop(param1.glowMeterPercentage / 100 * this.m_GlowMeterFrames);
-         this.AccountIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-         this.EventIcon_mc.visible = param1.isDoingEventQuest;
-         if(param1.showSharedIcon)
+         this.Emote_mc.x = Math.max(EMOTE_MIN_X,nameFieldMaxPos + EMOTE_ICON_SPACING);
+         this.Meter_mc.gotoAndStop(aEntryObject.healthPercentage / 100 * this._hpMeterFrames);
+         this.RadsMeter_mc.gotoAndStop(aEntryObject.radsPercentage / 100 * this._radsMeterFrames);
+         this.GlowMeter_mc.Meter_mc.gotoAndStop(aEntryObject.glowMeterPercentage / 100 * this.m_GlowMeterFrames);
+         this.AccountIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aEntryObject.avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+         this.EventIcon_mc.visible = aEntryObject.isDoingEventQuest;
+         if(aEntryObject.showSharedIcon)
          {
-            if(param1.perkCardData != null)
+            if(aEntryObject.perkCardData != null)
             {
-               this.perkID = param1.perkCardData.perkID;
-               this.SharedPerk_mc.Card_mc.Level_tf.text = param1.perkCardData.pointCost;
-               this.SharedPerk_mc.Name_mc.Name_tf.text = param1.perkCardData.perkName;
+               this.perkID = aEntryObject.perkCardData.perkID;
+               this.SharedPerk_mc.Card_mc.Level_tf.text = aEntryObject.perkCardData.pointCost;
+               this.SharedPerk_mc.Name_mc.Name_tf.text = aEntryObject.perkCardData.perkName;
             }
             if(this.SpeakerIcon_mc.visible)
             {
@@ -316,12 +316,12 @@ package
                this.SharedPerk_mc.x = this.nameField_mc.x + this.nameField_mc.textField.getLineMetrics(0).width + SHARED_CARD_SPACING;
             }
          }
-         this.showSharedPerk = param1.showSharedIcon;
+         this.showSharedPerk = aEntryObject.showSharedIcon;
          if(this._queuePerkAnim)
          {
             this.doPerkAnim();
          }
-         if(Boolean(param1.hasOwnProperty("isOnServer")) && !param1.isOnServer)
+         if(Boolean(aEntryObject.hasOwnProperty("isOnServer")) && !aEntryObject.isOnServer)
          {
             this.nameField_mc.x = this._nameBaseX - this.LevelText_mc.width;
             this.Meter_mc.visible = false;
@@ -337,9 +337,9 @@ package
             this.MeterBG_mc.visible = true;
             this.RadsMeter_mc.visible = true;
          }
-         if(param1.currentBondTime != null && param1.currentBondTime != PublicTeamsShared.HIDE_BOND_METER && !param1.isLocalPlayer)
+         if(aEntryObject.currentBondTime != null && aEntryObject.currentBondTime != PublicTeamsShared.HIDE_BOND_METER && !aEntryObject.isLocalPlayer)
          {
-            this.BondMeter_mc.startBondMeter(param1.currentBondTime);
+            this.BondMeter_mc.startBondMeter(aEntryObject.currentBondTime);
             this.BondMeter_mc.visible = true;
          }
          else
@@ -352,10 +352,10 @@ package
          }
       }
       
-      private function generateName(param1:String, param2:String = "") : String
+      private function generateName(baseName:String, status:String = "") : String
       {
-         var _loc3_:Array = GlobalFunc.GenerateNameAndTitleArray(param1);
-         return _loc3_[0] + param2 + (_loc3_.length > 1 ? GlobalFunc.CUSTOM_TITLE_DIVIDER + " " + _loc3_[1] : "");
+         var playerStrings:Array = GlobalFunc.GenerateNameAndTitleArray(baseName);
+         return playerStrings[0] + status + (playerStrings.length > 1 ? GlobalFunc.CUSTOM_TITLE_DIVIDER + " " + playerStrings[1] : "");
       }
       
       public function animateExpFlare() : void

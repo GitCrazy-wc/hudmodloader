@@ -33,141 +33,139 @@ package Shared.AS3.Data
          return _instance;
       }
       
-      public static function ConnectDataShuttleConnector(param1:UIDataShuttleConnector) : UIDataShuttleConnector
+      public static function ConnectDataShuttleConnector(aDataShuttleConnector:UIDataShuttleConnector) : UIDataShuttleConnector
       {
-         var _loc3_:UIDataFromClient = null;
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
-         var _loc2_:BSUIDataManager = GetInstance();
-         if(_loc2_.m_DataShuttleConnector == null)
+         var fromClient:UIDataFromClient = null;
+         var key:String = null;
+         var dispatchChanges:Array = null;
+         var inst:BSUIDataManager = GetInstance();
+         if(inst.m_DataShuttleConnector == null)
          {
-            _loc2_.m_DataShuttleConnector = param1;
-            _loc3_ = null;
-            _loc5_ = new Array();
-            for(_loc4_ in _loc2_.m_Providers)
+            inst.m_DataShuttleConnector = aDataShuttleConnector;
+            fromClient = null;
+            dispatchChanges = new Array();
+            for(key in inst.m_Providers)
             {
-               _loc3_ = _loc2_.m_Providers[_loc4_];
-               param1.Watch(_loc4_,false,_loc3_);
+               fromClient = inst.m_Providers[key];
+               aDataShuttleConnector.Watch(key,false,fromClient);
             }
-            for(_loc4_ in _loc2_.m_Providers)
+            for(key in inst.m_Providers)
             {
-               _loc3_ = _loc2_.m_Providers[_loc4_];
-               if(!_loc3_.isTest)
+               fromClient = inst.m_Providers[key];
+               if(!fromClient.isTest)
                {
-                  _loc3_.DispatchChange();
+                  fromClient.DispatchChange();
                }
             }
          }
-         return _loc2_.m_DataShuttleConnector;
+         return inst.m_DataShuttleConnector;
       }
       
-      public static function InitDataManager(param1:BSUIEventDispatcherBackend) : void
+      public static function InitDataManager(aEventDispatcherBackend:BSUIEventDispatcherBackend) : void
       {
-         GetInstance().eventDispatcherBackend = param1;
+         GetInstance().eventDispatcherBackend = aEventDispatcherBackend;
       }
       
-      public static function Subscribe(param1:String, param2:Function, param3:Boolean = false) : Function
+      public static function Subscribe(aProviderName:String, aCallback:Function, aLoadTestProviders:Boolean = false) : Function
       {
-         var _loc4_:UIDataFromClient = BSUIDataManager.GetDataFromClient(param1,true,param3);
-         if(_loc4_ != null)
+         var fromClient:UIDataFromClient = BSUIDataManager.GetDataFromClient(aProviderName,true,aLoadTestProviders);
+         if(fromClient != null)
          {
-            _loc4_.addEventListener(Event.CHANGE,param2);
-            return param2;
+            fromClient.addEventListener(Event.CHANGE,aCallback);
+            return aCallback;
          }
-         throw Error("Couldn\'t subscribe to data provider: " + param1);
+         throw Error("Couldn\'t subscribe to data provider: " + aProviderName);
       }
       
-      public static function Flush(param1:Array) : *
+      public static function Flush(providerList:Array) : *
       {
-         var _loc5_:UIDataFromClient = null;
-         var _loc2_:Number = param1.length;
-         var _loc3_:BSUIDataManager = GetInstance();
-         var _loc4_:uint = 0;
-         while(_loc4_ < _loc2_)
+         var dataFromClient:UIDataFromClient = null;
+         var len:Number = providerList.length;
+         var instance:BSUIDataManager = GetInstance();
+         for(var i:uint = 0; i < len; i++)
          {
-            _loc5_ = _loc3_.m_Providers[param1[_loc4_]];
-            _loc5_.DispatchChange();
-            _loc4_++;
+            dataFromClient = instance.m_Providers[providerList[i]];
+            dataFromClient.DispatchChange();
          }
       }
       
-      public static function Unsubscribe(param1:String, param2:Function, param3:Boolean = false) : void
+      public static function Unsubscribe(aProviderName:String, aCallback:Function, aLoadTestProviders:Boolean = false) : void
       {
-         var _loc4_:UIDataFromClient = BSUIDataManager.GetDataFromClient(param1,true,param3);
-         if(_loc4_ != null)
+         var fromClient:UIDataFromClient = BSUIDataManager.GetDataFromClient(aProviderName,true,aLoadTestProviders);
+         if(fromClient != null)
          {
-            _loc4_.removeEventListener(Event.CHANGE,param2);
+            fromClient.removeEventListener(Event.CHANGE,aCallback);
          }
       }
       
-      public static function GetDataFromClient(param1:String, param2:Boolean = true, param3:Boolean = false) : UIDataFromClient
+      public static function GetDataFromClient(aProviderName:String, aCreateIfNone:Boolean = true, aLoadTestProviders:Boolean = false) : UIDataFromClient
       {
-         var _loc5_:UIDataShuttleConnector = null;
-         var _loc6_:UIDataShuttleTestConnector = null;
-         var _loc7_:UIDataFromClient = null;
-         var _loc4_:BSUIDataManager = GetInstance();
-         if(_loc4_.m_Providers[param1] == null && param2)
+         var dataConnection:UIDataShuttleConnector = null;
+         var testConnection:UIDataShuttleTestConnector = null;
+         var dataFromClient:UIDataFromClient = null;
+         var inst:BSUIDataManager = GetInstance();
+         if(inst.m_Providers[aProviderName] == null && aCreateIfNone)
          {
-            _loc5_ = _loc4_.m_DataShuttleConnector;
-            _loc6_ = _loc4_.m_TestConnector;
-            _loc7_ = null;
-            if(_loc5_)
+            dataConnection = inst.m_DataShuttleConnector;
+            testConnection = inst.m_TestConnector;
+            dataFromClient = null;
+            if(dataConnection)
             {
-               _loc7_ = _loc5_.Watch(param1,true);
+               dataFromClient = dataConnection.Watch(aProviderName,true);
             }
-            if(!_loc7_)
+            if(!dataFromClient)
             {
-               if(param3)
+               if(aLoadTestProviders)
                {
-                  _loc7_ = _loc6_.Watch(param1,true);
+                  dataFromClient = testConnection.Watch(aProviderName,true);
                }
                else
                {
-                  _loc7_ = new UIDataFromClient(new Object());
-                  _loc7_.isTest = true;
+                  dataFromClient = new UIDataFromClient(new Object());
+                  dataFromClient.isTest = true;
                }
             }
-            _loc4_.m_Providers[param1] = _loc7_;
+            inst.m_Providers[aProviderName] = dataFromClient;
          }
-         return _loc4_.m_Providers[param1];
+         return inst.m_Providers[aProviderName];
       }
       
-      public static function RemoveWatchFromDataConnector(param1:String) : Boolean
+      public static function RemoveWatchFromDataConnector(aProviderName:String) : Boolean
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:BSUIDataManager = GetInstance();
-         if(_loc3_.m_Providers[param1] != null)
+         var success:Boolean = false;
+         var inst:BSUIDataManager = GetInstance();
+         if(inst.m_Providers[aProviderName] != null)
          {
-            _loc3_.m_DataShuttleConnector._RemoveWatch(param1);
-            delete _loc3_.m_Providers[param1];
-            _loc2_ = true;
+            inst.m_DataShuttleConnector._RemoveWatch(aProviderName);
+            delete inst.m_Providers[aProviderName];
+            success = true;
          }
-         return _loc2_;
+         return success;
       }
       
-      public static function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         GetInstance().addEventListener(param1,param2,param3,param4,param5);
+         GetInstance().addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public static function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         GetInstance().removeEventListener(param1,param2,param3);
+         GetInstance().removeEventListener(type,listener,useCapture);
       }
       
-      public static function dispatchEvent(param1:Event) : Boolean
+      public static function dispatchEvent(event:Event) : Boolean
       {
-         return GetInstance().dispatchEvent(param1);
+         return GetInstance().dispatchEvent(event);
       }
       
-      public static function hasEventListener(param1:String) : Boolean
+      public static function hasEventListener(type:String) : Boolean
       {
-         return GetInstance().hasEventListener(param1);
+         return GetInstance().hasEventListener(type);
       }
       
-      public static function willTrigger(param1:String) : Boolean
+      public static function willTrigger(type:String) : Boolean
       {
-         return GetInstance().willTrigger(param1);
+         return GetInstance().willTrigger(type);
       }
    }
 }

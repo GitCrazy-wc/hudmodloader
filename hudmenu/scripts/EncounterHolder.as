@@ -3,7 +3,7 @@ package
    import Shared.EnumHelper;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1031")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1038")]
    public class EncounterHolder extends MovieClip
    {
       
@@ -21,16 +21,31 @@ package
          addFrameScript(0,this.frame1,1,this.frame2);
       }
       
-      public function SetIcon(param1:uint, param2:uint, param3:Boolean) : *
+      public function SetIcon(aType:uint, aLevel:uint, aIsBoss:Boolean) : *
       {
-         this.gotoAndStop(this.GetIconTypeFrameLabel(param1));
-         this["Encounter_mc"].gotoAndStop(this.GetIconLevelFrameLabel(param2));
-         this["Encounter_mc"].BossIcon_mc.visible = param3;
+         this.gotoAndStop(this.GetIconTypeFrameLabel(aType));
+         this["Encounter_mc"].gotoAndStop(this.GetIconLevelFrameLabel(aLevel));
+         this["Encounter_mc"].BossIcon_mc.visible = aIsBoss;
       }
       
-      private function GetIconTypeFrameLabel(param1:uint) : String
+      public function GetIconLevelFramePadding(aLevel:uint) : uint
       {
-         switch(param1)
+         switch(aLevel)
+         {
+            case 1:
+               return 0;
+            case 2:
+               return 4;
+            case 3:
+               return 8;
+            default:
+               return 0;
+         }
+      }
+      
+      private function GetIconTypeFrameLabel(aType:uint) : String
+      {
+         switch(aType)
          {
             case 1:
                return "Skull";
@@ -41,9 +56,9 @@ package
          }
       }
       
-      private function GetIconLevelFrameLabel(param1:uint) : String
+      private function GetIconLevelFrameLabel(aLevel:uint) : String
       {
-         switch(param1)
+         switch(aLevel)
          {
             case 1:
                return "Easy";

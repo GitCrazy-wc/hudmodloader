@@ -5,7 +5,7 @@ package
    import flash.text.TextFieldAutoSize;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1575")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1582")]
    public dynamic class Subtitles extends BSUIComponent
    {
       
@@ -20,9 +20,9 @@ package
          this.SubtitleText_tf.autoSize = TextFieldAutoSize.NONE;
       }
       
-      public function set VerticalAutoSize(param1:String) : *
+      public function set VerticalAutoSize(vautoSize:String) : *
       {
-         TextFieldEx.setVerticalAutoSize(this.SubtitleText_tf,param1);
+         TextFieldEx.setVerticalAutoSize(this.SubtitleText_tf,vautoSize);
       }
    }
 }

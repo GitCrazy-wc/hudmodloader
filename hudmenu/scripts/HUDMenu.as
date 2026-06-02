@@ -2,12 +2,14 @@ package
 {
    import Shared.AS3.BSButtonHintBar;
    import Shared.AS3.BSButtonHintData;
+   import Shared.AS3.BSButtonHintHoldProcessor;
    import Shared.AS3.Data.BSUIDataManager;
    import Shared.AS3.Data.FromClientDataEvent;
    import Shared.AS3.Data.UIDataFromClient;
    import Shared.AS3.Events.CustomEvent;
    import Shared.AS3.Events.NetworkedUIEvent;
    import Shared.AS3.Events.QuestEvent;
+   import Shared.AS3.IHoldHandler;
    import Shared.AS3.IMenu;
    import Shared.GlobalFunc;
    import Shared.HUDModes;
@@ -34,7 +36,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   public class HUDMenu extends IMenu
+   public class HUDMenu extends IMenu implements IHoldHandler
    {
       
       public static const EVENT_LEVELUP_VISIBLE:String = "HUD::LevelUpVisible";
@@ -43,7 +45,11 @@ package
       
       public static const EVENT_LEVELUP_START:String = "HUD::LevelUpStart";
       
-      public static var EVENT_SCOREBOARD_CATEGORY_CHANGE:String = "Scoreboard::StatFilterChanged";
+      public static const EVENT_QUICK_HOLD_TOGGLE:String = "HUD::QuickHoldToggle";
+      
+      public static const EVENT_FOCUS_LOST:String = "BSButtonHintHoldProcessor::FocusLost";
+      
+      public static const EVENT_SCOREBOARD_CATEGORY_CHANGE:String = "Scoreboard::StatFilterChanged";
       
       public static const CURRENCY_UPDATE_LEVELUP_OFFSETY:Number = -160;
       
@@ -251,6 +257,8 @@ package
       
       private var m_UniqueFanfareActive:Boolean = false;
       
+      private var m_HoldProcessor:BSButtonHintHoldProcessor = null;
+      
       public var RevivePrompt_mc:MovieClip;
       
       private var m_RevivePromptVisible:Boolean = false;
@@ -275,30 +283,31 @@ package
          this.BGSCodeObj = new Object();
          Extensions.enabled = true;
          Extensions.noInvisibleAdvance = true;
+         this.m_HoldProcessor = new BSButtonHintHoldProcessor(this);
          this.resetChatMode();
          this.HUDChatBase_mc.HUDChatEntryWidget_mc.ChatEntryText_tf.addEventListener(KeyboardEvent.KEY_UP,this.chatEntryKeyUp);
          this.HUDChatBase_mc.HUDChatEntryWidget_mc.ChatEntryText_tf.addEventListener(FocusEvent.FOCUS_OUT,this.chatEntryFocusOut);
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStageEvent);
          this.QuestTracker = this.TopRightGroup_mc.QuestTracker;
          this.NewQuestTracker_mc = this.TopRightGroup_mc.NewQuestTracker_mc;
-         BSUIDataManager.Subscribe("DeathReviveData",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("DeathReviveData",function(event:FromClientDataEvent):*
          {
-            var _loc4_:Number = NaN;
-            var _loc2_:* = param1.data;
-            var _loc3_:Boolean = false;
-            if(_loc2_.isInBleedout)
+            var wholeNumberTime:Number = NaN;
+            var promptData:* = event.data;
+            var showPrompt:Boolean = false;
+            if(promptData.isInBleedout)
             {
-               if(!_loc2_.bleedoutDisabled)
+               if(!promptData.bleedoutDisabled)
                {
-                  if(_loc2_.timeTillExpire > 0)
+                  if(promptData.timeTillExpire > 0)
                   {
-                     _loc3_ = true;
-                     _loc4_ = Math.ceil(_loc2_.timeTillExpire);
-                     RevivePrompt_mc.reviveTimer.reviveTime_tf.text = "[" + _loc4_ + "s]";
-                     if(m_PrevReviveTime != _loc4_)
+                     showPrompt = true;
+                     wholeNumberTime = Math.ceil(promptData.timeTillExpire);
+                     RevivePrompt_mc.reviveTimer.reviveTime_tf.text = "[" + wholeNumberTime + "s]";
+                     if(m_PrevReviveTime != wholeNumberTime)
                      {
                         GlobalFunc.PlayMenuSound("UIMenuCriticallyInjuredCounterDecrement");
-                        m_PrevReviveTime = _loc4_;
+                        m_PrevReviveTime = wholeNumberTime;
                      }
                   }
                   else
@@ -308,13 +317,13 @@ package
                }
                else
                {
-                  _loc3_ = true;
+                  showPrompt = true;
                   RevivePrompt_mc.reviveTimer.reviveTime_tf.text = "";
                }
             }
-            if(_loc3_ != m_RevivePromptVisible)
+            if(showPrompt != m_RevivePromptVisible)
             {
-               if(_loc3_)
+               if(showPrompt)
                {
                   RevivePrompt_mc.gotoAndPlay("rollOn");
                }
@@ -323,7 +332,7 @@ package
                   RevivePrompt_mc.gotoAndPlay("rollOff");
                }
             }
-            m_RevivePromptVisible = _loc3_;
+            m_RevivePromptVisible = showPrompt;
          });
          reviveButtonBar = this.RevivePrompt_mc.ButtonHintBar_mc;
          buttonHintDataV = new Vector.<BSButtonHintData>();
@@ -332,12 +341,12 @@ package
          reviveButtonBar.SetButtonHintData(buttonHintDataV);
          addEventListener(QuestEvent.EVENT_AVAILABLE,this.onQuestAvailable);
          this.LocalEmote_mc.align = EmoteWidget.ALIGN_RIGHT;
-         BSUIDataManager.Subscribe("PVPData",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("PVPData",function(arEvent:FromClientDataEvent):*
          {
-            var _loc2_:* = param1.data;
-            if(_loc2_.announcement.length > 0)
+            var announcementData:* = arEvent.data;
+            if(announcementData.announcement.length > 0)
             {
-               onPVPAnnounced(_loc2_);
+               onPVPAnnounced(announcementData);
             }
          });
          this.m_QuestAnnounceQueue = new Vector.<QuestEvent>();
@@ -355,6 +364,7 @@ package
          this.m_CurrencyUpdateBaseY = this.HUDNotificationsGroup_mc.CurrencyUpdates_mc.y;
          this.m_WantedBaseY = this.YouAreWanted_mc.y;
          this.m_RankBaseY = this.ScoreboardRank_mc.y;
+         BSUIDataManager.Subscribe("FireForgetEvent",this.onFFEvent);
          BSUIDataManager.Subscribe("HUDModeData",this.onHUDModeUpdate);
          BSUIDataManager.Subscribe("MenuStackData",this.onMenuStackDataUpdate);
          BSUIDataManager.Subscribe("WorkshopStateData",this.onWorkshopStateUpdate);
@@ -365,30 +375,30 @@ package
          BSUIDataManager.Subscribe("ScreenResolutionData",this.onResolutionUpdate);
          addEventListener(HUDAnnounceEventWidget.EVENT_ACTIVE,this.onFanfareActive);
          addEventListener(HUDAnnounceEventWidget.EVENT_CLEARED,this.onFanfareCleared);
-         addEventListener(EVENT_LEVELUP_VISIBLE,function(param1:Event):*
+         addEventListener(EVENT_LEVELUP_VISIBLE,function(e:Event):*
          {
             levelUpVisible = true;
          });
-         addEventListener(EVENT_LEVELUP_HIDDEN,function(param1:Event):*
+         addEventListener(EVENT_LEVELUP_HIDDEN,function(e:Event):*
          {
             levelUpVisible = false;
          });
-         addEventListener(HUDReputationUpdatesWidget.EVENT_LEVELUP_VISIBLE,function(param1:Event):*
+         addEventListener(HUDReputationUpdatesWidget.EVENT_LEVELUP_VISIBLE,function(e:Event):*
          {
             repLevelUpVisible = true;
          });
-         addEventListener(HUDReputationUpdatesWidget.EVENT_CHANGE_VISIBLE,function(param1:Event):*
+         addEventListener(HUDReputationUpdatesWidget.EVENT_CHANGE_VISIBLE,function(e:Event):*
          {
             repChangeVisible = true;
          });
-         addEventListener(HUDReputationUpdatesWidget.EVENT_HIDDEN,function(param1:Event):*
+         addEventListener(HUDReputationUpdatesWidget.EVENT_HIDDEN,function(e:Event):*
          {
             repLevelUpVisible = false;
             repChangeVisible = false;
          });
-         addEventListener(EVENT_LEVELUP_START,function(param1:CustomEvent):*
+         addEventListener(EVENT_LEVELUP_START,function(arEvent:CustomEvent):*
          {
-            LevelUpAnimation_mc.LevelUpText.textField.text = param1.params.displayText;
+            LevelUpAnimation_mc.LevelUpText.textField.text = arEvent.params.displayText;
             LevelUpAnimation_mc.gotoAndPlay("On");
          });
          this.m_ValidWantedHUDModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY);
@@ -398,9 +408,9 @@ package
          RankPlayerIcon.clipHeight = RankPlayerIcon.height * (1 / RankPlayerIcon.scaleY);
          BSUIDataManager.Subscribe("ScoreboardData",this.onLeaderboardDataUpdate);
          this.m_ScoreboardFilterData = BSUIDataManager.GetDataFromClient("ScoreboardFilterData");
-         BSUIDataManager.Subscribe("ScoreboardFilterData",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("ScoreboardFilterData",function(arEvent:FromClientDataEvent):*
          {
-            if(param1.data.worldRankFilter.statType == GlobalFunc.STAT_TYPE_INVALID)
+            if(arEvent.data.worldRankFilter.statType == GlobalFunc.STAT_TYPE_INVALID)
             {
                m_WorldRankFilterOverride = GlobalFunc.STAT_TYPE_SURVIVAL_SCORE;
             }
@@ -535,7 +545,7 @@ package
          addChild(this.errorMessage);
       }
       
-      public function __setPerspectiveProjection_(param1:Event) : void
+      public function __setPerspectiveProjection_(evt:Event) : void
       {
          root.transform.perspectiveProjection.fieldOfView = 1.002611;
          root.transform.perspectiveProjection.projectionCenter = new Point(960,540);
@@ -546,11 +556,11 @@ package
          return this.PartyResolutionContainer_mc.HUDPartyListBase_mc;
       }
       
-      public function set levelUpVisible(param1:Boolean) : void
+      public function set levelUpVisible(aVisible:Boolean) : void
       {
-         this.m_LevelUpVisible = param1;
+         this.m_LevelUpVisible = aVisible;
          this.updateCurrencyUpdatesPos();
-         if(param1)
+         if(aVisible)
          {
             this.HUDNotificationsGroup_mc.XPMeter_mc.gotoAndStop("levelup");
             this.HUDNotificationsGroup_mc.XPMeter_mc.NumberText.visible = false;
@@ -562,19 +572,19 @@ package
          }
       }
       
-      public function set repLevelUpVisible(param1:Boolean) : void
+      public function set repLevelUpVisible(aVisible:Boolean) : void
       {
-         this.m_RepLevelUpVisible = param1;
+         this.m_RepLevelUpVisible = aVisible;
          this.updateCurrencyUpdatesPos();
       }
       
-      public function set repChangeVisible(param1:Boolean) : void
+      public function set repChangeVisible(aVisible:Boolean) : void
       {
-         this.m_RepChangeVisible = param1;
+         this.m_RepChangeVisible = aVisible;
          this.updateCurrencyUpdatesPos();
       }
       
-      public function onAddedToStageEvent(param1:Event) : void
+      public function onAddedToStageEvent(e:Event) : void
       {
          this.onAddedToStage();
       }
@@ -585,6 +595,15 @@ package
          this.CharacterInfoData = BSUIDataManager.GetDataFromClient("CharacterInfoData").data;
          this.ControlMapData = BSUIDataManager.GetDataFromClient("ControlMapData").data;
          BSUIDataManager.Subscribe("CharacterInfoData",this.onCharacterInfoUpdate);
+         addEventListener(Messages.EVENT_MESSAGE_VISIBILITY_UPDATE,this.onMessageVisibilityUpdate);
+      }
+      
+      private function onMessageVisibilityUpdate(aEvent:CustomEvent) : void
+      {
+         if(aEvent && aEvent.params && Boolean(aEvent.params.messageType) && aEvent.params.messageType == HUDMessageItemData.TYPE_INFESTATION)
+         {
+            this.AnnounceEventWidget_mc.SetTrackingButtonVisibility(!aEvent.params.fadedIn);
+         }
       }
       
       private function revertScoreboardFilter() : void
@@ -599,186 +618,186 @@ package
          }
       }
       
-      private function onHUDModeUpdate(param1:FromClientDataEvent) : void
+      private function onHUDModeUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc2_:String = param1.data.hudMode;
-         var _loc3_:Number = 0;
-         var _loc4_:Number = 0;
-         var _loc5_:Number = 0;
-         var _loc6_:Number = 0;
-         var _loc7_:Number = 0;
-         this.m_LastPowerArmor = Boolean(param1.data.inPowerArmor) && Boolean(param1.data.powerArmorHUDEnabled);
-         switch(_loc2_)
+         var mode:String = arEvent.data.hudMode;
+         var partyXOffset:Number = 0;
+         var partyYOffset:Number = 0;
+         var questXOffset:Number = 0;
+         var questYOffset:Number = 0;
+         var XPBarYOffset:Number = 0;
+         this.m_LastPowerArmor = Boolean(arEvent.data.inPowerArmor) && Boolean(arEvent.data.powerArmorHUDEnabled);
+         switch(mode)
          {
             case HUDModes.WORKSHOP_MODE:
             case HUDModes.WORKSHOP_NO_CROSSHAIR_MODE:
-               _loc3_ = 100;
-               _loc5_ = -285;
-               _loc6_ = 80;
+               partyXOffset = 100;
+               questXOffset = -285;
+               questYOffset = 80;
                break;
             case HUDModes.INSPECT_MODE:
-               _loc7_ = 133;
+               XPBarYOffset = 133;
          }
-         if(this.m_LastPowerArmor && _loc2_ != HUDModes.PHOTO_MODE && _loc2_ != HUDModes.MAP_MENU && _loc2_ != HUDModes.DIALOGUE_MODE)
+         if(this.m_LastPowerArmor && mode != HUDModes.PHOTO_MODE && mode != HUDModes.MAP_MENU && mode != HUDModes.DIALOGUE_MODE)
          {
-            _loc3_ = 205;
-            _loc4_ = -226;
+            partyXOffset = 205;
+            partyYOffset = -226;
          }
-         this.QuestTracker.x = this.m_QuestTrackerBaseX + _loc5_;
-         this.QuestTracker.y = this.m_QuestTrackerBaseY + _loc6_;
-         this.NewQuestTracker_mc.x = this.m_QuestTrackerBaseX + _loc5_;
-         this.NewQuestTracker_mc.y = this.m_QuestTrackerBaseY + _loc6_;
+         this.QuestTracker.x = this.m_QuestTrackerBaseX + questXOffset;
+         this.QuestTracker.y = this.m_QuestTrackerBaseY + questYOffset;
+         this.NewQuestTracker_mc.x = this.m_QuestTrackerBaseX + questXOffset;
+         this.NewQuestTracker_mc.y = this.m_QuestTrackerBaseY + questYOffset;
          HUDTeamWidget.inPA = this.m_LastPowerArmor;
-         this.HUDPartyListBase_mc.x = this.m_PartyListBaseX + _loc3_;
-         this.HUDPartyListBase_mc.y = this.m_PartyListBaseY + _loc4_;
+         this.HUDPartyListBase_mc.x = this.m_PartyListBaseX + partyXOffset;
+         this.HUDPartyListBase_mc.y = this.m_PartyListBaseY + partyYOffset;
          this.HUDPartyListBase_mc.PartyList.SetIsDirty();
-         this.HUDNotificationsGroup_mc.XPMeter_mc.y = this.m_XPBarBaseY + _loc7_;
-         this.m_ValidWantedHUDMode = this.m_ValidWantedHUDModes.indexOf(_loc2_) != -1;
-         if(_loc2_ != this.m_LastHUDMode && (this.m_LastHUDMode == HUDModes.MAP_MENU || this.m_LastHUDMode == HUDModes.PAUSE))
+         this.HUDNotificationsGroup_mc.XPMeter_mc.y = this.m_XPBarBaseY + XPBarYOffset;
+         this.m_ValidWantedHUDMode = this.m_ValidWantedHUDModes.indexOf(mode) != -1;
+         if(mode != this.m_LastHUDMode && (this.m_LastHUDMode == HUDModes.MAP_MENU || this.m_LastHUDMode == HUDModes.PAUSE))
          {
             this.revertScoreboardFilter();
          }
-         this.m_LastHUDMode = _loc2_;
+         this.m_LastHUDMode = mode;
          this.updateWantedVis();
          this.updateRankVis();
-         this.LevelUpAnimation_mc.visible = _loc2_ != HUDModes.PERKS_MODE && _loc2_ != HUDModes.LEGENDARY_PERKS_MODE;
+         this.LevelUpAnimation_mc.visible = mode != HUDModes.PERKS_MODE && mode != HUDModes.LEGENDARY_PERKS_MODE;
          this.updateHUDNotificationsOffset();
       }
       
-      private function onMenuStackDataUpdate(param1:FromClientDataEvent) : void
+      private function onMenuStackDataUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         if(Boolean(param1.data) && Boolean(param1.data.menuStackA))
+         var mapMenuOpen:Boolean = false;
+         var i:int = 0;
+         if(Boolean(arEvent.data) && Boolean(arEvent.data.menuStackA))
          {
-            _loc2_ = false;
-            if(Boolean(param1.data) && Boolean(param1.data.menuStackA))
+            mapMenuOpen = false;
+            if(Boolean(arEvent.data) && Boolean(arEvent.data.menuStackA))
             {
-               _loc2_ = false;
-               _loc3_ = param1.data.menuStackA.length - 1;
-               while(_loc3_ > -1)
+               mapMenuOpen = false;
+               i = arEvent.data.menuStackA.length - 1;
+               while(i > -1)
                {
-                  if(param1.data.menuStackA[_loc3_].menuName == "MapMenu")
+                  if(arEvent.data.menuStackA[i].menuName == "MapMenu")
                   {
-                     _loc2_ = true;
+                     mapMenuOpen = true;
                      break;
                   }
-                  _loc3_--;
+                  i--;
                }
             }
-            this.TeammateMarkerBase.hideMarkers = _loc2_;
+            this.TeammateMarkerBase.hideMarkers = mapMenuOpen;
          }
       }
       
-      private function onWorkshopStateUpdate(param1:FromClientDataEvent) : void
+      private function onWorkshopStateUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_IsFreeCamMode = param1.data.freeCamMode;
+         this.m_IsFreeCamMode = arEvent.data.freeCamMode;
          this.updateHUDNotificationsOffset();
       }
       
       private function updateHUDNotificationsOffset() : void
       {
-         var _loc1_:Number = 0;
-         var _loc2_:Number = 0;
-         var _loc3_:Number = 0;
-         var _loc4_:Number = 0;
-         var _loc5_:Boolean = false;
-         var _loc6_:* = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE || this.m_LastHUDMode == HUDModes.WORKSHOP_NO_CROSSHAIR_MODE;
-         HUDMessageItemBase.showBottomRight = _loc6_;
-         this.HUDNotificationsGroup_mc.Messages_mc.showBottomRight = _loc6_;
+         var notificationsXOffset:Number = 0;
+         var notificationsYOffset:Number = 0;
+         var tutorialXOffset:Number = 0;
+         var tutorialYOffset:Number = 0;
+         var bUseMapMessageOffsets:Boolean = false;
+         var isWorkshopMode:* = this.m_LastHUDMode == HUDModes.WORKSHOP_MODE || this.m_LastHUDMode == HUDModes.WORKSHOP_NO_CROSSHAIR_MODE;
+         HUDMessageItemBase.showBottomRight = isWorkshopMode;
+         this.HUDNotificationsGroup_mc.Messages_mc.showBottomRight = isWorkshopMode;
          switch(this.m_LastHUDMode)
          {
             case HUDModes.DIALOGUE_MODE:
-               _loc2_ = NOTIFICATION_OFFSET_Y_DIALOGUE;
-               _loc4_ = NOTIFICATION_OFFSET_Y_DIALOGUE;
+               notificationsYOffset = NOTIFICATION_OFFSET_Y_DIALOGUE;
+               tutorialYOffset = NOTIFICATION_OFFSET_Y_DIALOGUE;
                break;
             case HUDModes.WORKSHOP_NO_CROSSHAIR_MODE:
             case HUDModes.WORKSHOP_MODE:
-               _loc1_ = NOTIFICATION_X_WORKSHOP - this.m_MessagesBaseX;
-               _loc2_ = NOTIFICATION_Y_WORKSHOP - this.m_MessagesBaseX;
-               _loc3_ = NOTIFICATION_X_WORKSHOP - this.m_TutorialTextBaseX - TUTORIAL_X_PADDING;
-               _loc4_ = NOTIFICATION_Y_WORKSHOP - this.m_TutorialTextBaseY - TUTORIAL_Y_PADDING;
+               notificationsXOffset = NOTIFICATION_X_WORKSHOP - this.m_MessagesBaseX;
+               notificationsYOffset = NOTIFICATION_Y_WORKSHOP - this.m_MessagesBaseX;
+               tutorialXOffset = NOTIFICATION_X_WORKSHOP - this.m_TutorialTextBaseX - TUTORIAL_X_PADDING;
+               tutorialYOffset = NOTIFICATION_Y_WORKSHOP - this.m_TutorialTextBaseY - TUTORIAL_Y_PADDING;
                break;
             case HUDModes.CONTAINER_MODE:
-               _loc2_ = NOTIFICATION_OFFSET_Y_CONTAINER;
-               _loc4_ = NOTIFICATION_OFFSET_Y_CONTAINER;
+               notificationsYOffset = NOTIFICATION_OFFSET_Y_CONTAINER;
+               tutorialYOffset = NOTIFICATION_OFFSET_Y_CONTAINER;
                break;
             case HUDModes.MAP_MENU:
                if(this.m_WorldType == GlobalFunc.WORLD_TYPE_SURVIVAL)
                {
-                  _loc2_ = NOTIFICATION_OFFSET_Y_MAP_SURVIVAL;
-                  _loc4_ = NOTIFICATION_OFFSET_Y_MAP_SURVIVAL;
+                  notificationsYOffset = NOTIFICATION_OFFSET_Y_MAP_SURVIVAL;
+                  tutorialYOffset = NOTIFICATION_OFFSET_Y_MAP_SURVIVAL;
                }
                else if(this.m_WorldType == GlobalFunc.WORLD_TYPE_NORMAL || this.m_WorldType == GlobalFunc.WORLD_TYPE_PRIVATE)
                {
-                  _loc1_ = NOTIFICATION_OFFSET_X_MAP;
-                  _loc2_ = NOTIFICATION_OFFSET_Y_MAP;
-                  _loc3_ = NOTIFICATION_OFFSET_X_MAP;
-                  _loc4_ = NOTIFICATION_OFFSET_Y_MAP;
-                  _loc5_ = true;
+                  notificationsXOffset = NOTIFICATION_OFFSET_X_MAP;
+                  notificationsYOffset = NOTIFICATION_OFFSET_Y_MAP;
+                  tutorialXOffset = NOTIFICATION_OFFSET_X_MAP;
+                  tutorialYOffset = NOTIFICATION_OFFSET_Y_MAP;
+                  bUseMapMessageOffsets = true;
                }
          }
-         this.HUDNotificationsGroup_mc.Messages_mc.x = this.m_MessagesBaseX + (_loc5_ ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : _loc1_);
-         this.HUDNotificationsGroup_mc.Messages_mc.y = this.m_MessagesBaseY + (_loc5_ ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : _loc2_);
-         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.x = this.m_PromptMessageBaseX + (_loc5_ ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : _loc1_);
-         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.y = this.m_PromptMessageBaseY + (_loc5_ ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : _loc2_);
-         this.HUDNotificationsGroup_mc.TutorialText_mc.x = this.m_TutorialTextBaseX + _loc3_;
-         this.HUDNotificationsGroup_mc.TutorialText_mc.y = this.m_TutorialTextBaseY + _loc4_;
+         this.HUDNotificationsGroup_mc.Messages_mc.x = this.m_MessagesBaseX + (bUseMapMessageOffsets ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : notificationsXOffset);
+         this.HUDNotificationsGroup_mc.Messages_mc.y = this.m_MessagesBaseY + (bUseMapMessageOffsets ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : notificationsYOffset);
+         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.x = this.m_PromptMessageBaseX + (bUseMapMessageOffsets ? NOTIFICATION_OFFSET_X_MAP_MESSAGES : notificationsXOffset);
+         this.HUDNotificationsGroup_mc.PromptMessageHolder_mc.y = this.m_PromptMessageBaseY + (bUseMapMessageOffsets ? NOTIFICATION_OFFSET_Y_MAP_MESSAGES : notificationsYOffset);
+         this.HUDNotificationsGroup_mc.TutorialText_mc.x = this.m_TutorialTextBaseX + tutorialXOffset;
+         this.HUDNotificationsGroup_mc.TutorialText_mc.y = this.m_TutorialTextBaseY + tutorialYOffset;
          this.TopRightGroup_mc.enabled = !bNuclearWinterMode;
          this.TopRightGroup_mc.visible = !bNuclearWinterMode;
          this.AnnounceEventWidget_mc.enabled = !bNuclearWinterMode;
          this.AnnounceEventWidget_mc.visible = !bNuclearWinterMode;
          this.AnnounceAvailableQuest_mc.enabled = !bNuclearWinterMode;
          this.AnnounceAvailableQuest_mc.visible = !bNuclearWinterMode;
-         var _loc7_:HUDCompassWidget = this.CompassWidget_mc as HUDCompassWidget;
-         _loc7_.bNuclearWinterMode = bNuclearWinterMode;
+         var Compass:HUDCompassWidget = this.CompassWidget_mc as HUDCompassWidget;
+         Compass.bNuclearWinterMode = bNuclearWinterMode;
       }
       
       private function updateRankVis() : void
       {
-         var _loc1_:Boolean = this.m_ValidWantedHUDMode && this.m_WorldType == GlobalFunc.WORLD_TYPE_SURVIVAL && (this.m_ScoreboardRank > 1 || this.m_ScoreboardValue > 0);
-         if(this.ScoreboardRank_mc.visible != _loc1_)
+         var rankVisible:Boolean = this.m_ValidWantedHUDMode && this.m_WorldType == GlobalFunc.WORLD_TYPE_SURVIVAL && (this.m_ScoreboardRank > 1 || this.m_ScoreboardValue > 0);
+         if(this.ScoreboardRank_mc.visible != rankVisible)
          {
-            this.ScoreboardRank_mc.visible = _loc1_;
+            this.ScoreboardRank_mc.visible = rankVisible;
          }
-         var _loc2_:Number = 0;
+         var wantedOffset:Number = 0;
          if(this.m_IsWanted)
          {
-            _loc2_ += this.YouAreWanted_mc.Sizer_mc.height + WANTED_SCOREBOARD_RANK_Y_OFFSET;
+            wantedOffset += this.YouAreWanted_mc.Sizer_mc.height + WANTED_SCOREBOARD_RANK_Y_OFFSET;
          }
          if(this.m_LastPowerArmor)
          {
-            this.ScoreboardRank_mc.y = this.m_RankBaseY - WANTED_POWER_ARMOR_Y_OFFSET - _loc2_;
+            this.ScoreboardRank_mc.y = this.m_RankBaseY - WANTED_POWER_ARMOR_Y_OFFSET - wantedOffset;
          }
          else
          {
-            this.ScoreboardRank_mc.y = this.m_RankBaseY - _loc2_;
+            this.ScoreboardRank_mc.y = this.m_RankBaseY - wantedOffset;
          }
       }
       
-      private function updateWantedVis(param1:Number = 0) : void
+      private function updateWantedVis(aBounty:Number = 0) : void
       {
-         var _loc2_:Boolean = this.m_ValidWantedHUDMode && this.m_IsWanted;
-         if(this.YouAreWanted_mc.visible != _loc2_)
+         var wantedVisible:Boolean = this.m_ValidWantedHUDMode && this.m_IsWanted;
+         if(this.YouAreWanted_mc.visible != wantedVisible)
          {
-            this.YouAreWanted_mc.visible = _loc2_;
-            if(_loc2_)
+            this.YouAreWanted_mc.visible = wantedVisible;
+            if(wantedVisible)
             {
                this.YouAreWanted_mc.gotoAndPlay("rollOn");
             }
          }
-         else if(_loc2_ && param1 > 0 && param1 > this.m_LastBounty)
+         else if(wantedVisible && aBounty > 0 && aBounty > this.m_LastBounty)
          {
             this.YouAreWanted_mc.gotoAndPlay("update");
          }
-         if(param1 > 0)
+         if(aBounty > 0)
          {
-            this.YouAreWanted_mc.bountyAmount.bounty_tf.text = param1;
+            this.YouAreWanted_mc.bountyAmount.bounty_tf.text = aBounty;
             if(this.m_LastBounty == 0)
             {
                GlobalFunc.PlayMenuSound("UIBountyStingerRecipient");
             }
-            this.m_LastBounty = param1;
+            this.m_LastBounty = aBounty;
          }
          if(this.m_LastPowerArmor)
          {
@@ -807,13 +826,13 @@ package
          }
       }
       
-      private function onLeaderboardDataUpdate(param1:FromClientDataEvent) : void
+      private function onLeaderboardDataUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc2_:* = param1.data.localScoreboardEntry;
-         this.m_ScoreboardRank = _loc2_.rank;
-         this.m_ScoreboardValue = _loc2_.value;
+         var rankInfo:* = arEvent.data.localScoreboardEntry;
+         this.m_ScoreboardRank = rankInfo.rank;
+         this.m_ScoreboardValue = rankInfo.value;
          this.ScoreboardRank_mc.LeaderBoardRank_mc.LeaderBoardRank_tf.text = this.m_ScoreboardRank;
-         this.ScoreboardRank_mc.AccountIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(_loc2_.iconPath),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+         this.ScoreboardRank_mc.AccountIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(rankInfo.iconPath),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
          if(this.m_ScoreboardRank >= 1 && this.m_ScoreboardRank <= 3)
          {
             this.ScoreboardRank_mc.RankPip_mc.visible = true;
@@ -826,31 +845,31 @@ package
          this.updateRankVis();
       }
       
-      private function onAccountInfoUpdate(param1:FromClientDataEvent) : void
+      private function onAccountInfoUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_WorldType = param1.data.worldType;
+         this.m_WorldType = arEvent.data.worldType;
          this.updateHUDNotificationsOffset();
          this.updateRankVis();
       }
       
-      private function onResolutionUpdate(param1:FromClientDataEvent) : *
+      private function onResolutionUpdate(arEvent:FromClientDataEvent) : *
       {
-         gotoAndStop(param1.data.AspectRatio);
+         gotoAndStop(arEvent.data.AspectRatio);
       }
       
       private function isUniqueFanfareVisible() : Boolean
       {
-         var _loc1_:* = this.AnnounceEventWidget_mc.UniqueItemContainer_mc;
-         return _loc1_ && _loc1_.currentFrameLabel != "off";
+         var uniqueMC:* = this.AnnounceEventWidget_mc.UniqueItemContainer_mc;
+         return uniqueMC && uniqueMC.currentFrameLabel != "off";
       }
       
       private function isOtherFanfareVisible() : Boolean
       {
-         var isClipActive:Function = function(param1:MovieClip):Boolean
+         var isClipActive:Function = function(currClip:MovieClip):Boolean
          {
-            if(param1 != null && param1.currentFrameLabel != null)
+            if(currClip != null && currClip.currentFrameLabel != null)
             {
-               return param1.currentFrameLabel != "off";
+               return currClip.currentFrameLabel != "off";
             }
             return false;
          };
@@ -864,13 +883,13 @@ package
       
       private function updateStealthMeterVisibility() : void
       {
-         var _loc1_:Boolean = this.isUniqueFanfareVisible();
-         var _loc2_:Boolean = this.isOtherFanfareVisible();
-         if(_loc1_)
+         var bUniqueVisible:Boolean = this.isUniqueFanfareVisible();
+         var bOtherVisible:Boolean = this.isOtherFanfareVisible();
+         if(bUniqueVisible)
          {
             this.m_UniqueFanfareActive = true;
          }
-         if(this.m_UniqueFanfareActive && !_loc2_)
+         if(this.m_UniqueFanfareActive && !bOtherVisible)
          {
             this.TopCenterGroup_mc.StealthMeter_mc.visible = true;
             this.TopCenterGroup_mc.StealthMeter_mc.gotoAndPlay("rollOn");
@@ -881,14 +900,14 @@ package
          }
       }
       
-      private function onFanfareActive(param1:Event) : *
+      private function onFanfareActive(e:Event) : *
       {
          this.updateStealthMeterVisibility();
          this.QuestTracker.SetAnimationBlocked(true);
          this.m_FanfareAnimating = true;
       }
       
-      private function onFanfareCleared(param1:Event) : *
+      private function onFanfareCleared(e:Event) : *
       {
          if(!this.isUniqueFanfareVisible())
          {
@@ -901,49 +920,48 @@ package
          this.m_FanfareAnimating = false;
       }
       
-      private function onRadialMenuStatusUpdate(param1:FromClientDataEvent) : void
+      private function onRadialMenuStatusUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.CompassWidget_mc.y = param1.data.isShowing ? this.m_CompassBaseY + 1500 : this.m_CompassBaseY;
+         this.CompassWidget_mc.y = arEvent.data.isShowing ? this.m_CompassBaseY + 1500 : this.m_CompassBaseY;
       }
       
       private function evaluateQuestAnnounceQueue() : void
       {
-         var _loc1_:QuestEvent = null;
+         var nextEvent:QuestEvent = null;
          if(!this.m_QuestAnnounceBusy && this.m_QuestAnnounceQueue.length > 0)
          {
-            _loc1_ = this.m_QuestAnnounceQueue.shift();
-            switch(_loc1_.type)
+            nextEvent = this.m_QuestAnnounceQueue.shift();
+            switch(nextEvent.type)
             {
                case QuestEvent.EVENT_AVAILABLE:
-                  this.onQuestAvailable(_loc1_);
+                  this.onQuestAvailable(nextEvent);
             }
          }
       }
       
-      public function onDpadPress(param1:String) : *
+      public function onDpadPress(direction:String) : *
       {
-         var _loc2_:String = String(Math.max(BSUIDataManager.GetDataFromClient("CharacterInfoData").data.StimpakCount - 1,0));
-         this.dpadMapContainer.DpadMap_mc.StimpakText_mc.StimpakText_tf.text = _loc2_;
+         var stimpaks:String = String(Math.max(BSUIDataManager.GetDataFromClient("CharacterInfoData").data.StimpakCount - 1,0));
+         this.dpadMapContainer.DpadMap_mc.StimpakText_mc.StimpakText_tf.text = stimpaks;
          this.dpadMapContainer.gotoAndPlay("dPadOn");
-         this.DpadMap_mc.gotoAndStop(param1);
+         this.DpadMap_mc.gotoAndStop(direction);
       }
       
-      public function onQuestAvailable(param1:QuestEvent) : void
+      public function onQuestAvailable(aEvent:QuestEvent) : void
       {
          if(this.m_QuestAnnounceBusy)
          {
-            this.m_QuestAnnounceQueue.push(param1);
+            this.m_QuestAnnounceQueue.push(aEvent);
             return;
          }
-         if(param1.pvpFlag)
+         if(aEvent.pvpFlag)
          {
-            this.onPVPAnnounced(param1.data);
+            this.onPVPAnnounced(aEvent.data);
          }
       }
       
-      public function onPVPAnnounced(param1:Object) : void
+      public function onPVPAnnounced(eData:Object) : void
       {
-         var eData:Object = param1;
          if(this.m_QuestAnnounceBusy)
          {
             this.m_QuestAnnounceQueue.push(new QuestEvent(QuestEvent.EVENT_AVAILABLE,eData,true,false,true));
@@ -971,11 +989,11 @@ package
          },11000);
       }
       
-      public function onCharacterInfoUpdate(param1:FromClientDataEvent) : void
+      public function onCharacterInfoUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.LocalEmote_mc.entityID = param1.data.entityID;
-         this.m_IsWanted = param1.data.wanted;
-         if(param1.data.showNetworkIndicator)
+         this.LocalEmote_mc.entityID = arEvent.data.entityID;
+         this.m_IsWanted = arEvent.data.wanted;
+         if(arEvent.data.showNetworkIndicator)
          {
             this.networkIndicator_mc.visible = true;
          }
@@ -983,11 +1001,11 @@ package
          {
             this.networkIndicator_mc.visible = false;
          }
-         this.updateWantedVis(param1.data.bounty);
+         this.updateWantedVis(arEvent.data.bounty);
          this.updateRankVis();
       }
       
-      public function enterChatMode() : *
+      internal function enterChatMode() : *
       {
          this.HUDChatBase_mc.HUDChatEntryWidget_mc.ChatEntryText_tf.border = true;
          stage.focus = this.HUDChatBase_mc.HUDChatEntryWidget_mc.ChatEntryText_tf;
@@ -1002,13 +1020,13 @@ package
          BSUIDataManager.dispatchEvent(new CustomEvent(ON_ENDEDITTEXT,{"tag":"Chat"}));
       }
       
-      internal function chatEntryKeyUp(param1:KeyboardEvent) : void
+      internal function chatEntryKeyUp(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == Keyboard.ESCAPE)
+         if(event.keyCode == Keyboard.ESCAPE)
          {
             this.resetChatMode();
          }
-         if(param1.keyCode == Keyboard.ENTER)
+         if(event.keyCode == Keyboard.ENTER)
          {
             this.sendChatMessage(this.HUDChatBase_mc.HUDChatEntryWidget_mc.ChatEntryText_tf.text);
             this.resetChatMode();
@@ -1016,58 +1034,115 @@ package
          }
       }
       
-      internal function chatEntryFocusOut(param1:FocusEvent) : void
+      internal function chatEntryFocusOut(event:FocusEvent) : void
       {
          this.resetChatMode();
       }
       
-      public function sendChatMessage(param1:String) : *
+      public function sendChatMessage(Message:String) : *
       {
-         var _loc2_:String = "NoUsername";
+         var Username:String = "NoUsername";
          if(this.CharacterInfoData)
          {
-            _loc2_ = this.CharacterInfoData.name;
+            Username = this.CharacterInfoData.name;
          }
-         if(param1.length > 0 && param1 != "")
+         if(Message.length > 0 && Message != "")
          {
-            BSUIDataManager.dispatchEvent(new NetworkedUIEvent("networked::UIEVENT","ChatMessage",_loc2_,"All",param1));
+            BSUIDataManager.dispatchEvent(new NetworkedUIEvent("networked::UIEVENT","ChatMessage",Username,"All",Message));
          }
       }
       
-      public function OnNetworkedUIEventReceived(param1:String, param2:String, param3:String, param4:String) : *
+      public function OnNetworkedUIEventReceived(EventType:String, EventSender:String, EventTarget:String, EventData:String) : *
       {
-         if(param1 == "ChatMessage")
+         if(EventType == "ChatMessage")
          {
-            this.HUDChatBase_mc.HUDChatWidget_mc.addChatMessage(param4,param2);
+            this.HUDChatBase_mc.HUDChatWidget_mc.addChatMessage(EventData,EventSender);
          }
       }
       
-      public function ProcessUserEvent(param1:String, param2:Boolean) : Boolean
+      private function onFFEvent(arEvent:FromClientDataEvent) : void
       {
+         var data:* = arEvent.data;
+         if(GlobalFunc.HasFFEvent(data,EVENT_FOCUS_LOST))
+         {
+            this.clearButtonHold();
+         }
+      }
+      
+      public function ProcessUserEvent(strEventName:String, abPressed:Boolean) : Boolean
+      {
+         var data:Object = null;
          this.m_FanfareAnimating = true;
-         var _loc3_:Boolean = false;
-         dispatchEvent(new HUDModUserEvent(param1,param2));
-         if(this.FrobberWidget_mc.show && !_loc3_)
+         var bhandled:Boolean = false;
+         dispatchEvent(new HUDModUserEvent(strEventName,abPressed));
+         if(this.FrobberWidget_mc.show && !bhandled)
          {
-            _loc3_ = this.FrobberWidget_mc.ProcessUserEvent(param1,param2);
+            bhandled = this.FrobberWidget_mc.ProcessUserEvent(strEventName,abPressed);
          }
-         if(this.m_FanfareAnimating && !_loc3_)
+         if(!bhandled && this.HUDNotificationsGroup_mc.Messages_mc.pressAndHoldActive && Boolean(this.HUDNotificationsGroup_mc.Messages_mc.currentPressAndHoldMessage))
          {
-            _loc3_ = this.AnnounceEventWidget_mc.ProcessUserEvent(param1,param2);
+            data = {
+               "eventName":strEventName,
+               "pressed":abPressed,
+               "buttonsOrBar":this.HUDNotificationsGroup_mc.Messages_mc.currentPressAndHoldMessage.ButtonHintBar_mc,
+               "handled":false
+            };
+            this.m_HoldProcessor.processButtonHold(data);
+            bhandled = Boolean(data.handled);
          }
-         if(!_loc3_ && !param2)
+         if(this.m_FanfareAnimating && !bhandled)
          {
-            switch(param1)
+            bhandled = this.AnnounceEventWidget_mc.ProcessUserEvent(strEventName,abPressed);
+         }
+         if(!bhandled && !abPressed)
+         {
+            switch(strEventName)
             {
                case "TeamChat":
                   if(this.ControlMapData.textEntryMode == "")
                   {
                      this.enterChatMode();
                   }
-                  _loc3_ = true;
+                  bhandled = true;
             }
          }
-         return _loc3_;
+         return bhandled;
+      }
+      
+      private function clearButtonHold() : void
+      {
+         if(this.HUDNotificationsGroup_mc.Messages_mc.currentPressAndHoldMessage)
+         {
+            this.HUDNotificationsGroup_mc.Messages_mc.currentPressAndHoldMessage.ButtonHintBar_mc.HideAllButtons();
+            this.HUDNotificationsGroup_mc.Messages_mc.ClearPressAndHoldMessage();
+            this.m_HoldProcessor.reset();
+         }
+      }
+      
+      public function onButtonPressEvent(strInputEventName:String, strDispatchEventName:String, abButtonDisplayed:Boolean = false, aDataID:uint = 0) : Boolean
+      {
+         var bhandled:* = false;
+         if(strDispatchEventName != "")
+         {
+            if(this.hasOwnProperty(strDispatchEventName))
+            {
+               this[strDispatchEventName]();
+            }
+            else if(strDispatchEventName == HUDMessageItemRecentActivity.EVENT_JOIN)
+            {
+               if(this.HUDNotificationsGroup_mc.Messages_mc.currentPressAndHoldMessage)
+               {
+                  BSUIDataManager.dispatchEvent(new CustomEvent(strDispatchEventName,{"locationID":this.HUDNotificationsGroup_mc.Messages_mc.currentPressAndHoldMessage.data.data.recentActivityId}));
+               }
+               this.clearButtonHold();
+            }
+            else
+            {
+               BSUIDataManager.dispatchEvent(new CustomEvent(strDispatchEventName,{"ID":aDataID}));
+            }
+            bhandled = true;
+         }
+         return bhandled;
       }
       
       override protected function onSetSafeRect() : void

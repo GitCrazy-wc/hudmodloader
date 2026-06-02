@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol727")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol733")]
    public class PingMarkersContainer extends MovieClip
    {
       
@@ -32,79 +32,75 @@ package
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(aEvent:Event) : void
       {
-         var _loc2_:int = 0;
+         var iMarker:int = 0;
          BSUIDataManager.Subscribe("pingArray",this.onPingUpdate);
          this.visible = false;
-         _loc2_ = 0;
-         while(_loc2_ < this.Pings.length)
+         for(iMarker = 0; iMarker < this.Pings.length; iMarker++)
          {
-            this.Pings[_loc2_] = new PingMarker();
-            this.Pings[_loc2_].visible = false;
-            addChild(this.Pings[_loc2_]);
-            _loc2_++;
+            this.Pings[iMarker] = new PingMarker();
+            this.Pings[iMarker].visible = false;
+            addChild(this.Pings[iMarker]);
          }
          this.m_FourthWidth = this.Pings[0].width / 4;
          this.m_HalfHeight = this.Pings[0].height / 2;
       }
       
-      private function onPingUpdate(param1:FromClientDataEvent) : void
+      private function onPingUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc5_:Boolean = false;
-         var _loc6_:* = undefined;
-         var _loc7_:Object = null;
-         var _loc2_:int = int(param1.data.pingArray.length);
-         if(this.m_IsPingArrayEmpty && _loc2_ == 0)
+         var validData:Boolean = false;
+         var reverseIndex:* = undefined;
+         var pingObj:Object = null;
+         var pingCount:int = int(arEvent.data.pingArray.length);
+         if(this.m_IsPingArrayEmpty && pingCount == 0)
          {
             this.visible = false;
             return;
          }
          this.visible = true;
-         var _loc3_:Boolean = true;
-         var _loc4_:int = 0;
-         while(_loc4_ < MAX_PINGS)
+         var isCurrentArrayEmpty:Boolean = true;
+         for(var i:int = 0; i < MAX_PINGS; i++)
          {
-            _loc5_ = false;
-            if(_loc4_ < _loc2_)
+            validData = false;
+            if(i < pingCount)
             {
-               _loc6_ = _loc2_ - _loc4_ - 1;
-               _loc7_ = param1.data.pingArray[_loc4_];
-               if(_loc7_.age < PING_TIMER)
+               reverseIndex = pingCount - i - 1;
+               pingObj = arEvent.data.pingArray[i];
+               if(pingObj.age < PING_TIMER)
                {
-                  this.Pings[_loc6_].SetData(_loc7_);
-                  this.Pings[_loc6_].x = _loc7_.positionX - this.m_FourthWidth;
-                  this.Pings[_loc6_].y = _loc7_.positionY - this.m_HalfHeight;
-                  this.Pings[_loc6_].Redraw();
-                  if(!this.Pings[_loc6_].visible)
+                  this.Pings[reverseIndex].SetData(pingObj);
+                  this.Pings[reverseIndex].x = pingObj.positionX - this.m_FourthWidth;
+                  this.Pings[reverseIndex].y = pingObj.positionY - this.m_HalfHeight;
+                  this.Pings[reverseIndex].Redraw();
+                  if(!this.Pings[reverseIndex].visible)
                   {
-                     this.Pings[_loc6_].visible = true;
+                     this.Pings[reverseIndex].visible = true;
                   }
-                  this.Pings[_loc6_].GoToAnimationFrame(this.Map(_loc7_.age,0,PING_TIMER,0,PING_ANIM_FRAMES));
-                  _loc3_ = false;
-                  if(_loc7_.isPingStart)
+                  this.Pings[reverseIndex].GoToAnimationFrame(this.Map(pingObj.age,0,PING_TIMER,0,PING_ANIM_FRAMES));
+                  isCurrentArrayEmpty = false;
+                  if(pingObj.isPingStart)
                   {
                      GlobalFunc.PlayMenuSound("UIPingActivate");
                   }
-                  _loc5_ = true;
+                  validData = true;
                }
             }
-            if(!_loc5_)
+            if(!validData)
             {
-               this.Pings[_loc4_].x = 0;
-               this.Pings[_loc4_].y = 0;
-               this.Pings[_loc4_].ClearData();
-               this.Pings[_loc4_].Redraw();
-               this.Pings[_loc4_].visible = false;
+               this.Pings[i].x = 0;
+               this.Pings[i].y = 0;
+               this.Pings[i].ClearData();
+               this.Pings[i].Redraw();
+               this.Pings[i].visible = false;
             }
-            _loc4_++;
          }
-         this.m_IsPingArrayEmpty = _loc3_;
+         this.m_IsPingArrayEmpty = isCurrentArrayEmpty;
       }
       
-      private function Map(param1:int, param2:int, param3:int, param4:int, param5:*) : int
+      private function Map(inValue:int, minInRange:int, maxInRange:int, minOutRange:int, maxOutRange:*) : int
       {
-         return int(param4 + (param5 - param4) / (param3 - param2) * (param1 - param2));
+         return int(minOutRange + (maxOutRange - minOutRange) / (maxInRange - minInRange) * (inValue - minInRange));
       }
    }
 }

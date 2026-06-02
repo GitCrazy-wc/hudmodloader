@@ -1,12 +1,15 @@
 package HUDMenu_fla
 {
    import flash.display.MovieClip;
+   import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol140")]
-   public dynamic class TeamArrow_774 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol156")]
+   public dynamic class NamePlateLevelBoxContainer_mc_782 extends MovieClip
    {
       
-      public function TeamArrow_774()
+      public var Level_tf:TextField;
+      
+      public function NamePlateLevelBoxContainer_mc_782()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3,3,this.frame4);

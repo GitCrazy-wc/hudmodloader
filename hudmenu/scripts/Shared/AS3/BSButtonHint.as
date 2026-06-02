@@ -92,10 +92,10 @@ package Shared.AS3
       
       public function BSButtonHint()
       {
-         var _loc1_:Array = null;
-         var _loc2_:FrameLabel = null;
-         var _loc3_:Boolean = false;
-         var _loc4_:uint = 0;
+         var frameList:Array = null;
+         var curFrame:FrameLabel = null;
+         var foundHold:Boolean = false;
+         var i:uint = 0;
          super();
          visible = false;
          mouseChildren = false;
@@ -118,34 +118,32 @@ package Shared.AS3
          addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
          if(this.HoldMeter_mc != null)
          {
-            _loc1_ = this.HoldMeter_mc.currentLabels;
-            _loc3_ = false;
-            _loc4_ = 1;
-            while(_loc4_ < _loc1_.length)
+            frameList = this.HoldMeter_mc.currentLabels;
+            foundHold = false;
+            for(i = 1; i < frameList.length; i++)
             {
-               _loc2_ = _loc1_[_loc4_] as FrameLabel;
-               if(_loc3_)
+               curFrame = frameList[i] as FrameLabel;
+               if(foundHold)
                {
-                  this.m_HoldFrames = _loc2_.frame - this.m_HoldStartFrame - 1;
+                  this.m_HoldFrames = curFrame.frame - this.m_HoldStartFrame - 1;
                   break;
                }
-               if(_loc2_.name == "buttonHold")
+               if(curFrame.name == "buttonHold")
                {
-                  _loc3_ = true;
-                  this.m_HoldStartFrame = _loc2_.frame;
+                  foundHold = true;
+                  this.m_HoldStartFrame = curFrame.frame;
                }
-               _loc4_++;
             }
          }
       }
       
-      public function set ButtonHintData(param1:BSButtonHintData) : void
+      public function set ButtonHintData(value:BSButtonHintData) : void
       {
          if(this._buttonHintData)
          {
             this._buttonHintData.removeEventListener(BSButtonHintData.BUTTON_HINT_DATA_CHANGE,this.onButtonHintDataDirtyEvent);
          }
-         this._buttonHintData = param1;
+         this._buttonHintData = value;
          if(this._buttonHintData)
          {
             this._buttonHintData.addEventListener(BSButtonHintData.BUTTON_HINT_DATA_CHANGE,this.onButtonHintDataDirtyEvent);
@@ -153,52 +151,52 @@ package Shared.AS3
          SetIsDirty();
       }
       
-      private function onButtonHintDataDirtyEvent(param1:Event) : void
+      private function onButtonHintDataDirtyEvent(arEvent:Event) : void
       {
          SetIsDirty();
       }
       
       public function get PCKey() : String
       {
-         var _loc1_:String = null;
+         var pcKeyName:String = null;
          if(this._buttonHintData.PCKey)
          {
-            _loc1_ = this._buttonHintData.PCKey;
-            _loc1_ = this.TranslateKey(_loc1_);
-            return this.Justification == JUSTIFY_LEFT ? _loc1_ + ")" : "(" + _loc1_;
+            pcKeyName = this._buttonHintData.PCKey;
+            pcKeyName = this.TranslateKey(pcKeyName);
+            return this.Justification == JUSTIFY_LEFT ? pcKeyName + ")" : "(" + pcKeyName;
          }
          return "";
       }
       
       public function get SecondaryPCKey() : String
       {
-         var _loc1_:String = null;
+         var pcKeyName:String = null;
          if(this._buttonHintData.SecondaryPCKey)
          {
-            _loc1_ = this._buttonHintData.SecondaryPCKey;
-            _loc1_ = this.TranslateKey(_loc1_);
-            return "(" + _loc1_;
+            pcKeyName = this._buttonHintData.SecondaryPCKey;
+            pcKeyName = this.TranslateKey(pcKeyName);
+            return "(" + pcKeyName;
          }
          return "";
       }
       
-      private function TranslateKey(param1:String) : String
+      private function TranslateKey(aKeyName:String) : String
       {
          switch(uiKeyboard)
          {
             case PlatformChangeEvent.PLATFORM_PC_KB_FR:
-               if(FRtoENMap.hasOwnProperty(param1))
+               if(FRtoENMap.hasOwnProperty(aKeyName))
                {
-                  param1 = FRtoENMap[param1];
+                  aKeyName = FRtoENMap[aKeyName];
                }
                break;
             case PlatformChangeEvent.PLATFORM_PC_KB_BE:
-               if(BEtoENMap.hasOwnProperty(param1))
+               if(BEtoENMap.hasOwnProperty(aKeyName))
                {
-                  param1 = BEtoENMap[param1];
+                  aKeyName = BEtoENMap[aKeyName];
                }
          }
-         return param1;
+         return aKeyName;
       }
       
       private function get UsePCKey() : Boolean
@@ -208,75 +206,75 @@ package Shared.AS3
       
       public function get ControllerButton() : String
       {
-         var _loc2_:String = null;
-         var _loc1_:String = "";
+         var fontKey:String = null;
+         var controllerButtonName:String = "";
          if(uiController != PlatformChangeEvent.PLATFORM_MOBILE && this.UsePCKey)
          {
-            _loc1_ = this.PCKey;
+            controllerButtonName = this.PCKey;
          }
          else
          {
             switch(uiController)
             {
                case PlatformChangeEvent.PLATFORM_PC_KB_MOUSE:
-                  _loc1_ = this._buttonHintData.PCKey;
+                  controllerButtonName = this._buttonHintData.PCKey;
                   break;
                case PlatformChangeEvent.PLATFORM_PC_GAMEPAD:
                case PlatformChangeEvent.PLATFORM_XB1:
                default:
-                  _loc1_ = this._buttonHintData.XenonButton;
+                  controllerButtonName = this._buttonHintData.XenonButton;
                   break;
                case PlatformChangeEvent.PLATFORM_PS4:
-                  _loc1_ = this._buttonHintData.PSNButton;
+                  controllerButtonName = this._buttonHintData.PSNButton;
                   break;
                case PlatformChangeEvent.PLATFORM_MOBILE:
-                  _loc1_ = "";
+                  controllerButtonName = "";
             }
-            _loc2_ = GlobalFunc.GetButtonFontKey(_loc1_);
-            if(_loc2_ != "")
+            fontKey = GlobalFunc.GetButtonFontKey(controllerButtonName,bIsGen9);
+            if(fontKey != "")
             {
-               _loc1_ = _loc2_;
+               controllerButtonName = fontKey;
             }
          }
-         return _loc1_;
+         return controllerButtonName;
       }
       
       public function get SecondaryControllerButton() : String
       {
-         var _loc2_:String = null;
-         var _loc1_:String = "";
+         var fontKey:String = null;
+         var controllerButtonName:String = "";
          if(this._buttonHintData.hasSecondaryButton)
          {
             if(uiController != PlatformChangeEvent.PLATFORM_MOBILE && this.UsePCKey)
             {
-               _loc1_ = this.SecondaryPCKey;
+               controllerButtonName = this.SecondaryPCKey;
             }
             else
             {
                switch(uiController)
                {
                   case PlatformChangeEvent.PLATFORM_PC_KB_MOUSE:
-                     _loc1_ = this._buttonHintData.SecondaryPCKey;
+                     controllerButtonName = this._buttonHintData.SecondaryPCKey;
                      break;
                   case PlatformChangeEvent.PLATFORM_PC_GAMEPAD:
                   case PlatformChangeEvent.PLATFORM_XB1:
                   default:
-                     _loc1_ = this._buttonHintData.SecondaryXenonButton;
+                     controllerButtonName = this._buttonHintData.SecondaryXenonButton;
                      break;
                   case PlatformChangeEvent.PLATFORM_PS4:
-                     _loc1_ = this._buttonHintData.SecondaryPSNButton;
+                     controllerButtonName = this._buttonHintData.SecondaryPSNButton;
                      break;
                   case PlatformChangeEvent.PLATFORM_MOBILE:
-                     _loc1_ = "";
+                     controllerButtonName = "";
                }
-               _loc2_ = GlobalFunc.GetButtonFontKey(_loc1_);
-               if(_loc2_ != "")
+               fontKey = GlobalFunc.GetButtonFontKey(controllerButtonName);
+               if(fontKey != "")
                {
-                  _loc1_ = _loc2_;
+                  controllerButtonName = fontKey;
                }
             }
          }
-         return _loc1_;
+         return controllerButtonName;
       }
       
       public function get ButtonText() : String
@@ -323,23 +321,23 @@ package Shared.AS3
          return this._buttonHintData.DynamicMovieClipName.length > 0;
       }
       
-      public function onTextClick(param1:Event) : void
+      public function onTextClick(aEvent:Event) : void
       {
-         var _loc2_:* = undefined;
-         var _loc3_:* = undefined;
+         var triggerPrimaryFunction:* = undefined;
+         var triggerSecondaryFunction:* = undefined;
          if(this.ButtonVisible)
          {
-            _loc2_ = !this.ButtonDisabled;
-            _loc3_ = false;
-            if(Boolean(this._buttonHintData.SecondaryPCKey) && (param1 as MouseEvent).localX > this._hitArea.width / 2)
+            triggerPrimaryFunction = !this.ButtonDisabled;
+            triggerSecondaryFunction = false;
+            if(Boolean(this._buttonHintData.SecondaryPCKey) && (aEvent as MouseEvent).localX > this._hitArea.width / 2)
             {
-               _loc3_ = !this.SecondaryButtonDisabled;
+               triggerSecondaryFunction = !this.SecondaryButtonDisabled;
             }
-            if(_loc3_)
+            if(triggerSecondaryFunction)
             {
                this._buttonHintData.onSecondaryButtonClick();
             }
-            else if(_loc2_)
+            else if(triggerPrimaryFunction)
             {
                this._buttonHintData.onTextClick();
             }
@@ -355,11 +353,11 @@ package Shared.AS3
          return this._bButtonPressed;
       }
       
-      public function set bButtonPressed(param1:Boolean) : *
+      public function set bButtonPressed(abButtonPressed:Boolean) : *
       {
-         if(this._bButtonPressed != param1)
+         if(this._bButtonPressed != abButtonPressed)
          {
-            this._bButtonPressed = param1;
+            this._bButtonPressed = abButtonPressed;
             SetIsDirty();
          }
       }
@@ -369,21 +367,21 @@ package Shared.AS3
          return this._bMouseOver;
       }
       
-      public function set bMouseOver(param1:Boolean) : *
+      public function set bMouseOver(abMouseOver:Boolean) : *
       {
-         if(this._bMouseOver != param1)
+         if(this._bMouseOver != abMouseOver)
          {
-            this._bMouseOver = param1;
+            this._bMouseOver = abMouseOver;
             SetIsDirty();
          }
       }
       
-      private function onMouseOver(param1:MouseEvent) : *
+      private function onMouseOver(event:MouseEvent) : *
       {
          this.bMouseOver = true;
       }
       
-      protected function onMouseOut(param1:MouseEvent) : *
+      protected function onMouseOut(event:MouseEvent) : *
       {
          this.bMouseOver = false;
       }
@@ -393,24 +391,24 @@ package Shared.AS3
          return this.m_UseVaultTecColor;
       }
       
-      public function set useVaultTecColor(param1:Boolean) : void
+      public function set useVaultTecColor(aUseColor:Boolean) : void
       {
-         var _loc2_:AdjustColor = null;
-         var _loc3_:Array = null;
-         if(param1 != this.m_UseVaultTecColor)
+         var colorFilter:AdjustColor = null;
+         var matrixArray:Array = null;
+         if(aUseColor != this.m_UseVaultTecColor)
          {
-            this.m_UseVaultTecColor = param1;
-            if(param1)
+            this.m_UseVaultTecColor = aUseColor;
+            if(aUseColor)
             {
                if(colorMatrix == null)
                {
-                  _loc2_ = new AdjustColor();
-                  _loc2_.brightness = 100;
-                  _loc2_.contrast = 0;
-                  _loc2_.saturation = -77;
-                  _loc2_.hue = -55;
-                  _loc3_ = _loc2_.CalculateFinalFlatArray();
-                  colorMatrix = new ColorMatrixFilter(_loc3_);
+                  colorFilter = new AdjustColor();
+                  colorFilter.brightness = 100;
+                  colorFilter.contrast = 0;
+                  colorFilter.saturation = -77;
+                  colorFilter.hue = -55;
+                  matrixArray = colorFilter.CalculateFinalFlatArray();
+                  colorMatrix = new ColorMatrixFilter(matrixArray);
                }
                this.HoldMeter_mc.filters = [colorMatrix];
                this.textField_tf.textColor = 16777163;
@@ -427,16 +425,16 @@ package Shared.AS3
          }
       }
       
-      public function set canHold(param1:Boolean) : void
+      public function set canHold(aHold:Boolean) : void
       {
-         this.m_CanHold = param1;
+         this.m_CanHold = aHold;
       }
       
-      public function set holdPercent(param1:Number) : void
+      public function set holdPercent(aPercent:Number) : void
       {
-         if(param1 != this.m_HoldPercent)
+         if(aPercent != this.m_HoldPercent)
          {
-            this.m_HoldPercent = param1;
+            this.m_HoldPercent = aPercent;
             this.redrawHoldIndicator();
          }
       }
@@ -470,12 +468,12 @@ package Shared.AS3
       
       override public function redrawUIComponent() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc5_:Array = null;
-         var _loc6_:uint = 0;
+         var minXPos:Number = NaN;
+         var maxXPos:Number = NaN;
+         var minYPos:Number = NaN;
+         var maxYPos:Number = NaN;
+         var sizerElements:Array = null;
+         var i:uint = 0;
          super.redrawUIComponent();
          hitArea = null;
          if(contains(this._hitArea))
@@ -503,56 +501,54 @@ package Shared.AS3
             this.redrawHitArea();
             addChild(this._hitArea);
             hitArea = this._hitArea;
-            _loc1_ = 0;
-            _loc2_ = 0;
-            _loc3_ = 0;
-            _loc4_ = 0;
-            _loc5_ = [this.IconHolderInstance,this.SecondaryIconHolderInstance,this.textField_tf];
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length)
+            minXPos = 0;
+            maxXPos = 0;
+            minYPos = 0;
+            maxYPos = 0;
+            sizerElements = [this.IconHolderInstance,this.SecondaryIconHolderInstance,this.textField_tf];
+            for(i = 0; i < sizerElements.length; i++)
             {
-               _loc2_ = Math.max(_loc2_,_loc5_[_loc6_].x + _loc5_[_loc6_].width);
-               _loc4_ = Math.max(_loc4_,_loc5_[_loc6_].y + _loc5_[_loc6_].height);
-               _loc6_++;
+               maxXPos = Math.max(maxXPos,sizerElements[i].x + sizerElements[i].width);
+               maxYPos = Math.max(maxYPos,sizerElements[i].y + sizerElements[i].height);
             }
-            this.Sizer_mc.x = _loc1_;
-            this.Sizer_mc.y = _loc3_;
-            this.Sizer_mc.width = _loc2_ - _loc1_;
-            this.Sizer_mc.height = _loc4_ - _loc3_;
+            this.Sizer_mc.x = minXPos;
+            this.Sizer_mc.y = minYPos;
+            this.Sizer_mc.width = maxXPos - minXPos;
+            this.Sizer_mc.height = maxYPos - minYPos;
          }
       }
       
-      public function SetFlashing(param1:Boolean) : *
+      public function SetFlashing(abFlash:Boolean) : *
       {
-         if(param1 != this.bButtonFlashing)
+         if(abFlash != this.bButtonFlashing)
          {
-            this.bButtonFlashing = param1;
-            this.IconHolderInstance.gotoAndPlay(param1 ? "Flashing" : "Default");
+            this.bButtonFlashing = abFlash;
+            this.IconHolderInstance.gotoAndPlay(abFlash ? "Flashing" : "Default");
          }
       }
       
-      private function UpdateIconTextField(param1:TextField, param2:String) : *
+      private function UpdateIconTextField(icon_tf:TextField, controllerText:String) : *
       {
-         var _loc6_:* = undefined;
-         param1.text = param2;
-         var _loc3_:String = this.GetExpectedFont();
-         var _loc4_:String = param1.getTextFormat().font;
-         if(_loc3_ != _loc4_)
+         var formatUpdate:* = undefined;
+         icon_tf.text = controllerText;
+         var expectedFont:String = this.GetExpectedFont();
+         var currentFont:String = icon_tf.getTextFormat().font;
+         if(expectedFont != currentFont)
          {
-            _loc6_ = new TextFormat(_loc3_);
-            param1.setTextFormat(_loc6_);
+            formatUpdate = new TextFormat(expectedFont);
+            icon_tf.setTextFormat(formatUpdate);
          }
-         var _loc5_:Number = this.UsePCKey ? 1.25 : 2.25;
-         if(param1.y != _loc5_)
+         var expectedY:Number = this.UsePCKey ? 1.25 : 2.25;
+         if(icon_tf.y != expectedY)
          {
-            param1.y = _loc5_;
+            icon_tf.y = expectedY;
          }
       }
       
       private function redrawDynamicMovieClip() : void
       {
-         var _loc1_:Class = null;
-         var _loc2_:Number = NaN;
+         var clipClass:Class = null;
+         var clipScale:Number = NaN;
          if(this._buttonHintData.DynamicMovieClipName != this._strCurrentDynamicMovieClipName)
          {
             if(this.DynamicMovieClip)
@@ -561,12 +557,12 @@ package Shared.AS3
             }
             if(this.UseDynamicMovieClip)
             {
-               _loc1_ = getDefinitionByName(this._buttonHintData.DynamicMovieClipName) as Class;
-               this.DynamicMovieClip = new (_loc1_ as Class)();
+               clipClass = getDefinitionByName(this._buttonHintData.DynamicMovieClipName) as Class;
+               this.DynamicMovieClip = new (clipClass as Class)();
                addChild(this.DynamicMovieClip);
-               _loc2_ = this._DyanmicMovieHeight / this.DynamicMovieClip.height;
-               this.DynamicMovieClip.scaleX = _loc2_;
-               this.DynamicMovieClip.scaleY = _loc2_;
+               clipScale = this._DyanmicMovieHeight / this.DynamicMovieClip.height;
+               this.DynamicMovieClip.scaleX = clipScale;
+               this.DynamicMovieClip.scaleY = clipScale;
                this.DynamicMovieClip.alpha = this.AllButtonsDisabled ? DISABLED_GREY_OUT_ALPHA : 1;
                this.DynamicMovieClip.x = this.Justification == JUSTIFY_LEFT ? this.IconHolderInstance.width + DYNAMIC_MOVIE_CLIP_BUFFER : this.IconHolderInstance.x - this.DynamicMovieClip.width - DYNAMIC_MOVIE_CLIP_BUFFER;
                this.DynamicMovieClip.y = this._DynamicMovieY;
@@ -576,14 +572,14 @@ package Shared.AS3
       
       private function redrawTextField() : void
       {
-         var _loc1_:* = undefined;
+         var holdButtonOffset:* = undefined;
          this.textField_tf.visible = !this.UseDynamicMovieClip;
          if(this.textField_tf.visible)
          {
             GlobalFunc.SetText(this.textField_tf,this.ButtonText,false,this.ForceUppercase,false);
             this.textField_tf.alpha = this.AllButtonsDisabled ? DISABLED_GREY_OUT_ALPHA : 1;
-            _loc1_ = this.m_CanHold ? HOLD_TEXT_OFFSET : 0;
-            this.textField_tf.x = this.Justification == JUSTIFY_LEFT ? this.IconHolderInstance.width + _loc1_ : this.IconHolderInstance.x - this.textField_tf.width - _loc1_;
+            holdButtonOffset = this.m_CanHold ? HOLD_TEXT_OFFSET : 0;
+            this.textField_tf.x = this.Justification == JUSTIFY_LEFT ? this.IconHolderInstance.width + holdButtonOffset : this.IconHolderInstance.x - this.textField_tf.width - holdButtonOffset;
          }
       }
       
@@ -607,38 +603,38 @@ package Shared.AS3
       
       private function redrawHitArea() : void
       {
-         var _loc1_:* = this.getBounds(this);
-         this._hitArea.x = _loc1_.x;
-         this._hitArea.width = _loc1_.width;
-         this._hitArea.y = _loc1_.y;
-         this._hitArea.height = _loc1_.height;
+         var bounds:* = this.getBounds(this);
+         this._hitArea.x = bounds.x;
+         this._hitArea.width = bounds.width;
+         this._hitArea.y = bounds.y;
+         this._hitArea.height = bounds.height;
       }
       
       private function GetExpectedFont() : String
       {
-         var _loc1_:String = null;
-         var _loc2_:Boolean = false;
+         var expectedFormat:String = null;
+         var bUseInverted:Boolean = false;
          if(this.UsePCKey)
          {
-            _loc1_ = "$MAIN_Font";
+            expectedFormat = "$MAIN_Font";
          }
          else
          {
-            _loc2_ = !this.bMouseOver && !this.bButtonPressed;
-            _loc1_ = _loc2_ ? "$Controller_buttons" : "$Controller_buttons_inverted";
+            bUseInverted = !this.bMouseOver && !this.bButtonPressed;
+            expectedFormat = bUseInverted ? "$Controller_buttons" : "$Controller_buttons_inverted";
          }
-         return _loc1_;
+         return expectedFormat;
       }
       
-      private function SetUpTextFields(param1:TextField) : *
+      private function SetUpTextFields(aTextField:TextField) : *
       {
-         param1.autoSize = TextFieldAutoSize.LEFT;
-         param1.antiAliasType = AntiAliasType.NORMAL;
+         aTextField.autoSize = TextFieldAutoSize.LEFT;
+         aTextField.antiAliasType = AntiAliasType.NORMAL;
       }
       
       private function updateButtonHintFilters() : void
       {
-         var _loc1_:* = this.filters.indexOf(WarningColorMatrixFilter);
+         var index:* = this.filters.indexOf(WarningColorMatrixFilter);
          if(this._buttonHintData.IsWarning)
          {
             this.filters = [WarningColorMatrixFilter];

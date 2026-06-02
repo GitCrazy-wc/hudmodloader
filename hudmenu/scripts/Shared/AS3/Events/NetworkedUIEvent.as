@@ -13,13 +13,13 @@ package Shared.AS3.Events
       
       private var _EventData:String = "testing";
       
-      public function NetworkedUIEvent(param1:String, param2:String, param3:String, param4:String, param5:String, param6:Boolean = false, param7:Boolean = false)
+      public function NetworkedUIEvent(type:String, aEventType:String, aEventSender:String, aEventTarget:String, aEventData:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this._EventType = param2;
-         this._EventSender = param3;
-         this._EventTarget = param4;
-         this._EventData = param5;
-         super(param1,param6,param7);
+         this._EventType = aEventType;
+         this._EventSender = aEventSender;
+         this._EventTarget = aEventTarget;
+         this._EventData = aEventData;
+         super(type,bubbles,cancelable);
       }
       
       override public function clone() : Event

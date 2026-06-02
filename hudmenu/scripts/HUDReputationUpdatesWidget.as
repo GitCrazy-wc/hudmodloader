@@ -45,24 +45,24 @@ package
          addEventListener(HUDReputationUpdateMeter.DISPLAY_COMPLETE,this.onDisplayComplete);
       }
       
-      private function onDataUpdate(param1:FromClientDataEvent) : void
+      private function onDataUpdate(arEvent:FromClientDataEvent) : void
       {
          this.evaluateQueue();
       }
       
       private function evaluateQueue() : void
       {
-         var _loc1_:Array = null;
+         var updateArray:Array = null;
          if(!this.m_IsBusy)
          {
-            _loc1_ = this.m_ReputationData.data.reputationDeltaArray;
-            if(_loc1_.length > 0)
+            updateArray = this.m_ReputationData.data.reputationDeltaArray;
+            if(updateArray.length > 0)
             {
                if(this.m_LastFullyShown)
                {
-                  if(this.m_CurUpdate != null && _loc1_[0].uFactionID == this.m_CurUpdate.factionID && _loc1_[0].uTierStart == _loc1_[0].uTierEnd && this.m_CurUpdate.tierStart == this.m_CurUpdate.tierEnd)
+                  if(this.m_CurUpdate != null && updateArray[0].uFactionID == this.m_CurUpdate.factionID && updateArray[0].uTierStart == updateArray[0].uTierEnd && this.m_CurUpdate.tierStart == this.m_CurUpdate.tierEnd)
                   {
-                     this.animateUpdate(_loc1_[0]);
+                     this.animateUpdate(updateArray[0]);
                   }
                   else
                   {
@@ -72,7 +72,7 @@ package
                }
                else
                {
-                  this.animateUpdate(_loc1_[0]);
+                  this.animateUpdate(updateArray[0]);
                }
             }
             else if(this.m_LastFullyShown)
@@ -82,24 +82,24 @@ package
          }
       }
       
-      private function animateUpdate(param1:Object) : void
+      private function animateUpdate(aUpdate:Object) : void
       {
-         var _loc3_:Array = null;
+         var updateArray:Array = null;
          if(TEST_MODE)
          {
-            _loc3_ = this.m_ReputationData.data.reputationDeltaArray;
-            _loc3_.shift();
+            updateArray = this.m_ReputationData.data.reputationDeltaArray;
+            updateArray.shift();
          }
-         BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_PULL,{"uDeltaID":param1.uDeltaID},true));
+         BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_PULL,{"uDeltaID":aUpdate.uDeltaID},true));
          this.m_IsBusy = true;
          this.m_LastUpdate = this.m_CurUpdate;
-         var _loc2_:Object = this.buildDeltaInfo(param1);
-         this.m_CurUpdate = _loc2_;
-         if(_loc2_.tierStart != _loc2_.tierEnd)
+         var processedUpdate:Object = this.buildDeltaInfo(aUpdate);
+         this.m_CurUpdate = processedUpdate;
+         if(processedUpdate.tierStart != processedUpdate.tierEnd)
          {
-            if(_loc2_.tierEnd > _loc2_.tierStart)
+            if(processedUpdate.tierEnd > processedUpdate.tierStart)
             {
-               this.LevelUpAnimation_mc.RepLevelUpBoy_mc.gotoAndStop(_loc2_.factionCode);
+               this.LevelUpAnimation_mc.RepLevelUpBoy_mc.gotoAndStop(processedUpdate.factionCode);
                this.LevelUpAnimation_mc.gotoAndPlay("rollOn");
                dispatchEvent(new Event(EVENT_LEVELUP_VISIBLE,true));
             }
@@ -115,60 +115,58 @@ package
                this.ReputationMeter_mc.fadeIn();
                dispatchEvent(new Event(EVENT_CHANGE_VISIBLE,true));
             }
-            this.ReputationMeter_mc.data = _loc2_;
+            this.ReputationMeter_mc.data = processedUpdate;
          }
       }
       
-      public function buildDeltaInfo(param1:Object) : Object
+      public function buildDeltaInfo(aUpdate:Object) : Object
       {
-         var _loc4_:Object = null;
-         var _loc5_:String = null;
-         var _loc6_:int = 0;
-         var _loc2_:Object = {};
-         var _loc3_:Array = ["Crater","Foundation"];
-         var _loc7_:uint = 0;
-         while(_loc7_ < _loc3_.length)
+         var curFaction:Object = null;
+         var curName:String = null;
+         var curRep:int = 0;
+         var deltaInfo:Object = {};
+         var factionNames:Array = ["Crater","Foundation"];
+         for(var factionIndex:uint = 0; factionIndex < factionNames.length; factionIndex++)
          {
-            _loc5_ = _loc3_[_loc7_];
-            _loc4_ = this.m_ReputationData.data["factionData" + _loc5_];
-            if(param1.uFactionID == _loc4_.uFactionID)
+            curName = factionNames[factionIndex];
+            curFaction = this.m_ReputationData.data["factionData" + curName];
+            if(aUpdate.uFactionID == curFaction.uFactionID)
             {
-               _loc2_.factionID = _loc4_.uFactionID;
-               _loc2_.factionName = _loc4_.szFactionName;
-               _loc2_.factionCode = _loc5_;
-               _loc2_.tierInfo = _loc4_.reputationTiers;
+               deltaInfo.factionID = curFaction.uFactionID;
+               deltaInfo.factionName = curFaction.szFactionName;
+               deltaInfo.factionCode = curName;
+               deltaInfo.tierInfo = curFaction.reputationTiers;
                break;
             }
-            _loc7_++;
          }
-         _loc2_.tierStart = param1.uTierStart;
-         _loc2_.tierEnd = param1.uTierEnd;
-         _loc2_.percentStart = Factions.getNextReputationTierPercent(param1.fAmountStart,param1.uTierStart,_loc4_.reputationTiers);
-         if(param1.uTierStart == param1.uTierEnd)
+         deltaInfo.tierStart = aUpdate.uTierStart;
+         deltaInfo.tierEnd = aUpdate.uTierEnd;
+         deltaInfo.percentStart = Factions.getNextReputationTierPercent(aUpdate.fAmountStart,aUpdate.uTierStart,curFaction.reputationTiers);
+         if(aUpdate.uTierStart == aUpdate.uTierEnd)
          {
-            _loc2_.percentEnd = Factions.getNextReputationTierPercent(param1.fAmountEnd,param1.uTierStart,_loc4_.reputationTiers);
+            deltaInfo.percentEnd = Factions.getNextReputationTierPercent(aUpdate.fAmountEnd,aUpdate.uTierStart,curFaction.reputationTiers);
          }
          else
          {
-            _loc2_.percentEnd = _loc2_.percentStart;
+            deltaInfo.percentEnd = deltaInfo.percentStart;
          }
-         return _loc2_;
+         return deltaInfo;
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
          BSUIDataManager.Subscribe("ReputationData",this.onDataUpdate,TEST_MODE);
          this.m_ReputationData = BSUIDataManager.GetDataFromClient("ReputationData");
       }
       
-      public function onDisplayComplete(param1:Event = null) : void
+      public function onDisplayComplete(aEvent:Event = null) : void
       {
          this.m_LastFullyShown = true;
          this.m_IsBusy = false;
          this.evaluateQueue();
       }
       
-      public function onFadeOutEnd(param1:Event) : void
+      public function onFadeOutEnd(aEvent:Event) : void
       {
          dispatchEvent(new Event(EVENT_HIDDEN,true));
          this.m_LastFullyShown = false;

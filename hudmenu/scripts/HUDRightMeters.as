@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1752")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1759")]
    public class HUDRightMeters extends MovieClip
    {
       
@@ -109,12 +109,12 @@ package
          this.SetOverheatMeterPercent(0);
       }
       
-      public function set showFusionCoreMeter(param1:Boolean) : void
+      public function set showFusionCoreMeter(aShow:Boolean) : void
       {
-         if(param1 != this.bShowFusionCore)
+         if(aShow != this.bShowFusionCore)
          {
-            this.bShowFusionCore = param1;
-            if(param1)
+            this.bShowFusionCore = aShow;
+            if(aShow)
             {
                this.HUDFusionCoreMeter_mc.gotoAndPlay("rollOn");
             }
@@ -127,10 +127,10 @@ package
       
       private function updateFusionCoreMeter() : void
       {
-         var _loc1_:Number = GlobalFunc.Clamp(this.m_FusionCorePercent,0,this.PercentMax) / this.PercentMax;
-         var _loc2_:int = Math.ceil(_loc1_ * this.HUDFusionCoreMeter_mc.Meter_mc.totalFrames);
-         this.HUDFusionCoreMeter_mc.Meter_mc.gotoAndStop(_loc2_);
-         var _loc3_:uint = GlobalFunc.Clamp(this.m_FusionCoreCount,0,9);
+         var corePercent:Number = GlobalFunc.Clamp(this.m_FusionCorePercent,0,this.PercentMax) / this.PercentMax;
+         var coreFrame:int = Math.ceil(corePercent * this.HUDFusionCoreMeter_mc.Meter_mc.totalFrames);
+         this.HUDFusionCoreMeter_mc.Meter_mc.gotoAndStop(coreFrame);
+         var displayCount:uint = GlobalFunc.Clamp(this.m_FusionCoreCount,0,9);
          this.HUDFusionCoreMeter_mc.CoreCount_mc.CoreCount_tf.text = "x" + this.m_FusionCoreCount;
          if(this.m_FusionCoreCount == 0 && this.m_FusionCorePercent < this.m_FusionCoreWarnPercent)
          {
@@ -142,29 +142,29 @@ package
          }
       }
       
-      private function onPowerArmorInfoUpdate(param1:FromClientDataEvent) : void
+      private function onPowerArmorInfoUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_FusionCorePercent = param1.data.fusionCorePercent;
-         this.m_FusionCoreWarnPercent = param1.data.fusionCoreWarnPercent;
-         this.m_FusionCoreCount = param1.data.fusionCoreCount;
+         this.m_FusionCorePercent = arEvent.data.fusionCorePercent;
+         this.m_FusionCoreWarnPercent = arEvent.data.fusionCoreWarnPercent;
+         this.m_FusionCoreCount = arEvent.data.fusionCoreCount;
          if(this.bShowFusionCore)
          {
             this.updateFusionCoreMeter();
          }
       }
       
-      private function onHudModeDataChange(param1:FromClientDataEvent) : *
+      private function onHudModeDataChange(event:FromClientDataEvent) : *
       {
-         this.visible = this.m_ValidHudModes.indexOf(param1.data.hudMode) != -1;
-         this.m_InPowerArmor = param1.data.inPowerArmor;
-         this.m_PowerArmorHUDEnabled = param1.data.powerArmorHUDEnabled;
+         this.visible = this.m_ValidHudModes.indexOf(event.data.hudMode) != -1;
+         this.m_InPowerArmor = event.data.inPowerArmor;
+         this.m_PowerArmorHUDEnabled = event.data.powerArmorHUDEnabled;
          this.showFusionCoreMeter = this.m_InPowerArmor && !this.m_PowerArmorHUDEnabled;
          if(this.bShowFusionCore)
          {
             this.updateFusionCoreMeter();
          }
-         var _loc2_:Boolean = this.bIsPip;
-         this.bIsPip = param1.data.hudMode == HUDModes.PIPBOY;
+         var bWasPip:Boolean = this.bIsPip;
+         this.bIsPip = event.data.hudMode == HUDModes.PIPBOY;
          if(this.bIsPip)
          {
             if(this.fHungerPercent >= 0 && this.bHungerVisible)
@@ -182,7 +182,7 @@ package
                this.fadeInFeral();
             }
          }
-         else if(this.visible && _loc2_)
+         else if(this.visible && bWasPip)
          {
             if(this.HungerTimeout == -1 && this.fHungerPercent >= this.PercentIndefiniteShow)
             {
@@ -193,7 +193,7 @@ package
                this.ThirstTimeout = setTimeout(this.fadeOutThirst,FADE_DELAY);
             }
          }
-         if(Boolean(param1.data.inPowerArmor) && Boolean(param1.data.powerArmorHUDEnabled))
+         if(Boolean(event.data.inPowerArmor) && Boolean(event.data.powerArmorHUDEnabled))
          {
             gotoAndStop("powerArmorHUD");
          }
@@ -201,48 +201,48 @@ package
          {
             gotoAndStop("defaultHUD");
          }
-         this.oldHudMode = param1.data.hudMode;
+         this.oldHudMode = event.data.hudMode;
       }
       
-      private function onStateUpdate(param1:FromClientDataEvent) : *
+      private function onStateUpdate(arEvent:FromClientDataEvent) : *
       {
-         var _loc6_:int = 0;
-         var _loc7_:Number = NaN;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:Number = NaN;
-         var _loc11_:int = 0;
-         var _loc2_:Object = param1.data;
-         this.HUDActiveEffectsWidget_mc.onDataUpdate(_loc2_.activeEffects);
-         var _loc3_:Number = Number(_loc2_.hungerPercent);
-         var _loc4_:Number = Number(_loc2_.thirstPercent);
-         var _loc5_:Number = Number(_loc2_.feralPercent);
-         this.bHungerVisible = _loc2_.hungerVisible;
-         this.bThirstVisible = _loc2_.thirstVisible;
-         this.bFeralVisible = _loc2_.feralVisible;
+         var hungerFrame:int = 0;
+         var hungerRestorePercent:Number = NaN;
+         var hungerRestoreFrame:int = 0;
+         var thirstFrame:int = 0;
+         var thirstRestorePercent:Number = NaN;
+         var thirstRestoreFrame:int = 0;
+         var newData:Object = arEvent.data;
+         this.HUDActiveEffectsWidget_mc.onDataUpdate(newData.activeEffects);
+         var hungerPercentTmp:Number = Number(newData.hungerPercent);
+         var thirstPercentTmp:Number = Number(newData.thirstPercent);
+         var feralPercentTmp:Number = Number(newData.feralPercent);
+         this.bHungerVisible = newData.hungerVisible;
+         this.bThirstVisible = newData.thirstVisible;
+         this.bFeralVisible = newData.feralVisible;
          if(this.bHungerVisible)
          {
-            if(_loc3_ < this.PercentIndefiniteShow)
+            if(hungerPercentTmp < this.PercentIndefiniteShow)
             {
                this.endHungerHideTimeout();
                this.fadeInHunger();
             }
-            else if(!GlobalFunc.CloseToNumber(this.fHungerPercent,_loc3_,this.PercentChangeVal) || _loc3_ > this.fHungerPercent)
+            else if(!GlobalFunc.CloseToNumber(this.fHungerPercent,hungerPercentTmp,this.PercentChangeVal) || hungerPercentTmp > this.fHungerPercent)
             {
                this.endHungerHideTimeout();
                this.fadeInHunger();
                this.HungerTimeout = setTimeout(this.fadeOutHunger,FADE_DELAY);
             }
-            this.fHungerPercent = _loc3_;
-            _loc3_ = GlobalFunc.Clamp(_loc3_,0,this.PercentMax) / this.PercentMax;
-            _loc6_ = Math.ceil(_loc3_ * this.HUDHungerMeter_mc.Meter_mc.totalFrames);
-            this.HUDHungerMeter_mc.Meter_mc.gotoAndStop(_loc6_);
+            this.fHungerPercent = hungerPercentTmp;
+            hungerPercentTmp = GlobalFunc.Clamp(hungerPercentTmp,0,this.PercentMax) / this.PercentMax;
+            hungerFrame = Math.ceil(hungerPercentTmp * this.HUDHungerMeter_mc.Meter_mc.totalFrames);
+            this.HUDHungerMeter_mc.Meter_mc.gotoAndStop(hungerFrame);
             this.HUDHungerMeter_mc.survivalMeterIcon_mc.gotoAndStop("foodPositive");
-            if(_loc2_.hunger_RestorePct is Number && _loc2_.hunger_RestorePct > 0)
+            if(newData.hunger_RestorePct is Number && newData.hunger_RestorePct > 0)
             {
-               _loc7_ = GlobalFunc.Clamp(this.fHungerPercent + _loc2_.hunger_RestorePct,0,this.PercentMax) / this.PercentMax;
-               _loc8_ = Math.ceil(_loc7_ * this.HUDHungerMeter_mc.GhostMeter_mc.totalFrames);
-               this.HUDHungerMeter_mc.GhostMeter_mc.gotoAndStop(_loc8_);
+               hungerRestorePercent = GlobalFunc.Clamp(this.fHungerPercent + newData.hunger_RestorePct,0,this.PercentMax) / this.PercentMax;
+               hungerRestoreFrame = Math.ceil(hungerRestorePercent * this.HUDHungerMeter_mc.GhostMeter_mc.totalFrames);
+               this.HUDHungerMeter_mc.GhostMeter_mc.gotoAndStop(hungerRestoreFrame);
                this.HUDHungerMeter_mc.GhostMeter_mc.visible = true;
             }
             else
@@ -256,27 +256,27 @@ package
          }
          if(this.bThirstVisible)
          {
-            if(_loc4_ < this.PercentIndefiniteShow)
+            if(thirstPercentTmp < this.PercentIndefiniteShow)
             {
                this.endThirstHideTimeout();
                this.fadeInThirst();
             }
-            else if(!GlobalFunc.CloseToNumber(this.fThirstPercent,_loc4_,this.PercentChangeVal) || _loc4_ > this.fThirstPercent)
+            else if(!GlobalFunc.CloseToNumber(this.fThirstPercent,thirstPercentTmp,this.PercentChangeVal) || thirstPercentTmp > this.fThirstPercent)
             {
                this.endThirstHideTimeout();
                this.fadeInThirst();
                this.ThirstTimeout = setTimeout(this.fadeOutThirst,FADE_DELAY);
             }
-            this.fThirstPercent = _loc4_;
-            _loc4_ = GlobalFunc.Clamp(_loc4_,0,this.PercentMax) / this.PercentMax;
-            _loc9_ = Math.ceil(_loc4_ * this.HUDThirstMeter_mc.Meter_mc.totalFrames);
-            this.HUDThirstMeter_mc.Meter_mc.gotoAndStop(_loc9_);
+            this.fThirstPercent = thirstPercentTmp;
+            thirstPercentTmp = GlobalFunc.Clamp(thirstPercentTmp,0,this.PercentMax) / this.PercentMax;
+            thirstFrame = Math.ceil(thirstPercentTmp * this.HUDThirstMeter_mc.Meter_mc.totalFrames);
+            this.HUDThirstMeter_mc.Meter_mc.gotoAndStop(thirstFrame);
             this.HUDThirstMeter_mc.survivalMeterIcon_mc.gotoAndStop("thirstPositive");
-            if(_loc2_.thirst_RestorePct is Number && _loc2_.thirst_RestorePct > 0)
+            if(newData.thirst_RestorePct is Number && newData.thirst_RestorePct > 0)
             {
-               _loc10_ = GlobalFunc.Clamp(this.fThirstPercent + _loc2_.thirst_RestorePct,0,this.PercentMax) / this.PercentMax;
-               _loc11_ = Math.ceil(_loc10_ * this.HUDThirstMeter_mc.GhostMeter_mc.totalFrames);
-               this.HUDThirstMeter_mc.GhostMeter_mc.gotoAndStop(_loc11_);
+               thirstRestorePercent = GlobalFunc.Clamp(this.fThirstPercent + newData.thirst_RestorePct,0,this.PercentMax) / this.PercentMax;
+               thirstRestoreFrame = Math.ceil(thirstRestorePercent * this.HUDThirstMeter_mc.GhostMeter_mc.totalFrames);
+               this.HUDThirstMeter_mc.GhostMeter_mc.gotoAndStop(thirstRestoreFrame);
                this.HUDThirstMeter_mc.GhostMeter_mc.visible = true;
             }
             else
@@ -291,25 +291,25 @@ package
          if(this.bFeralVisible)
          {
             this.fadeInFeral();
-            this.fFeralPercent = _loc5_;
-            _loc5_ = GlobalFunc.Clamp(_loc5_,0,this.PercentMax) / this.PercentMax;
-            if(_loc5_ == 0 && (this.FeralMeter_mc.FeralMeterInternal_mc.currentLabel != "empty" && this.FeralMeter_mc.FeralMeterInternal_mc.currentLabel != "emptyAnim"))
+            this.fFeralPercent = feralPercentTmp;
+            feralPercentTmp = GlobalFunc.Clamp(feralPercentTmp,0,this.PercentMax) / this.PercentMax;
+            if(feralPercentTmp == 0 && (this.FeralMeter_mc.FeralMeterInternal_mc.currentLabel != "empty" && this.FeralMeter_mc.FeralMeterInternal_mc.currentLabel != "emptyAnim"))
             {
                this.FeralMeter_mc.FeralMeterInternal_mc.gotoAndPlay("emptyAnim");
             }
-            else if(_loc5_ != 0)
+            else if(feralPercentTmp != 0)
             {
-               this.FeralMeter_mc.FeralMeterInternal_mc.gotoAndStop((1 - _loc5_) * 100);
+               this.FeralMeter_mc.FeralMeterInternal_mc.gotoAndStop((1 - feralPercentTmp) * 100);
             }
          }
          else if(this.bShowFeral)
          {
             this.setFeralOff();
          }
-         if(Boolean(_loc2_.overheatWeaponEquipped) && !_loc2_.currentWeaponSheathed)
+         if(Boolean(newData.overheatWeaponEquipped) && !newData.currentWeaponSheathed)
          {
             this.OverheatMeter_mc.visible = true;
-            this.SetOverheatMeterPercent(_loc2_.overheatPercent);
+            this.SetOverheatMeterPercent(newData.overheatPercent);
          }
          else
          {
@@ -426,9 +426,9 @@ package
          }
       }
       
-      public function SetOverheatMeterPercent(param1:Number) : *
+      public function SetOverheatMeterPercent(afPercent:Number) : *
       {
-         this.OverheatMeter_mc.MeterBar_mc.Percent = param1;
+         this.OverheatMeter_mc.MeterBar_mc.Percent = afPercent;
       }
       
       public function SetPercentIndefiniteShow(param1:Number) : *

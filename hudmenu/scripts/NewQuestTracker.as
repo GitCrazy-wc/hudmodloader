@@ -74,16 +74,16 @@ package
          return this.m_IsActive;
       }
       
-      public function set isActive(param1:Boolean) : void
+      public function set isActive(aBool:Boolean) : void
       {
-         var _loc2_:Array = null;
-         if(param1 != this.m_IsActive)
+         var questDataA:Array = null;
+         if(aBool != this.m_IsActive)
          {
-            this.m_IsActive = param1;
+            this.m_IsActive = aBool;
             if(this.m_IsActive)
             {
-               _loc2_ = BSUIDataManager.GetDataFromClient(QUEST_TRACKER_PROVIDER).data.quests;
-               this.initializeQuestTracker(_loc2_);
+               questDataA = BSUIDataManager.GetDataFromClient(QUEST_TRACKER_PROVIDER).data.quests;
+               this.initializeQuestTracker(questDataA);
                this.setDisplayed(true);
             }
             else
@@ -93,9 +93,9 @@ package
          }
       }
       
-      public function setDisplayed(param1:Boolean) : void
+      public function setDisplayed(aDisplayed:Boolean) : void
       {
-         this.m_ShouldDisplay = param1;
+         this.m_ShouldDisplay = aDisplayed;
          if(this.m_IsValidHudMode && this.isActive && this.m_ShouldDisplay)
          {
             this.m_Displayed = true;
@@ -109,9 +109,9 @@ package
          }
       }
       
-      private function eventQuestDividerVisible(param1:Boolean) : *
+      private function eventQuestDividerVisible(aVisible:Boolean) : *
       {
-         if(param1)
+         if(aVisible)
          {
             if(!this.m_EventQuestDividerVisible)
             {
@@ -122,89 +122,83 @@ package
          {
             this.EventQuestDivider_mc.gotoAndPlay("rollOff");
          }
-         this.m_EventQuestDividerVisible = param1;
+         this.m_EventQuestDividerVisible = aVisible;
       }
       
-      private function updateQuestTracker(param1:Array) : void
+      private function updateQuestTracker(aQuestDataA:Array) : void
       {
-         var _loc4_:String = null;
-         var _loc5_:Object = null;
-         var _loc6_:HUDQuestTrackerEntry = null;
-         var _loc7_:Dictionary = null;
-         var _loc8_:uint = 0;
-         var _loc9_:uint = 0;
-         var _loc10_:uint = 0;
-         var _loc11_:HUDQuestTrackerObjective = null;
-         var _loc12_:HUDQuestTrackerObjective = null;
-         var _loc13_:HUDQuestTrackerObjective = null;
-         var _loc14_:HUDQuestTrackerEntry = null;
-         var _loc15_:HUDQuestTrackerObjective = null;
-         var _loc2_:Dictionary = new Dictionary();
-         var _loc3_:uint = 0;
-         while(_loc3_ < param1.length)
+         var questId:String = null;
+         var newQuestData:Object = null;
+         var questEntry:HUDQuestTrackerEntry = null;
+         var updatedObjectives:Dictionary = null;
+         var it:uint = 0;
+         var j:uint = 0;
+         var foundIndex:uint = 0;
+         var foundObjective:HUDQuestTrackerObjective = null;
+         var newObjective:HUDQuestTrackerObjective = null;
+         var objectiveToRemove:HUDQuestTrackerObjective = null;
+         var questToRemove:HUDQuestTrackerEntry = null;
+         var obj:HUDQuestTrackerObjective = null;
+         var updatedQuests:Dictionary = new Dictionary();
+         for(var i:uint = 0; i < aQuestDataA.length; i++)
          {
-            _loc5_ = param1[_loc3_];
-            _loc6_ = this.m_DisplayedQuests[_loc5_.questId];
-            if(_loc6_)
+            newQuestData = aQuestDataA[i];
+            questEntry = this.m_DisplayedQuests[newQuestData.questId];
+            if(questEntry)
             {
-               this.initializeQuest(_loc5_,_loc6_,false);
-               _loc6_.stateUpdate();
-               _loc7_ = new Dictionary();
-               _loc8_ = 0;
-               while(_loc8_ < _loc5_.objectives.length)
+               this.initializeQuest(newQuestData,questEntry,false);
+               questEntry.stateUpdate();
+               updatedObjectives = new Dictionary();
+               for(it = 0; it < newQuestData.objectives.length; it++)
                {
-                  _loc10_ = _loc6_.getObjectiveIndexById(_loc5_.objectives[_loc8_].objectiveId);
-                  if(_loc10_ < _loc6_.objectives.length)
+                  foundIndex = questEntry.getObjectiveIndexById(newQuestData.objectives[it].objectiveId);
+                  if(foundIndex < questEntry.objectives.length)
                   {
-                     _loc11_ = _loc6_.objectives[_loc10_];
-                     this.initializeObjective(_loc5_.objectives[_loc8_],_loc11_);
-                     _loc11_.displayIndex = _loc8_;
-                     _loc7_[_loc11_.objectiveID] = _loc11_;
+                     foundObjective = questEntry.objectives[foundIndex];
+                     this.initializeObjective(newQuestData.objectives[it],foundObjective);
+                     foundObjective.displayIndex = it;
+                     updatedObjectives[foundObjective.objectiveID] = foundObjective;
                   }
                   else
                   {
-                     _loc12_ = new HUDQuestTrackerObjective();
-                     _loc6_.addObjective(_loc12_);
-                     this.initializeObjective(_loc5_.objectives[_loc8_],_loc12_);
-                     _loc12_.displayIndex = _loc8_;
-                     _loc12_.fadeIn();
-                     _loc7_[_loc12_.objectiveID] = _loc12_;
+                     newObjective = new HUDQuestTrackerObjective();
+                     questEntry.addObjective(newObjective);
+                     this.initializeObjective(newQuestData.objectives[it],newObjective);
+                     newObjective.displayIndex = it;
+                     newObjective.fadeIn();
+                     updatedObjectives[newObjective.objectiveID] = newObjective;
                   }
-                  _loc8_++;
                }
-               _loc9_ = 0;
-               while(_loc9_ < _loc6_.objectives.length)
+               for(j = 0; j < questEntry.objectives.length; j++)
                {
-                  if(!_loc7_[_loc6_.objectives[_loc9_].objectiveID])
+                  if(!updatedObjectives[questEntry.objectives[j].objectiveID])
                   {
-                     _loc13_ = _loc6_.objectives[_loc9_];
-                     _loc13_.fadeOut(true);
-                     this.m_ObjectivesToRemove.push(new RemoveObjectiveData(_loc13_,_loc6_));
+                     objectiveToRemove = questEntry.objectives[j];
+                     objectiveToRemove.fadeOut(true);
+                     this.m_ObjectivesToRemove.push(new RemoveObjectiveData(objectiveToRemove,questEntry));
                   }
-                  _loc9_++;
                }
-               _loc6_.newArrangeObjectives();
+               questEntry.newArrangeObjectives();
             }
             else
             {
-               _loc6_ = this.addQuest(_loc5_,true);
+               questEntry = this.addQuest(newQuestData,true);
             }
-            _loc2_[_loc5_.questId] = _loc6_;
-            _loc3_++;
+            updatedQuests[newQuestData.questId] = questEntry;
          }
-         for(_loc4_ in this.m_DisplayedQuests)
+         for(questId in this.m_DisplayedQuests)
          {
-            if(!_loc2_[_loc4_])
+            if(!updatedQuests[questId])
             {
-               _loc14_ = this.m_DisplayedQuests[_loc4_];
-               if(_loc14_)
+               questToRemove = this.m_DisplayedQuests[questId];
+               if(questToRemove)
                {
-                  _loc14_.fadeOut(true);
-                  for each(_loc15_ in _loc14_.objectives)
+                  questToRemove.fadeOut(true);
+                  for each(obj in questToRemove.objectives)
                   {
-                     _loc15_.fadeOut(true);
+                     obj.fadeOut(true);
                   }
-                  this.m_QuestsToRemove.push(_loc14_);
+                  this.m_QuestsToRemove.push(questToRemove);
                }
             }
          }
@@ -217,93 +211,89 @@ package
          this.m_DataUpdateQueued = false;
       }
       
-      private function initializeQuestTracker(param1:Array) : void
+      private function initializeQuestTracker(aQuestDataA:Array) : void
       {
          this.m_BusyAnimating = false;
          this.clearQuestTracker();
          this.setDisplayed(true);
-         var _loc2_:uint = 0;
-         while(_loc2_ < param1.length)
+         for(var i:uint = 0; i < aQuestDataA.length; i++)
          {
-            this.addQuest(param1[_loc2_]);
-            _loc2_++;
+            this.addQuest(aQuestDataA[i]);
          }
          this.arrangeQuests();
          this.m_Initialized = true;
       }
       
-      private function addQuest(param1:Object, param2:Boolean = false) : HUDQuestTrackerEntry
+      private function addQuest(aQuestData:Object, aAnimate:Boolean = false) : HUDQuestTrackerEntry
       {
-         var _loc3_:HUDQuestTrackerEntry = new HUDQuestTrackerEntry();
-         this.initializeQuest(param1,_loc3_,true);
-         _loc3_.isNew = true;
-         _loc3_.stateUpdate();
-         this.m_DisplayedQuests[param1.questId] = _loc3_;
-         addChild(_loc3_);
-         if(param2)
+         var newQuest:HUDQuestTrackerEntry = new HUDQuestTrackerEntry();
+         this.initializeQuest(aQuestData,newQuest,true);
+         newQuest.isNew = true;
+         newQuest.stateUpdate();
+         this.m_DisplayedQuests[aQuestData.questId] = newQuest;
+         addChild(newQuest);
+         if(aAnimate)
          {
-            _loc3_.fadeIn();
+            newQuest.fadeIn();
          }
-         return _loc3_;
+         return newQuest;
       }
       
       private function clearQuestTracker() : void
       {
-         var _loc1_:String = null;
-         for(_loc1_ in this.m_DisplayedQuests)
+         var questId:String = null;
+         for(questId in this.m_DisplayedQuests)
          {
-            this.removeQuest(this.m_DisplayedQuests[_loc1_]);
+            this.removeQuest(this.m_DisplayedQuests[questId]);
          }
       }
       
-      private function removeQuest(param1:HUDQuestTrackerEntry) : void
+      private function removeQuest(aQuest:HUDQuestTrackerEntry) : void
       {
-         if(param1)
+         if(aQuest)
          {
-            removeChild(param1);
-            delete this.m_DisplayedQuests[param1.questID];
+            removeChild(aQuest);
+            delete this.m_DisplayedQuests[aQuest.questID];
          }
       }
       
-      private function arrangeQuests(param1:Boolean = false) : void
+      private function arrangeQuests(aAnimate:Boolean = false) : void
       {
-         var _loc7_:HUDQuestTrackerEntry = null;
-         var _loc2_:Boolean = false;
-         var _loc3_:Boolean = false;
-         var _loc4_:Number = 0;
-         var _loc5_:Array = BSUIDataManager.GetDataFromClient("QuestTrackerProvider").data.quests;
-         var _loc6_:uint = 0;
-         while(_loc6_ < _loc5_.length)
+         var questClip:HUDQuestTrackerEntry = null;
+         var showDivider:Boolean = false;
+         var eventSection:Boolean = false;
+         var posY:Number = 0;
+         var questDataA:Array = BSUIDataManager.GetDataFromClient("QuestTrackerProvider").data.quests;
+         for(var i:uint = 0; i < questDataA.length; i++)
          {
-            _loc7_ = this.m_DisplayedQuests[_loc5_[_loc6_].questId];
-            if(_loc7_)
+            questClip = this.m_DisplayedQuests[questDataA[i].questId];
+            if(questClip)
             {
-               if(_loc7_.isEvent)
+               if(questClip.isEvent)
                {
-                  _loc3_ = true;
+                  eventSection = true;
                }
                else
                {
-                  if(_loc3_)
+                  if(eventSection)
                   {
-                     this.EventQuestDivider_mc.y = _loc4_ + QUEST_SPACING;
-                     _loc4_ += this.EventQuestDivider_mc.Sizer_mc.height + QUEST_SPACING;
-                     _loc2_ = true;
+                     this.EventQuestDivider_mc.y = posY + QUEST_SPACING;
+                     posY += this.EventQuestDivider_mc.Sizer_mc.height + QUEST_SPACING;
+                     showDivider = true;
                   }
-                  _loc3_ = false;
+                  eventSection = false;
                }
-               _loc7_.setYPos(_loc4_,param1 && !_loc7_.isNew);
-               _loc4_ = _loc4_ + _loc7_.fullHeight + QUEST_SPACING;
-               _loc7_.isNew = false;
+               questClip.setYPos(posY,aAnimate && !questClip.isNew);
+               posY = posY + questClip.fullHeight + QUEST_SPACING;
+               questClip.isNew = false;
             }
-            _loc6_++;
          }
-         this.eventQuestDividerVisible(_loc2_);
+         this.eventQuestDividerVisible(showDivider);
       }
       
-      private function addTimer(param1:Number, param2:Boolean) : *
+      private function addTimer(aTime:Number, aUseCountdownTimer:Boolean) : *
       {
-         if(param1 > 0 && param2 || !param2)
+         if(aTime > 0 && aUseCountdownTimer || !aUseCountdownTimer)
          {
             if(!this.m_HasTimers)
             {
@@ -314,96 +304,96 @@ package
          }
       }
       
-      private function initializeObjective(param1:Object, param2:HUDQuestTrackerObjective) : void
+      private function initializeObjective(aObjectiveData:Object, aHUDObjective:HUDQuestTrackerObjective) : void
       {
-         param2.title = param1.title;
-         param2.state = param1.state;
-         param2.isOptional = param1.isOptional;
-         param2.objectiveID = param1.objectiveId;
-         param2.questID = param1.questId;
-         param2.isOrObjective = param1.isOrObjective;
-         param2.isOffMap = param1.isOffMap;
-         param2.useProvider = false;
-         param2.useCountdownTimer = param1.timer.count_down;
-         param2.isTimerPaused = param1.timer.is_paused;
-         param2.progress = param1.progress;
-         param2.alertMessage = param1.announce;
-         param2.alertState = param1.announceState;
-         param2.contextQuestID = param1.contextQuestID;
-         param2.meterType = param1.isTwoWayProgressMeter ? HUDQuestTrackerObjective.METER_TYPE_TWO_WAY : HUDQuestTrackerObjective.METER_TYPE_DEFAULT;
-         param2.isProximityTracker = param1.isProximityTracker;
-         if(!param2.isProximityTracker)
+         aHUDObjective.title = aObjectiveData.title;
+         aHUDObjective.state = aObjectiveData.state;
+         aHUDObjective.isOptional = aObjectiveData.isOptional;
+         aHUDObjective.objectiveID = aObjectiveData.objectiveId;
+         aHUDObjective.questID = aObjectiveData.questId;
+         aHUDObjective.isOrObjective = aObjectiveData.isOrObjective;
+         aHUDObjective.isOffMap = aObjectiveData.isOffMap;
+         aHUDObjective.useProvider = false;
+         aHUDObjective.useCountdownTimer = aObjectiveData.timer.count_down;
+         aHUDObjective.isTimerPaused = aObjectiveData.timer.is_paused;
+         aHUDObjective.progress = aObjectiveData.progress;
+         aHUDObjective.alertMessage = aObjectiveData.announce;
+         aHUDObjective.alertState = aObjectiveData.announceState;
+         aHUDObjective.contextQuestID = aObjectiveData.contextQuestID;
+         aHUDObjective.meterType = aObjectiveData.isTwoWayProgressMeter ? HUDQuestTrackerObjective.METER_TYPE_TWO_WAY : HUDQuestTrackerObjective.METER_TYPE_DEFAULT;
+         aHUDObjective.isProximityTracker = aObjectiveData.isProximityTracker;
+         if(!aHUDObjective.isProximityTracker)
          {
-            param2.progress = param1.progress;
+            aHUDObjective.progress = aObjectiveData.progress;
          }
-         if(param2.m_TimestampLow != param1.timer.timestamp_low || param2.m_TimestampHigh != param1.timer.timestamp_high)
+         if(aHUDObjective.m_TimestampLow != aObjectiveData.timer.timestamp_low || aHUDObjective.m_TimestampHigh != aObjectiveData.timer.timestamp_high)
          {
-            param2.timer = param1.timer.total_time;
+            aHUDObjective.timer = aObjectiveData.timer.total_time;
          }
-         param2.m_TimestampLow = param1.timer.timestamp_low;
-         param2.m_TimestampHigh = param1.timer.timestamp_high;
-         if(!param2.isTimerPaused)
+         aHUDObjective.m_TimestampLow = aObjectiveData.timer.timestamp_low;
+         aHUDObjective.m_TimestampHigh = aObjectiveData.timer.timestamp_high;
+         if(!aHUDObjective.isTimerPaused)
          {
-            this.addTimer(param2.timer,param2.useCountdownTimer);
+            this.addTimer(aHUDObjective.timer,aHUDObjective.useCountdownTimer);
          }
-         if(param2.isOrObjective)
+         if(aHUDObjective.isOrObjective)
          {
-            param2.title = "$$QUEST_TRACKER_OBJECTIVE_OR_PREFIX " + param2.title;
+            aHUDObjective.title = "$$QUEST_TRACKER_OBJECTIVE_OR_PREFIX " + aHUDObjective.title;
          }
-         param2.isMergedLeaderObjective = param1.isMergedLeaderObj;
-         param2.ProcessTitleUpdates();
-         param2.stateUpdate();
+         aHUDObjective.isMergedLeaderObjective = aObjectiveData.isMergedLeaderObj;
+         aHUDObjective.ProcessTitleUpdates();
+         aHUDObjective.stateUpdate();
       }
       
-      private function initializeQuest(param1:Object, param2:HUDQuestTrackerEntry, param3:Boolean) : void
+      private function initializeQuest(aQuestData:Object, aQuestEntry:HUDQuestTrackerEntry, aInitObjectives:Boolean) : void
       {
-         var _loc4_:Object = null;
-         var _loc5_:* = undefined;
-         var _loc6_:HUDQuestTrackerObjective = null;
-         param2.title = param1.title;
-         param2.questID = param1.questId;
-         param2.state = param1.state;
-         param2.isEvent = param1.displayType == GlobalFunc.QUEST_DISPLAY_TYPE_EVENT;
-         param2.questDisplayType = param1.displayType;
-         param2.isDisplayedToTeam = param1.isDisplayedToTeam;
-         param2.isShareable = param1.isShareable;
-         param2.useProvider = false;
-         param2.useCountdownTimer = param1.startTime.count_down;
-         param2.isTimerPaused = param1.startTime.is_paused;
-         if(param2.m_TimestampLow != param1.startTime.timestamp_low || param2.m_TimestampHigh != param1.startTime.timestamp_high)
+         var objectiveData:Object = null;
+         var objectiveKey:* = undefined;
+         var newObjective:HUDQuestTrackerObjective = null;
+         aQuestEntry.title = aQuestData.title;
+         aQuestEntry.questID = aQuestData.questId;
+         aQuestEntry.state = aQuestData.state;
+         aQuestEntry.isEvent = aQuestData.displayType == GlobalFunc.QUEST_DISPLAY_TYPE_EVENT;
+         aQuestEntry.questDisplayType = aQuestData.displayType;
+         aQuestEntry.isDisplayedToTeam = aQuestData.isDisplayedToTeam;
+         aQuestEntry.isShareable = aQuestData.isShareable;
+         aQuestEntry.useProvider = false;
+         aQuestEntry.useCountdownTimer = aQuestData.startTime.count_down;
+         aQuestEntry.isTimerPaused = aQuestData.startTime.is_paused;
+         if(aQuestEntry.m_TimestampLow != aQuestData.startTime.timestamp_low || aQuestEntry.m_TimestampHigh != aQuestData.startTime.timestamp_high)
          {
-            param2.timer = param1.startTime.total_time;
+            aQuestEntry.timer = aQuestData.startTime.total_time;
          }
-         param2.m_TimestampLow = param1.startTime.timestamp_low;
-         param2.m_TimestampHigh = param1.startTime.timestamp_high;
-         if(!param2.isTimerPaused)
+         aQuestEntry.m_TimestampLow = aQuestData.startTime.timestamp_low;
+         aQuestEntry.m_TimestampHigh = aQuestData.startTime.timestamp_high;
+         if(!aQuestEntry.isTimerPaused)
          {
-            this.addTimer(param2.timer,param2.useCountdownTimer);
+            this.addTimer(aQuestEntry.timer,aQuestEntry.useCountdownTimer);
          }
-         if(param3)
+         if(aInitObjectives)
          {
-            for(_loc5_ in param1.objectives)
+            for(objectiveKey in aQuestData.objectives)
             {
-               _loc6_ = new HUDQuestTrackerObjective();
-               _loc4_ = param1.objectives[_loc5_];
-               param2.addObjective(_loc6_);
-               this.initializeObjective(_loc4_,_loc6_);
-               _loc6_.displayIndex = _loc5_;
-               _loc6_.stateUpdate();
+               newObjective = new HUDQuestTrackerObjective();
+               objectiveData = aQuestData.objectives[objectiveKey];
+               aQuestEntry.addObjective(newObjective);
+               this.initializeObjective(objectiveData,newObjective);
+               newObjective.displayIndex = objectiveKey;
+               newObjective.stateUpdate();
             }
-            param2.arrangeObjectivesNoSort();
+            aQuestEntry.arrangeObjectivesNoSort();
          }
       }
       
-      private function isValidHUDMode(param1:String) : Boolean
+      private function isValidHUDMode(aHUDMode:String) : Boolean
       {
-         return this.m_ValidHudModes.indexOf(param1) != -1;
+         return this.m_ValidHudModes.indexOf(aHUDMode) != -1;
       }
       
-      private function onHUDModeUpdate(param1:FromClientDataEvent) : void
+      private function onHUDModeUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_IsValidHudMode = this.isValidHUDMode(param1.data.hudMode);
-         if(param1.data.hudMode == HUDModes.ALL)
+         this.m_IsValidHudMode = this.isValidHUDMode(arEvent.data.hudMode);
+         if(arEvent.data.hudMode == HUDModes.ALL)
          {
             this.setDisplayed(true);
          }
@@ -413,16 +403,15 @@ package
          }
       }
       
-      private function onMenuStackChange(param1:FromClientDataEvent) : void
+      private function onMenuStackChange(arEvent:FromClientDataEvent) : void
       {
-         var _loc3_:* = undefined;
-         var _loc2_:Boolean = false;
-         if(param1.data.menuStackA.length > 0)
+         var i:* = undefined;
+         var invalidMenuFound:Boolean = false;
+         if(arEvent.data.menuStackA.length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < param1.data.menuStackA.length)
+            for(i = 0; i < arEvent.data.menuStackA.length; i++)
             {
-               switch(param1.data.menuStackA[_loc3_].menuName)
+               switch(arEvent.data.menuStackA[i].menuName)
                {
                   case "PerksMenu":
                   case "WorkshopMenu":
@@ -431,12 +420,11 @@ package
                   case "ContainerMenu":
                   case "MapMenu":
                   case "NewPlayerLoadoutsMenu":
-                     _loc2_ = true;
+                     invalidMenuFound = true;
                      break;
                }
-               _loc3_++;
             }
-            if(_loc2_)
+            if(invalidMenuFound)
             {
                this.setDisplayed(false);
             }
@@ -447,21 +435,21 @@ package
          }
       }
       
-      private function onQuestTrackerData(param1:FromClientDataEvent) : void
+      private function onQuestTrackerData(arEvent:FromClientDataEvent) : void
       {
-         if(Boolean(param1) && Boolean(param1.data))
+         if(Boolean(arEvent) && Boolean(arEvent.data))
          {
-            this.isActive = param1.data.active;
-            if(this.isActive && Boolean(param1.data.quests))
+            this.isActive = arEvent.data.active;
+            if(this.isActive && Boolean(arEvent.data.quests))
             {
                if(!this.m_Initialized)
                {
-                  this.initializeQuestTracker(param1.data.quests);
+                  this.initializeQuestTracker(arEvent.data.quests);
                   this.m_Initialized = true;
                }
                else if(!this.m_BusyAnimating)
                {
-                  this.updateQuestTracker(param1.data.quests);
+                  this.updateQuestTracker(arEvent.data.quests);
                }
                else
                {
@@ -471,84 +459,80 @@ package
          }
       }
       
-      private function onUpdateTimers(param1:Event) : void
+      private function onUpdateTimers(aEvent:Event) : void
       {
-         var _loc3_:uint = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:HUDQuestTrackerEntry = null;
-         var _loc6_:uint = 0;
-         var _loc2_:Number = new Date().getTime() / 1000;
-         if(_loc2_ - this.m_PreviousTime >= 1)
+         var timerCount:uint = 0;
+         var deltaTime:Number = NaN;
+         var quest:HUDQuestTrackerEntry = null;
+         var i:uint = 0;
+         var newFrameTime:Number = new Date().getTime() / 1000;
+         if(newFrameTime - this.m_PreviousTime >= 1)
          {
-            _loc3_ = 0;
-            _loc4_ = _loc2_ - this.m_PreviousTime;
+            timerCount = 0;
+            deltaTime = newFrameTime - this.m_PreviousTime;
             if(this.m_HasTimers)
             {
-               for each(_loc5_ in this.m_DisplayedQuests)
+               for each(quest in this.m_DisplayedQuests)
                {
-                  if(!_loc5_.isTimerPaused)
+                  if(!quest.isTimerPaused)
                   {
-                     if(_loc5_.timer > 0 && _loc5_.useCountdownTimer)
+                     if(quest.timer > 0 && quest.useCountdownTimer)
                      {
-                        _loc3_++;
-                        _loc5_.timer -= _loc4_;
+                        timerCount++;
+                        quest.timer -= deltaTime;
                      }
-                     else if(!_loc5_.useCountdownTimer)
+                     else if(!quest.useCountdownTimer)
                      {
-                        _loc3_++;
-                        _loc5_.timer += _loc4_;
+                        timerCount++;
+                        quest.timer += deltaTime;
                      }
                   }
-                  _loc6_ = 0;
-                  while(_loc6_ < _loc5_.objectives.length)
+                  for(i = 0; i < quest.objectives.length; i++)
                   {
-                     if(!_loc5_.objectives[_loc6_].isTimerPaused)
+                     if(!quest.objectives[i].isTimerPaused)
                      {
-                        if(_loc5_.objectives[_loc6_].timer > 0 && _loc5_.objectives[_loc6_].useCountdownTimer)
+                        if(quest.objectives[i].timer > 0 && quest.objectives[i].useCountdownTimer)
                         {
-                           _loc3_++;
-                           _loc5_.objectives[_loc6_].timer -= _loc4_;
-                           _loc5_.objectives[_loc6_].ProcessTitleUpdates();
+                           timerCount++;
+                           quest.objectives[i].timer -= deltaTime;
+                           quest.objectives[i].ProcessTitleUpdates();
                         }
-                        else if(!_loc5_.objectives[_loc6_].useCountdownTimer)
+                        else if(!quest.objectives[i].useCountdownTimer)
                         {
-                           _loc3_++;
-                           _loc5_.objectives[_loc6_].timer += _loc4_;
-                           _loc5_.objectives[_loc6_].ProcessTitleUpdates();
+                           timerCount++;
+                           quest.objectives[i].timer += deltaTime;
+                           quest.objectives[i].ProcessTitleUpdates();
                         }
                      }
-                     _loc6_++;
                   }
                }
             }
-            if(_loc3_ == 0)
+            if(timerCount == 0)
             {
                removeEventListener(Event.ENTER_FRAME,this.onUpdateTimers);
                this.m_HasTimers = false;
             }
-            this.m_PreviousTime = _loc2_;
+            this.m_PreviousTime = newFrameTime;
          }
       }
       
       private function onRemoveTimeout() : void
       {
-         var _loc1_:RemoveObjectiveData = null;
-         var _loc2_:HUDQuestTrackerEntry = null;
-         var _loc3_:uint = 0;
+         var removeData:RemoveObjectiveData = null;
+         var questEntry:HUDQuestTrackerEntry = null;
+         var i:uint = 0;
          while(this.m_ObjectivesToRemove.length > 0)
          {
-            _loc1_ = this.m_ObjectivesToRemove.pop();
-            _loc2_ = _loc1_.owningQuest;
-            if(Boolean(_loc1_) && Boolean(_loc2_))
+            removeData = this.m_ObjectivesToRemove.pop();
+            questEntry = removeData.owningQuest;
+            if(Boolean(removeData) && Boolean(questEntry))
             {
-               _loc2_.deleteObjective(_loc1_.objectiveToRemove);
-               _loc2_.arrangeObjectivesNoSort(true);
+               questEntry.deleteObjective(removeData.objectiveToRemove);
+               questEntry.arrangeObjectivesNoSort(true);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.objectives.length)
+            for(i = 0; i < questEntry.objectives.length; i++)
             {
-               _loc2_.objectives[_loc3_].displayIndex = _loc3_;
-               _loc3_++;
+               questEntry.objectives[i].displayIndex = i;
             }
          }
          while(this.m_QuestsToRemove.length > 0)

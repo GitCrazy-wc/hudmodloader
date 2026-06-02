@@ -17,7 +17,7 @@ package
    import flash.text.TextField;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol960")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol966")]
    public dynamic class HUDTeamWidget extends BSUIComponent
    {
       
@@ -87,27 +87,27 @@ package
          return _inPowerArmor;
       }
       
-      public static function set inPA(param1:Boolean) : void
+      public static function set inPA(aBool:Boolean) : void
       {
-         _inPowerArmor = param1;
+         _inPowerArmor = aBool;
       }
       
       override public function onAddedToStage() : void
       {
-         BSUIDataManager.Subscribe("PartyMenuList",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("PartyMenuList",function(arEvent:FromClientDataEvent):*
          {
-            m_TeamType = param1.data.teamType;
-            partyListData = param1.data.members;
-            var _loc2_:uint = partyListData.length;
+            m_TeamType = arEvent.data.teamType;
+            partyListData = arEvent.data.members;
+            var len:uint = partyListData.length;
             partyListMenuData.splice(0);
-            var _loc3_:uint = 0;
-            while(_loc3_ < TEAM_MAX_PLAYERS && _loc3_ < _loc2_)
+            var i:uint = 0;
+            while(i < TEAM_MAX_PLAYERS && i < len)
             {
-               if(partyListData[_loc3_] != null && partyListData[_loc3_].isVisible && partyListData[_loc3_].avatarId != "IconAddFriend" && Boolean(partyListData[_loc3_].isOnServer))
+               if(partyListData[i] != null && partyListData[i].isVisible && partyListData[i].avatarId != "IconAddFriend" && Boolean(partyListData[i].isOnServer))
                {
-                  partyListMenuData.push(partyListData[_loc3_]);
+                  partyListMenuData.push(partyListData[i]);
                }
-               _loc3_++;
+               i++;
             }
             PartyList.List_mc.MenuListData = partyListMenuData;
             PartyList.addEventListener(PublicTeamsBondMeter.EVENT_BOND_METER_COMPLETE,onBondComplete);
@@ -115,12 +115,12 @@ package
             PublicTeamsBondMeter.LAST_BOND_UPDATE_TIME = new Date().getTime() / 1000;
             SetIsDirty();
          });
-         BSUIDataManager.Subscribe("HUDModeData",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("HUDModeData",function(arEvent:FromClientDataEvent):*
          {
-            m_HudMode = param1.data.hudMode;
+            m_HudMode = arEvent.data.hudMode;
             SetIsDirty();
          });
-         BSUIDataManager.Subscribe("MenuStackData",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("MenuStackData",function(arEvent:FromClientDataEvent):*
          {
             SetIsDirty();
          });
@@ -128,69 +128,65 @@ package
       
       override public function redrawUIComponent() : void
       {
-         var _loc6_:BSScrollingListEntry = null;
-         var _loc7_:* = undefined;
-         var _loc8_:PartyListEntry = null;
-         var _loc9_:uint = 0;
-         var _loc10_:PartyListEntry = null;
+         var partyListClip:BSScrollingListEntry = null;
+         var clipHeight:* = undefined;
+         var clip:PartyListEntry = null;
+         var it:uint = 0;
+         var entryClip:PartyListEntry = null;
          this.PartyList.visible = this.determinePartyListVisibility();
-         var _loc1_:Boolean = this.m_HudMode == HUDModes.CONTAINER_MODE || this.m_HudMode == HUDModes.WORKSHOP_MODE || this.m_HudMode == HUDModes.WORKSHOP_NO_CROSSHAIR_MODE || this.m_HudMode == HUDModes.PIPBOY || this.m_HudMode == HUDModes.TERMINAL_MODE;
-         this.PartyList.alpha = _loc1_ ? 0.5 : 1;
-         this.PTPartyListHeader_mc.alpha = _loc1_ ? 0.5 : 1;
-         var _loc2_:uint = this.partyListMenuData.length;
+         var fadeOut:Boolean = this.m_HudMode == HUDModes.CONTAINER_MODE || this.m_HudMode == HUDModes.WORKSHOP_MODE || this.m_HudMode == HUDModes.WORKSHOP_NO_CROSSHAIR_MODE || this.m_HudMode == HUDModes.PIPBOY || this.m_HudMode == HUDModes.TERMINAL_MODE;
+         this.PartyList.alpha = fadeOut ? 0.5 : 1;
+         this.PTPartyListHeader_mc.alpha = fadeOut ? 0.5 : 1;
+         var partyListLen:uint = this.partyListMenuData.length;
          this.UpdatePublicTeamsHeader();
-         if(_loc2_ > 0)
+         if(partyListLen > 0)
          {
-            _loc6_ = this.PartyList.List_mc.GetClipByIndex(0);
-            _loc7_ = _loc6_.Sizer_mc ? _loc6_.Sizer_mc.height : _loc6_.height;
-            this.AreaVoiceList_mc.y = this.m_AreaVoiceListBaseY - this.PTPartyListHeader_mc.height - _loc7_ * _loc2_ - AREA_VOICE_LIST_OFFSET;
+            partyListClip = this.PartyList.List_mc.GetClipByIndex(0);
+            clipHeight = partyListClip.Sizer_mc ? partyListClip.Sizer_mc.height : partyListClip.height;
+            this.AreaVoiceList_mc.y = this.m_AreaVoiceListBaseY - this.PTPartyListHeader_mc.height - clipHeight * partyListLen - AREA_VOICE_LIST_OFFSET;
          }
          else
          {
             this.AreaVoiceList_mc.y = this.m_AreaVoiceListBaseY;
          }
-         var _loc3_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
-         while(_loc5_ < TEAM_MAX_PLAYERS)
+         var animatingExpFlareCount:uint = 0;
+         var expFlareCountToShow:uint = 0;
+         for(var i:uint = 0; i < TEAM_MAX_PLAYERS; i++)
          {
-            _loc8_ = this.PartyList.List_mc.GetClipByIndex(_loc5_) as PartyListEntry;
-            if((_loc8_) && _loc8_.BondMeter_mc && !_loc8_.visible && _loc8_.BondMeter_mc.bondMeterState == PublicTeamsBondMeter.BOND_METER_FILLING)
+            clip = this.PartyList.List_mc.GetClipByIndex(i) as PartyListEntry;
+            if(clip && clip.BondMeter_mc && !clip.visible && clip.BondMeter_mc.bondMeterState == PublicTeamsBondMeter.BOND_METER_FILLING)
             {
-               _loc8_.BondMeter_mc.bondMeterState = PublicTeamsBondMeter.BOND_METER_OFF;
+               clip.BondMeter_mc.bondMeterState = PublicTeamsBondMeter.BOND_METER_OFF;
             }
-            if(Boolean(_loc8_) && (!_loc8_.visible || !this.PartyList.visible))
+            if(Boolean(clip) && (!clip.visible || !this.PartyList.visible))
             {
-               _loc8_.showExpeditionFlare = false;
+               clip.showExpeditionFlare = false;
             }
-            if(Boolean(_loc8_) && _loc8_.visible)
+            if(Boolean(clip) && clip.visible)
             {
-               if(_loc8_.isExpFlareAnimating)
+               if(clip.isExpFlareAnimating)
                {
-                  _loc3_++;
+                  animatingExpFlareCount++;
                }
-               else if(_loc8_.showExpeditionFlare)
+               else if(clip.showExpeditionFlare)
                {
-                  _loc4_++;
+                  expFlareCountToShow++;
                }
             }
-            _loc5_++;
          }
-         if(_loc3_ == 0 && _loc4_ > 0)
+         if(animatingExpFlareCount == 0 && expFlareCountToShow > 0)
          {
-            _loc9_ = 0;
-            while(_loc9_ < TEAM_MAX_PLAYERS)
+            for(it = 0; it < TEAM_MAX_PLAYERS; it++)
             {
-               _loc10_ = this.PartyList.List_mc.GetClipByIndex(_loc9_) as PartyListEntry;
-               if((_loc10_) && _loc10_.visible && _loc10_.showExpeditionFlare)
+               entryClip = this.PartyList.List_mc.GetClipByIndex(it) as PartyListEntry;
+               if(entryClip && entryClip.visible && entryClip.showExpeditionFlare)
                {
-                  _loc10_.animateExpFlare();
+                  entryClip.animateExpFlare();
                }
-               _loc9_++;
             }
             GlobalFunc.PlayMenuSound("UIXpdHudFlair");
          }
-         if(this.PartyList.visible && (_loc3_ > 0 || _loc4_ > 0))
+         if(this.PartyList.visible && (animatingExpFlareCount > 0 || expFlareCountToShow > 0))
          {
             stage.addEventListener(EVENT_EXP_FLARE_ANIM_COMPLETE,this.onEmbarkAnimComplete);
          }
@@ -202,16 +198,16 @@ package
       
       private function determinePartyListVisibility() : Boolean
       {
-         var _loc2_:UIDataFromClient = null;
-         var _loc3_:Boolean = false;
-         var _loc4_:Array = null;
-         var _loc5_:int = 0;
-         var _loc1_:Boolean = true;
+         var menuStackData:UIDataFromClient = null;
+         var loadingMenuFound:Boolean = false;
+         var menuStackA:Array = null;
+         var i:int = 0;
+         var shouldShowPartyList:Boolean = true;
          if(this.partyListMenuData.length == 0)
          {
-            _loc1_ = false;
+            shouldShowPartyList = false;
          }
-         if(_loc1_)
+         if(shouldShowPartyList)
          {
             switch(this.m_HudMode)
             {
@@ -224,70 +220,67 @@ package
                case HUDModes.WORKSHOP_MODE:
                case HUDModes.WORKSHOP_NO_CROSSHAIR_MODE:
                case HUDModes.EXAMINE_CONFIRM_MODE:
-                  _loc1_ = false;
+                  shouldShowPartyList = false;
             }
          }
-         if(_loc1_)
+         if(shouldShowPartyList)
          {
-            _loc2_ = BSUIDataManager.GetDataFromClient("MenuStackData");
-            if(_loc2_ && _loc2_.data && Boolean(_loc2_.data.menuStackA))
+            menuStackData = BSUIDataManager.GetDataFromClient("MenuStackData");
+            if(menuStackData && menuStackData.data && Boolean(menuStackData.data.menuStackA))
             {
-               _loc3_ = false;
-               _loc4_ = _loc2_.data.menuStackA;
-               while(_loc5_ < _loc4_.length)
+               loadingMenuFound = false;
+               for(menuStackA = menuStackData.data.menuStackA; i < menuStackA.length; )
                {
-                  if(_loc4_[_loc5_].menuName == "ExamineMenu" || _loc4_[_loc5_].menuName == "MapMenu")
+                  if(menuStackA[i].menuName == "ExamineMenu" || menuStackA[i].menuName == "MapMenu")
                   {
-                     _loc1_ = false;
+                     shouldShowPartyList = false;
                   }
-                  else if(_loc4_[_loc5_].menuName == "LoadingMenu")
+                  else if(menuStackA[i].menuName == "LoadingMenu")
                   {
-                     _loc3_ = true;
+                     loadingMenuFound = true;
                   }
-                  _loc5_++;
+                  i++;
                }
-               if(!_loc3_ && this.m_LoadingMenuOpen)
+               if(!loadingMenuFound && this.m_LoadingMenuOpen)
                {
                   this.PartyList.SetIsDirty();
                }
-               this.m_LoadingMenuOpen = _loc3_;
+               this.m_LoadingMenuOpen = loadingMenuFound;
             }
          }
-         return _loc1_;
+         return shouldShowPartyList;
       }
       
       private function UpdatePublicTeamsHeader() : void
       {
-         var _loc1_:uint = 0;
-         var _loc2_:String = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:PartyListEntry = null;
+         var teamType:uint = 0;
+         var typeString:String = null;
+         var numOfBonds:int = 0;
+         var numOfEntries:int = 0;
+         var i:int = 0;
+         var entry:PartyListEntry = null;
          if(PublicTeamsShared.IsValidPublicTeamType(this.m_TeamType) && this.PartyList.visible)
          {
-            _loc1_ = this.m_TeamType;
-            _loc2_ = PublicTeamsShared.DecideTeamTypeString(_loc1_);
-            this.TeamType_tf.text = GlobalFunc.LocalizeFormattedString("{1} {2}","$PT" + _loc2_,"$TEAM");
-            this.PTHUDIcon_mc.setIconType(_loc1_);
+            teamType = this.m_TeamType;
+            typeString = PublicTeamsShared.DecideTeamTypeString(teamType);
+            this.TeamType_tf.text = GlobalFunc.LocalizeFormattedString("{1} {2}","$PT" + typeString,"$TEAM");
+            this.PTHUDIcon_mc.setIconType(teamType);
             this.PTHUDIcon_mc.x = this.PTPartyHeaderTeamType_mc.x + this.TeamType_tf.textWidth + PUBLIC_TEAMS_ICON_OFFSET;
-            _loc3_ = 0;
-            _loc4_ = int(this.PartyList.List_mc.entryList.length);
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            numOfBonds = 0;
+            numOfEntries = int(this.PartyList.List_mc.entryList.length);
+            for(i = 0; i < numOfEntries; i++)
             {
-               _loc6_ = this.PartyList.List_mc.GetClipByIndex(_loc5_) as PartyListEntry;
-               if(_loc6_.BondMeter_mc.isBonded)
+               entry = this.PartyList.List_mc.GetClipByIndex(i) as PartyListEntry;
+               if(entry.BondMeter_mc.isBonded)
                {
-                  _loc3_++;
+                  numOfBonds++;
                }
-               _loc5_++;
             }
             this.PTPartyHeaderBonus_mc.visible = true;
-            this.BonusMultiplier_tf.text = "X" + (_loc3_ + 1).toString();
-            if(_loc4_ > 0)
+            this.BonusMultiplier_tf.text = "X" + (numOfBonds + 1).toString();
+            if(numOfEntries > 0)
             {
-               this.PTPartyListHeader_mc.y = this.PartyList.List_mc.GetClipByIndex(_loc4_ - 1).y - this.PTPartyListHeader_mc.height - PUBLIC_TEAMS_HEADER_OFFSET;
+               this.PTPartyListHeader_mc.y = this.PartyList.List_mc.GetClipByIndex(numOfEntries - 1).y - this.PTPartyListHeader_mc.height - PUBLIC_TEAMS_HEADER_OFFSET;
                this.PTPartyListHeader_mc.visible = true;
             }
          }
@@ -297,28 +290,26 @@ package
          }
       }
       
-      private function onBondComplete(param1:Event) : void
+      private function onBondComplete(aEvent:Event) : void
       {
          this.UpdatePublicTeamsHeader();
       }
       
-      public function onEmbarkAnimComplete(param1:Event) : void
+      public function onEmbarkAnimComplete(aEvent:Event) : void
       {
-         var _loc2_:uint = 0;
-         var _loc3_:PartyListEntry = null;
+         var i:uint = 0;
+         var clip:PartyListEntry = null;
          if(this.PartyList.visible)
          {
-            param1.stopPropagation();
+            aEvent.stopPropagation();
             GlobalFunc.PlayMenuSound("UIXpdHudFlair");
-            _loc2_ = 0;
-            while(_loc2_ < TEAM_MAX_PLAYERS)
+            for(i = 0; i < TEAM_MAX_PLAYERS; i++)
             {
-               _loc3_ = this.PartyList.List_mc.GetClipByIndex(_loc2_) as PartyListEntry;
-               if(_loc3_ && _loc3_.visible && _loc3_.showExpeditionFlare && !_loc3_.isExpFlareAnimating)
+               clip = this.PartyList.List_mc.GetClipByIndex(i) as PartyListEntry;
+               if(clip && clip.visible && clip.showExpeditionFlare && !clip.isExpFlareAnimating)
                {
-                  _loc3_.animateExpFlare();
+                  clip.animateExpFlare();
                }
-               _loc2_++;
             }
          }
       }

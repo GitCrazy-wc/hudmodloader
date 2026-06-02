@@ -191,9 +191,9 @@ package Shared.AS3
          return this.m_ClipVector;
       }
       
-      public function set showSelectedItem(param1:Boolean) : void
+      public function set showSelectedItem(aShow:Boolean) : void
       {
-         this.m_ShowSelectedItem = param1;
+         this.m_ShowSelectedItem = aShow;
          this.m_NeedRedraw = true;
          this.setIsDirty();
       }
@@ -203,9 +203,9 @@ package Shared.AS3
          return this.m_ShowSelectedItem;
       }
       
-      public function set textBehavior(param1:String) : void
+      public function set textBehavior(aBehavior:String) : void
       {
-         this.m_TextBehavior = param1;
+         this.m_TextBehavior = aBehavior;
       }
       
       public function get textBehavior() : String
@@ -213,20 +213,20 @@ package Shared.AS3
          return this.m_TextBehavior;
       }
       
-      public function set maxRows(param1:uint) : void
+      public function set maxRows(aRows:uint) : void
       {
-         if(param1 != this.m_MaxRows || this.m_MaxDisplayedItems <= 0)
+         if(aRows != this.m_MaxRows || this.m_MaxDisplayedItems <= 0)
          {
-            this.m_MaxRows = param1;
+            this.m_MaxRows = aRows;
             this.invalidateData();
          }
       }
       
-      public function set maxCols(param1:uint) : void
+      public function set maxCols(aCols:uint) : void
       {
-         if(param1 != this.m_MaxCols || this.m_MaxDisplayedItems <= 0)
+         if(aCols != this.m_MaxCols || this.m_MaxDisplayedItems <= 0)
          {
-            this.m_MaxCols = param1;
+            this.m_MaxCols = aCols;
             this.invalidateData();
          }
       }
@@ -239,9 +239,9 @@ package Shared.AS3
          this.setIsDirty();
       }
       
-      public function set scrollVertical(param1:Boolean) : void
+      public function set scrollVertical(aVert:Boolean) : void
       {
-         this.m_ScrollVertical = param1;
+         this.m_ScrollVertical = aVert;
          this.m_NeedRecalculateScrollMax = true;
          this.m_NeedRedraw = true;
          this.setIsDirty();
@@ -277,9 +277,9 @@ package Shared.AS3
          return this.m_DisplayHeight;
       }
       
-      public function set useVariableWidth(param1:Boolean) : void
+      public function set useVariableWidth(aBool:Boolean) : void
       {
-         this.m_UseVariableWidth = param1;
+         this.m_UseVariableWidth = aBool;
       }
       
       public function get useVariableWidth() : Boolean
@@ -287,9 +287,9 @@ package Shared.AS3
          return this.m_UseVariableWidth;
       }
       
-      public function set useVariableHeight(param1:Boolean) : void
+      public function set useVariableHeight(aBool:Boolean) : void
       {
-         this.m_UseVariableHeight = param1;
+         this.m_UseVariableHeight = aBool;
       }
       
       public function get useVariableHeight() : Boolean
@@ -297,9 +297,9 @@ package Shared.AS3
          return this.m_UseVariableHeight;
       }
       
-      public function set AnimatedArrows(param1:Boolean) : void
+      public function set AnimatedArrows(aAnimated:Boolean) : void
       {
-         this.m_AnimatedArrows = param1;
+         this.m_AnimatedArrows = aAnimated;
       }
       
       public function get AnimatedArrows() : Boolean
@@ -307,24 +307,24 @@ package Shared.AS3
          return this.m_AnimatedArrows;
       }
       
-      public function set rowScrollPos(param1:int) : void
+      public function set rowScrollPos(aPos:int) : void
       {
-         param1 = GlobalFunc.Clamp(param1,0,this.m_RowScrollPosMax);
-         if(param1 != this.m_RowScrollPos)
+         aPos = GlobalFunc.Clamp(aPos,0,this.m_RowScrollPosMax);
+         if(aPos != this.m_RowScrollPos)
          {
-            this.m_RowScrollPos = param1;
+            this.m_RowScrollPos = aPos;
             this.m_NeedRedraw = true;
             this.m_NeedSliderUpdate = true;
             this.setIsDirty();
          }
       }
       
-      public function set colScrollPos(param1:int) : void
+      public function set colScrollPos(aPos:int) : void
       {
-         param1 = GlobalFunc.Clamp(param1,0,this.m_ColScrollPosMax);
-         if(param1 != this.m_ColScrollPos)
+         aPos = GlobalFunc.Clamp(aPos,0,this.m_ColScrollPosMax);
+         if(aPos != this.m_ColScrollPos)
          {
-            this.m_ColScrollPos = param1;
+            this.m_ColScrollPos = aPos;
             this.m_NeedRedraw = true;
             this.m_NeedSliderUpdate = true;
             this.setIsDirty();
@@ -336,9 +336,9 @@ package Shared.AS3
          return this.m_DisableInput;
       }
       
-      public function set disableInput(param1:Boolean) : void
+      public function set disableInput(aDisabled:Boolean) : void
       {
-         this.m_DisableInput = param1;
+         this.m_DisableInput = aDisabled;
       }
       
       public function get disableMouseWheel() : Boolean
@@ -346,9 +346,9 @@ package Shared.AS3
          return this.m_DisableMouseWheel;
       }
       
-      public function set disableMouseWheel(param1:Boolean) : void
+      public function set disableMouseWheel(aBool:Boolean) : void
       {
-         this.m_DisableMouseWheel = param1;
+         this.m_DisableMouseWheel = aBool;
       }
       
       public function get disableSelection() : Boolean
@@ -356,9 +356,9 @@ package Shared.AS3
          return this.m_DisableSelection;
       }
       
-      public function set disableSelection(param1:Boolean) : void
+      public function set disableSelection(aBool:Boolean) : void
       {
-         this.m_DisableSelection = param1;
+         this.m_DisableSelection = aBool;
       }
       
       public function get ignoreMouse() : Boolean
@@ -396,9 +396,9 @@ package Shared.AS3
          return this.m_IdName;
       }
       
-      public function set idName(param1:String) : void
+      public function set idName(aString:String) : void
       {
-         this.m_IdName = param1;
+         this.m_IdName = aString;
       }
       
       public function get selectedEntryId() : *
@@ -411,13 +411,13 @@ package Shared.AS3
          return this.m_SelectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : *
+      public function set selectedIndex(aIndex:int) : *
       {
-         var _loc2_:int = GlobalFunc.Clamp(param1,-1,this.m_Entries.length - 1);
-         if(_loc2_ != this.m_SelectedIndex)
+         var newIndex:int = GlobalFunc.Clamp(aIndex,-1,this.m_Entries.length - 1);
+         if(newIndex != this.m_SelectedIndex)
          {
             this.m_PrevSelectedIndex = this.m_SelectedIndex;
-            this.m_SelectedIndex = _loc2_;
+            this.m_SelectedIndex = newIndex;
             if(this.idName != "" && this.entryData && this.m_SelectedIndex < this.entryData.length && this.m_SelectedIndex > -1)
             {
                this.m_SelectedEntryId = this.entryData[this.m_SelectedIndex][this.idName];
@@ -436,10 +436,10 @@ package Shared.AS3
          return this.m_SelectedClip;
       }
       
-      public function set listItemClassName(param1:String) : void
+      public function set listItemClassName(aName:String) : void
       {
-         this.m_ListItemClass = getDefinitionByName(param1) as Class;
-         this.m_ListItemClassName = param1;
+         this.m_ListItemClass = getDefinitionByName(aName) as Class;
+         this.m_ListItemClassName = aName;
          this.m_NeedRedraw = true;
       }
       
@@ -448,46 +448,44 @@ package Shared.AS3
          return this.m_Entries;
       }
       
-      public function set entryData(param1:Array) : void
+      public function set entryData(aEntries:Array) : void
       {
-         var _loc2_:uint = 0;
-         this.m_Entries = param1;
+         var i:uint = 0;
+         this.m_Entries = aEntries;
          if(this.m_Entries == null)
          {
             this.m_Entries = new Array();
          }
          this.m_NeedRecalculateScrollMax = true;
          this.m_NeedRedraw = true;
-         if(this.setSelectedIndexOnFirstEntryDataInit && param1 && param1.length > 0 && this.selectedIndex <= -1)
+         if(this.setSelectedIndexOnFirstEntryDataInit && aEntries && aEntries.length > 0 && this.selectedIndex <= -1)
          {
             this.m_NavChangeFromInput = false;
             this.selectedIndex = 0;
          }
          else if(this.idName != "" && this.selectedEntryId != null)
          {
-            _loc2_ = 0;
-            while(_loc2_ < this.entryData.length)
+            for(i = 0; i < this.entryData.length; i++)
             {
-               if(this.entryData[_loc2_][this.idName] === this.selectedEntryId)
+               if(this.entryData[i][this.idName] === this.selectedEntryId)
                {
                   this.m_NavChangeFromInput = false;
-                  this.selectedIndex = _loc2_;
+                  this.selectedIndex = i;
                   break;
                }
-               _loc2_++;
             }
          }
          this.setIsDirty();
       }
       
-      public function set needRedraw(param1:*) : void
+      public function set needRedraw(aNeed:*) : void
       {
-         this.m_NeedRedraw = param1;
+         this.m_NeedRedraw = aNeed;
       }
       
-      public function set wheelSelectionScroll(param1:Boolean) : void
+      public function set wheelSelectionScroll(aEnabled:Boolean) : void
       {
-         this.m_WheelSelectionScroll = param1;
+         this.m_WheelSelectionScroll = aEnabled;
       }
       
       public function get wheelSelectionScroll() : Boolean
@@ -495,9 +493,9 @@ package Shared.AS3
          return this.m_WheelSelectionScroll;
       }
       
-      public function set selectionScrollLockOffset(param1:int) : void
+      public function set selectionScrollLockOffset(aOffset:int) : void
       {
-         this.m_SelectionScrollLockOffset = param1;
+         this.m_SelectionScrollLockOffset = aOffset;
       }
       
       public function get selectionScrollLockOffset() : int
@@ -505,9 +503,9 @@ package Shared.AS3
          return this.m_SelectionScrollLockOffset;
       }
       
-      public function set selectionScrollLock(param1:Boolean) : void
+      public function set selectionScrollLock(aLocked:Boolean) : void
       {
-         this.m_SelectionScrollLock = param1;
+         this.m_SelectionScrollLock = aLocked;
       }
       
       public function get selectionScrollLock() : Boolean
@@ -520,9 +518,9 @@ package Shared.AS3
          return this.m_LastNavDirection;
       }
       
-      public function set entriesLayeredInOrder(param1:Boolean) : void
+      public function set entriesLayeredInOrder(aBool:Boolean) : void
       {
-         this.m_EntriesLayeredInOrder = param1;
+         this.m_EntriesLayeredInOrder = aBool;
       }
       
       public function get entriesLayeredInOrder() : Boolean
@@ -530,9 +528,9 @@ package Shared.AS3
          return this.m_EntriesLayeredInOrder;
       }
       
-      public function set setSelectedIndexOnFirstEntryDataInit(param1:Boolean) : void
+      public function set setSelectedIndexOnFirstEntryDataInit(aBool:Boolean) : void
       {
-         this.m_SetSelectedIndexOnFirstEntryDataInit = param1;
+         this.m_SetSelectedIndexOnFirstEntryDataInit = aBool;
       }
       
       public function get setSelectedIndexOnFirstEntryDataInit() : Boolean
@@ -555,20 +553,20 @@ package Shared.AS3
          return this.m_SelectionChangeCount == 1;
       }
       
-      private function getRowFromIndex(param1:int) : uint
+      private function getRowFromIndex(aIndex:int) : uint
       {
-         if(param1 > 0)
+         if(aIndex > 0)
          {
-            return Math.floor(param1 / (this.m_MaxCols + this.m_ColScrollPosMax));
+            return Math.floor(aIndex / (this.m_MaxCols + this.m_ColScrollPosMax));
          }
          return 0;
       }
       
-      private function getColFromIndex(param1:int) : uint
+      private function getColFromIndex(aIndex:int) : uint
       {
-         if(param1 > 0)
+         if(aIndex > 0)
          {
-            return param1 % (this.m_MaxCols + this.m_ColScrollPosMax);
+            return aIndex % (this.m_MaxCols + this.m_ColScrollPosMax);
          }
          return 0;
       }
@@ -582,7 +580,7 @@ package Shared.AS3
          }
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(a:Event) : void
       {
          this.m_NavChangeFromInput = false;
          this.selectedIndex = this.selectedIndex;
@@ -610,9 +608,9 @@ package Shared.AS3
          }
       }
       
-      public function getIndexFromGridPos(param1:uint, param2:uint) : int
+      public function getIndexFromGridPos(aRow:uint, aCol:uint) : int
       {
-         return param1 * this.m_MaxCols + param2;
+         return aRow * this.m_MaxCols + aCol;
       }
       
       public function ForceRedraw() : void
@@ -623,55 +621,55 @@ package Shared.AS3
       
       private function constrainScrollToSelection() : void
       {
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
-         var _loc6_:uint = 0;
+         var row:uint = 0;
+         var col:uint = 0;
+         var minViewableRow:uint = 0;
+         var maxViewableRow:uint = 0;
+         var minViewableCol:uint = 0;
+         var maxViewableCol:uint = 0;
          if(this.m_NeedRecalculateScrollMax)
          {
             this.calculateListScrollMax();
          }
          if(this.selectedIndex > 0)
          {
-            _loc1_ = this.selectedRow;
-            _loc2_ = this.selectedCol;
+            row = this.selectedRow;
+            col = this.selectedCol;
             if(this.m_SelectionScrollLock)
             {
                if(this.m_ScrollVertical)
                {
-                  this.rowScrollPos = _loc1_ + this.m_SelectionScrollLockOffset;
+                  this.rowScrollPos = row + this.m_SelectionScrollLockOffset;
                }
                else
                {
-                  this.colScrollPos = _loc2_ + this.m_SelectionScrollLockOffset;
+                  this.colScrollPos = col + this.m_SelectionScrollLockOffset;
                }
             }
             else if(this.m_ScrollVertical)
             {
-               _loc3_ = this.m_RowScrollPos;
-               _loc4_ = this.m_RowScrollPos + this.m_MaxRows - 1;
-               if(_loc1_ < _loc3_)
+               minViewableRow = this.m_RowScrollPos;
+               maxViewableRow = this.m_RowScrollPos + this.m_MaxRows - 1;
+               if(row < minViewableRow)
                {
-                  this.rowScrollPos = _loc1_;
+                  this.rowScrollPos = row;
                }
-               else if(_loc1_ > _loc4_)
+               else if(row > maxViewableRow)
                {
-                  this.rowScrollPos = _loc1_ - (this.m_MaxRows - 1);
+                  this.rowScrollPos = row - (this.m_MaxRows - 1);
                }
             }
             else
             {
-               _loc5_ = this.m_ColScrollPos;
-               _loc6_ = this.m_ColScrollPos + this.m_MaxCols - 1;
-               if(_loc2_ < _loc5_)
+               minViewableCol = this.m_ColScrollPos;
+               maxViewableCol = this.m_ColScrollPos + this.m_MaxCols - 1;
+               if(col < minViewableCol)
                {
-                  this.colScrollPos = _loc2_;
+                  this.colScrollPos = col;
                }
-               else if(_loc2_ > _loc6_)
+               else if(col > maxViewableCol)
                {
-                  this.colScrollPos = _loc2_ - (this.m_MaxCols - 1);
+                  this.colScrollPos = col - (this.m_MaxCols - 1);
                }
             }
          }
@@ -682,87 +680,87 @@ package Shared.AS3
          }
       }
       
-      public function onKeyDown(param1:KeyboardEvent) : *
+      public function onKeyDown(event:KeyboardEvent) : *
       {
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
-         var _loc4_:Boolean = false;
-         var _loc5_:Boolean = false;
+         var row:uint = 0;
+         var col:uint = 0;
+         var selectionChange:Boolean = false;
+         var validKey:Boolean = false;
          if(!this.m_DisableInput)
          {
-            _loc2_ = this.selectedRow;
-            _loc3_ = this.selectedCol;
-            _loc4_ = false;
-            _loc5_ = false;
-            switch(param1.keyCode)
+            row = this.selectedRow;
+            col = this.selectedCol;
+            selectionChange = false;
+            validKey = false;
+            switch(event.keyCode)
             {
                case Keyboard.UP:
-                  _loc5_ = true;
-                  if(_loc2_ > 0)
+                  validKey = true;
+                  if(row > 0)
                   {
-                     _loc4_ = true;
-                     _loc2_--;
+                     selectionChange = true;
+                     row--;
                   }
-                  param1.stopPropagation();
+                  event.stopPropagation();
                   break;
                case Keyboard.DOWN:
-                  _loc5_ = true;
-                  if(_loc2_ < this.getRowFromIndex(this.m_Entries.length - 1))
+                  validKey = true;
+                  if(row < this.getRowFromIndex(this.m_Entries.length - 1))
                   {
-                     _loc4_ = true;
-                     _loc2_++;
+                     selectionChange = true;
+                     row++;
                   }
-                  param1.stopPropagation();
+                  event.stopPropagation();
                   break;
                case Keyboard.LEFT:
-                  _loc5_ = true;
-                  if(_loc3_ > 0)
+                  validKey = true;
+                  if(col > 0)
                   {
-                     _loc4_ = true;
-                     _loc3_--;
+                     selectionChange = true;
+                     col--;
                   }
-                  param1.stopPropagation();
+                  event.stopPropagation();
                   break;
                case Keyboard.RIGHT:
-                  _loc5_ = true;
-                  if(_loc3_ < this.m_MaxCols - 1 + this.m_ColScrollPosMax && this.selectedIndex < this.entryCount - 1)
+                  validKey = true;
+                  if(col < this.m_MaxCols - 1 + this.m_ColScrollPosMax && this.selectedIndex < this.entryCount - 1)
                   {
-                     _loc4_ = true;
-                     _loc3_++;
+                     selectionChange = true;
+                     col++;
                   }
-                  param1.stopPropagation();
+                  event.stopPropagation();
             }
-            this.m_LastNavDirection = param1.keyCode;
-            this.m_IgnoreMouse = this.m_IgnoreMouse || _loc4_ || _loc5_;
-            if(_loc4_)
+            this.m_LastNavDirection = event.keyCode;
+            this.m_IgnoreMouse = this.m_IgnoreMouse || selectionChange || validKey;
+            if(selectionChange)
             {
                this.m_NavChangeFromInput = true;
-               this.selectedIndex = this.getIndexFromGridPos(_loc2_,_loc3_);
+               this.selectedIndex = this.getIndexFromGridPos(row,col);
             }
-            else if(_loc5_)
+            else if(validKey)
             {
                dispatchEvent(new CustomEvent(SELECTION_EDGE_BOUNCE,{"dir":this.lastNavDirection},true,true));
             }
          }
       }
       
-      public function onKeyUp(param1:KeyboardEvent) : *
+      public function onKeyUp(event:KeyboardEvent) : *
       {
-         if(!this.m_DisableInput && !this.m_DisableSelection && param1.keyCode == Keyboard.ENTER)
+         if(!this.m_DisableInput && !this.m_DisableSelection && event.keyCode == Keyboard.ENTER)
          {
-            this.onItemPress(param1);
-            param1.stopPropagation();
+            this.onItemPress(event);
+            event.stopPropagation();
          }
       }
       
-      private function onItemClick(param1:Event) : void
+      private function onItemClick(aEvent:Event) : void
       {
          this.m_IgnoreMouse = false;
          if(this.m_WheelSelectionScroll && this.m_uiController == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
          {
-            if((param1.target as BSScrollingListEntry).itemIndex != this.m_SelectedIndex)
+            if((aEvent.target as BSScrollingListEntry).itemIndex != this.m_SelectedIndex)
             {
-               this.selectedIndex = (param1.target as BSScrollingListEntry).itemIndex;
+               this.selectedIndex = (aEvent.target as BSScrollingListEntry).itemIndex;
             }
             else
             {
@@ -770,7 +768,7 @@ package Shared.AS3
                {
                   dispatchEvent(new Event(ITEM_CLICKED,true,true));
                }
-               this.onItemPress(param1);
+               this.onItemPress(aEvent);
             }
          }
          else
@@ -779,11 +777,11 @@ package Shared.AS3
             {
                dispatchEvent(new Event(ITEM_CLICKED,true,true));
             }
-            this.onItemPress(param1);
+            this.onItemPress(aEvent);
          }
       }
       
-      public function onItemPress(param1:Event) : void
+      public function onItemPress(eEvent:Event) : void
       {
          if(!this.m_DisableInput && !this.m_DisableSelection && this.m_SelectedIndex != -1)
          {
@@ -795,32 +793,32 @@ package Shared.AS3
          }
       }
       
-      private function onItemMouseOver(param1:MouseEvent) : void
+      private function onItemMouseOver(aEvent:MouseEvent) : void
       {
          if(!this.m_DisableInput && !this.m_DisableSelection && !this.m_WheelSelectionScroll && !this.m_IgnoreMouse && this.m_uiController == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
          {
             this.m_NavChangeFromInput = true;
-            this.selectedIndex = (param1.currentTarget as BSScrollingListEntry).itemIndex;
+            this.selectedIndex = (aEvent.currentTarget as BSScrollingListEntry).itemIndex;
             dispatchEvent(new Event(MOUSE_OVER_ITEM,true,true));
          }
       }
       
-      private function onMouseMove(param1:MouseEvent) : void
+      private function onMouseMove(aEvent:MouseEvent) : void
       {
          this.m_IgnoreMouse = false;
       }
       
-      private function onMouseWheel(param1:MouseEvent) : void
+      private function onMouseWheel(aEvent:MouseEvent) : void
       {
-         var _loc2_:* = false;
+         var posAdd:* = false;
          this.m_IgnoreMouse = false;
          if(!this.m_DisableInput && !this.m_DisableMouseWheel && this.m_uiController == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
          {
             this.m_NavChangeFromInput = true;
-            _loc2_ = param1.delta < 0;
+            posAdd = aEvent.delta < 0;
             if(this.m_WheelSelectionScroll)
             {
-               if(_loc2_)
+               if(posAdd)
                {
                   this.m_LastNavDirection = this.m_ScrollVertical ? int(Keyboard.UP) : int(Keyboard.RIGHT);
                   ++this.selectedIndex;
@@ -836,103 +834,102 @@ package Shared.AS3
                this.m_QueueSelectUnderMouse = true;
                if(this.m_ScrollVertical)
                {
-                  this.scrollRow(_loc2_);
+                  this.scrollRow(posAdd);
                }
                else
                {
-                  this.scrollCol(_loc2_);
+                  this.scrollCol(posAdd);
                }
             }
-            param1.stopPropagation();
+            aEvent.stopPropagation();
          }
       }
       
-      public function scrollRow(param1:Boolean, param2:* = false) : void
+      public function scrollRow(aAdd:Boolean, aWrap:* = false) : void
       {
-         var _loc3_:int = param1 ? this.m_RowScrollPos + 1 : int(this.m_RowScrollPos - 1);
-         if(param2)
+         var row:int = aAdd ? this.m_RowScrollPos + 1 : int(this.m_RowScrollPos - 1);
+         if(aWrap)
          {
-            if(_loc3_ < 0)
+            if(row < 0)
             {
-               _loc3_ = this.m_RowScrollPosMax - 1;
+               row = this.m_RowScrollPosMax - 1;
             }
-            else if(_loc3_ >= this.m_RowScrollPosMax)
+            else if(row >= this.m_RowScrollPosMax)
             {
-               _loc3_ = 0;
-            }
-         }
-         else
-         {
-            _loc3_ = Math.max(0,_loc3_);
-         }
-         this.rowScrollPos = _loc3_;
-      }
-      
-      public function scrollCol(param1:Boolean, param2:* = false) : void
-      {
-         var _loc3_:int = param1 ? this.m_ColScrollPos + 1 : int(this.m_ColScrollPos - 1);
-         if(param2)
-         {
-            if(_loc3_ < 0)
-            {
-               _loc3_ = this.m_ColScrollPosMax - 1;
-            }
-            else if(_loc3_ >= this.m_ColScrollPosMax)
-            {
-               _loc3_ = 0;
+               row = 0;
             }
          }
          else
          {
-            _loc3_ = Math.max(0,_loc3_);
+            row = Math.max(0,row);
          }
-         this.colScrollPos = _loc3_;
+         this.rowScrollPos = row;
       }
       
-      private function onSliderValueChange(param1:CustomEvent) : void
+      public function scrollCol(aAdd:Boolean, aWrap:* = false) : void
       {
-         if(this.m_ScrollVertical && this.ScrollVert_mc != null && param1.target == this.ScrollVert_mc)
+         var col:int = aAdd ? this.m_ColScrollPos + 1 : int(this.m_ColScrollPos - 1);
+         if(aWrap)
          {
-            this.rowScrollPos = param1.params as uint;
+            if(col < 0)
+            {
+               col = this.m_ColScrollPosMax - 1;
+            }
+            else if(col >= this.m_ColScrollPosMax)
+            {
+               col = 0;
+            }
          }
-         if(!this.m_ScrollVertical && this.ScrollHoriz_mc != null && param1.target == this.ScrollHoriz_mc)
+         else
          {
-            this.colScrollPos = param1.params as uint;
+            col = Math.max(0,col);
+         }
+         this.colScrollPos = col;
+      }
+      
+      private function onSliderValueChange(aEvent:CustomEvent) : void
+      {
+         if(this.m_ScrollVertical && this.ScrollVert_mc != null && aEvent.target == this.ScrollVert_mc)
+         {
+            this.rowScrollPos = aEvent.params as uint;
+         }
+         if(!this.m_ScrollVertical && this.ScrollHoriz_mc != null && aEvent.target == this.ScrollHoriz_mc)
+         {
+            this.colScrollPos = aEvent.params as uint;
          }
       }
       
-      private function onPlatformChange(param1:PlatformChangeEvent) : void
+      private function onPlatformChange(aEvent:PlatformChangeEvent) : void
       {
-         this.m_uiController = param1.uiController;
+         this.m_uiController = aEvent.uiController;
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
-         var e:Event = param1;
          if(this.ScrollUp_mc != null)
          {
-            this.ScrollUp_mc.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):*
+            this.ScrollUp_mc.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):*
             {
                scrollRow(false);
             });
          }
          if(this.ScrollDown_mc != null)
          {
-            this.ScrollDown_mc.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):*
+            this.ScrollDown_mc.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):*
             {
                scrollRow(true);
             });
          }
          if(this.ScrollLeft_mc != null)
          {
-            this.ScrollLeft_mc.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):*
+            this.ScrollLeft_mc.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):*
             {
                scrollCol(false);
             });
          }
          if(this.ScrollRight_mc != null)
          {
-            this.ScrollRight_mc.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):*
+            this.ScrollRight_mc.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):*
             {
                scrollCol(true);
             });
@@ -946,10 +943,8 @@ package Shared.AS3
          stage.focus = this;
       }
       
-      protected function populateEntryClip(param1:BSScrollingListEntry, param2:Object) : *
+      protected function populateEntryClip(aEntryClip:BSScrollingListEntry, aEntryData:Object) : *
       {
-         var aEntryClip:BSScrollingListEntry = param1;
-         var aEntryData:Object = param2;
          if(aEntryClip != null)
          {
             aEntryClip.selected = aEntryData == this.selectedEntry && this.m_ShowSelectedItem;
@@ -970,13 +965,13 @@ package Shared.AS3
       
       private function calculateListScrollMax() : void
       {
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
+         var totalRows:uint = 0;
+         var totalCols:uint = 0;
          if(this.m_ScrollVertical)
          {
             this.m_ColScrollPosMax = 0;
-            _loc1_ = Math.ceil(this.m_Entries.length / this.m_MaxCols);
-            this.m_RowScrollPosMax = _loc1_ - this.m_MaxRows;
+            totalRows = Math.ceil(this.m_Entries.length / this.m_MaxCols);
+            this.m_RowScrollPosMax = totalRows - this.m_MaxRows;
             if(this.ScrollVert_mc != null)
             {
                this.ScrollVert_mc.dispatchOnValueChange = false;
@@ -988,8 +983,8 @@ package Shared.AS3
          else
          {
             this.m_RowScrollPosMax = 0;
-            _loc2_ = Math.ceil(this.m_Entries.length / this.m_MaxRows);
-            this.m_ColScrollPosMax = _loc2_ - this.m_MaxCols;
+            totalCols = Math.ceil(this.m_Entries.length / this.m_MaxRows);
+            this.m_ColScrollPosMax = totalCols - this.m_MaxCols;
             if(this.ScrollHoriz_mc != null)
             {
                this.ScrollHoriz_mc.dispatchOnValueChange = false;
@@ -1012,26 +1007,26 @@ package Shared.AS3
          return new this.m_ListItemClass() as BSScrollingListEntry;
       }
       
-      private function createEntryClip(param1:uint, param2:uint, param3:uint) : Boolean
+      private function createEntryClip(aIndex:uint, aRow:uint, aCol:uint) : Boolean
       {
-         var _loc4_:BSScrollingListEntry = this.getNewEntryClip();
-         if(_loc4_ != null)
+         var newClip:BSScrollingListEntry = this.getNewEntryClip();
+         if(newClip != null)
          {
-            _loc4_.parentClip = this.parent as MovieClip;
-            _loc4_.clipIndex = param1;
-            _loc4_.clipRow = param2;
-            _loc4_.clipCol = param3;
-            _loc4_.addEventListener(MouseEvent.MOUSE_OVER,this.onItemMouseOver);
-            _loc4_.addEventListener(MouseEvent.CLICK,this.onItemClick);
+            newClip.parentClip = this.parent as MovieClip;
+            newClip.clipIndex = aIndex;
+            newClip.clipRow = aRow;
+            newClip.clipCol = aCol;
+            newClip.addEventListener(MouseEvent.MOUSE_OVER,this.onItemMouseOver);
+            newClip.addEventListener(MouseEvent.CLICK,this.onItemClick);
             if(this.m_EntriesLayeredInOrder)
             {
-               this.EntryHolder_mc.addChildAt(_loc4_,0);
+               this.EntryHolder_mc.addChildAt(newClip,0);
             }
             else
             {
-               this.EntryHolder_mc.addChild(_loc4_);
+               this.EntryHolder_mc.addChild(newClip);
             }
-            this.m_ClipVector.push(_loc4_);
+            this.m_ClipVector.push(newClip);
             return true;
          }
          trace("BCGridList::createEntryClip -- m_ListItemClass is invalid or does not derive from BSScrollingListEntry.");
@@ -1040,63 +1035,55 @@ package Shared.AS3
       
       private function createEntryClips() : void
       {
-         var _loc4_:BSScrollingListEntry = null;
+         var clip:BSScrollingListEntry = null;
          while(this.EntryHolder_mc.numChildren > 0)
          {
-            _loc4_ = this.getClipByIndex(0);
-            _loc4_.Dtor();
+            clip = this.getClipByIndex(0);
+            clip.Dtor();
             this.EntryHolder_mc.removeChildAt(0);
          }
          this.m_ClipVector = new Vector.<BSScrollingListEntry>();
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
+         var clipIndex:uint = 0;
+         var curRow:uint = 0;
+         var curCol:uint = 0;
          if(this.m_ScrollVertical)
          {
-            _loc2_ = 0;
-            while(_loc2_ < this.m_MaxRows)
+            for(curRow = 0; curRow < this.m_MaxRows; curRow++)
             {
-               _loc3_ = 0;
-               while(_loc3_ < this.m_MaxCols)
+               for(curCol = 0; curCol < this.m_MaxCols; curCol++)
                {
-                  if(this.createEntryClip(_loc1_,_loc2_,_loc3_))
+                  if(this.createEntryClip(clipIndex,curRow,curCol))
                   {
-                     _loc1_++;
+                     clipIndex++;
                   }
-                  _loc3_++;
                }
-               _loc2_++;
             }
          }
          else
          {
-            _loc3_ = 0;
-            while(_loc3_ < this.m_MaxCols)
+            for(curCol = 0; curCol < this.m_MaxCols; curCol++)
             {
-               _loc2_ = 0;
-               while(_loc2_ < this.m_MaxRows)
+               for(curRow = 0; curRow < this.m_MaxRows; curRow++)
                {
-                  if(this.createEntryClip(_loc1_,_loc2_,_loc3_))
+                  if(this.createEntryClip(clipIndex,curRow,curCol))
                   {
-                     _loc1_++;
+                     clipIndex++;
                   }
-                  _loc2_++;
                }
-               _loc3_++;
             }
          }
-         this.m_MaxDisplayedItems = _loc1_;
+         this.m_MaxDisplayedItems = clipIndex;
          this.m_NeedRecreateClips = false;
       }
       
-      public function getClipByIndex(param1:uint) : BSScrollingListEntry
+      public function getClipByIndex(aIndex:uint) : BSScrollingListEntry
       {
-         return param1 < this.EntryHolder_mc.numChildren ? this.m_ClipVector[param1] as BSScrollingListEntry : null;
+         return aIndex < this.EntryHolder_mc.numChildren ? this.m_ClipVector[aIndex] as BSScrollingListEntry : null;
       }
       
-      public function ToggleActiveState(param1:Boolean) : void
+      public function ToggleActiveState(aActive:Boolean) : void
       {
-         this.m_Active = param1;
+         this.m_Active = aActive;
          if(Boolean(this.ScrollUp_mc) && Boolean(this.ScrollDown_mc))
          {
             if(this.m_AnimatedArrows)
@@ -1190,119 +1177,115 @@ package Shared.AS3
       
       private function selectItemUnderMouse() : void
       {
-         var _loc1_:uint = 0;
-         var _loc2_:BSScrollingListEntry = null;
-         var _loc3_:MovieClip = null;
-         var _loc4_:Point = null;
+         var i:uint = 0;
+         var curClip:BSScrollingListEntry = null;
+         var hitTarget:MovieClip = null;
+         var testPoint:Point = null;
          if(!this.m_DisableSelection && !this.m_DisableInput && this.m_uiController == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
          {
             this.m_QueueSelectUnderMouse = false;
-            _loc1_ = 0;
-            while(_loc1_ < this.m_MaxDisplayedItems)
+            for(i = 0; i < this.m_MaxDisplayedItems; i++)
             {
-               _loc2_ = this.m_ClipVector[_loc1_];
-               _loc3_ = _loc2_ as MovieClip;
-               if(_loc2_.HitTarget_mc != null)
+               curClip = this.m_ClipVector[i];
+               hitTarget = curClip as MovieClip;
+               if(curClip.HitTarget_mc != null)
                {
-                  _loc3_ = _loc2_.HitTarget_mc;
+                  hitTarget = curClip.HitTarget_mc;
                }
-               else if(_loc2_.Sizer_mc != null)
+               else if(curClip.Sizer_mc != null)
                {
-                  _loc3_ = _loc2_.Sizer_mc;
+                  hitTarget = curClip.Sizer_mc;
                }
-               _loc4_ = localToGlobal(new Point(mouseX,mouseY));
-               if(_loc3_.hitTestPoint(_loc4_.x,_loc4_.y,false))
+               testPoint = localToGlobal(new Point(mouseX,mouseY));
+               if(hitTarget.hitTestPoint(testPoint.x,testPoint.y,false))
                {
-                  this.selectedIndex = this.m_ListStartIndex + _loc1_;
+                  this.selectedIndex = this.m_ListStartIndex + i;
                }
-               _loc1_++;
             }
          }
       }
       
       protected function redrawList() : void
       {
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc12_:uint = 0;
-         var _loc13_:BSScrollingListEntry = null;
+         var startIndex:uint = 0;
+         var endIndex:uint = 0;
+         var clipIndex:uint = 0;
+         var clipWidth:Number = NaN;
+         var clipHeight:Number = NaN;
+         var xPos:Number = NaN;
+         var yPos:Number = NaN;
+         var xPosMax:Number = NaN;
+         var yPosMax:Number = NaN;
+         var nextX:Number = NaN;
+         var nextY:Number = NaN;
+         var i:uint = 0;
+         var curClip:BSScrollingListEntry = null;
          this.m_DisplayWidth = 0;
          this.m_DisplayHeight = 0;
          this.m_DisplayedItemCount = 0;
          this.m_SelectedClip = null;
          if(this.m_MaxDisplayedItems > 0)
          {
-            _loc1_ = this.m_ListStartIndex;
-            _loc2_ = this.m_Entries.length;
-            _loc3_ = 0;
-            _loc6_ = 0;
-            _loc7_ = 0;
-            _loc8_ = 0;
-            _loc9_ = 0;
-            _loc10_ = 0;
-            _loc11_ = 0;
-            _loc12_ = 0;
-            while(_loc12_ < this.m_MaxDisplayedItems)
+            startIndex = this.m_ListStartIndex;
+            endIndex = this.m_Entries.length;
+            clipIndex = 0;
+            xPos = 0;
+            yPos = 0;
+            xPosMax = 0;
+            yPosMax = 0;
+            nextX = 0;
+            nextY = 0;
+            for(i = 0; i < this.m_MaxDisplayedItems; i++)
             {
-               _loc13_ = this.m_ClipVector[_loc12_];
-               if(_loc13_ != null)
+               curClip = this.m_ClipVector[i];
+               if(curClip != null)
                {
-                  if(_loc12_ + _loc1_ < _loc2_)
+                  if(i + startIndex < endIndex)
                   {
-                     _loc13_.itemIndex = _loc12_ + _loc1_;
-                     this.populateEntryClip(_loc13_,this.m_Entries[_loc12_ + _loc1_]);
+                     curClip.itemIndex = i + startIndex;
+                     this.populateEntryClip(curClip,this.m_Entries[i + startIndex]);
                      ++this.m_DisplayedItemCount;
-                     if(_loc13_.Sizer_mc != null)
+                     if(curClip.Sizer_mc != null)
                      {
-                        _loc4_ = _loc13_.Sizer_mc.width;
-                        _loc5_ = _loc13_.Sizer_mc.height;
+                        clipWidth = curClip.Sizer_mc.width;
+                        clipHeight = curClip.Sizer_mc.height;
                      }
                      else
                      {
-                        _loc4_ = _loc13_.width;
-                        _loc5_ = _loc13_.height;
+                        clipWidth = curClip.width;
+                        clipHeight = curClip.height;
                      }
-                     _loc13_.visible = true;
+                     curClip.visible = true;
                      if(this.useVariableWidth)
                      {
-                        _loc13_.x = _loc13_.clipCol != 0 ? _loc10_ : 0;
+                        curClip.x = curClip.clipCol != 0 ? nextX : 0;
                      }
                      else
                      {
-                        _loc13_.x = _loc4_ * _loc13_.clipCol;
+                        curClip.x = clipWidth * curClip.clipCol;
                      }
                      if(this.useVariableHeight)
                      {
-                        _loc13_.y = _loc11_;
+                        curClip.y = nextY;
                      }
                      else
                      {
-                        _loc13_.y = _loc5_ * _loc13_.clipRow;
+                        curClip.y = clipHeight * curClip.clipRow;
                      }
-                     _loc8_ = Math.max(_loc8_,_loc13_.x + _loc4_);
-                     _loc9_ = Math.max(_loc9_,_loc13_.y + _loc5_);
+                     xPosMax = Math.max(xPosMax,curClip.x + clipWidth);
+                     yPosMax = Math.max(yPosMax,curClip.y + clipHeight);
                   }
                   else
                   {
-                     _loc13_.visible = false;
-                     _loc13_.itemIndex = int.MAX_VALUE;
+                     curClip.visible = false;
+                     curClip.itemIndex = int.MAX_VALUE;
                   }
-                  _loc10_ = _loc13_.x + _loc4_;
-                  _loc11_ = _loc13_.y + _loc5_;
+                  nextX = curClip.x + clipWidth;
+                  nextY = curClip.y + clipHeight;
                }
-               _loc12_++;
             }
-            this.m_DisplayWidth = _loc8_;
-            this.m_DisplayHeight = _loc9_;
+            this.m_DisplayWidth = xPosMax;
+            this.m_DisplayHeight = yPosMax;
             this.updateScrollIndicators();
          }
          else

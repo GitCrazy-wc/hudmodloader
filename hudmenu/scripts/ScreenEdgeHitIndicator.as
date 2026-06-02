@@ -4,7 +4,7 @@ package
    import Shared.AS3.Data.FromClientDataEvent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1843")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1850")]
    public class ScreenEdgeHitIndicator extends MovieClip
    {
       
@@ -22,44 +22,42 @@ package
          BSUIDataManager.Subscribe("HitIndicators",this.onHitIndicatorsUpdate);
       }
       
-      private function onHitIndicatorsUpdate(param1:FromClientDataEvent) : void
+      private function onHitIndicatorsUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc2_:Array = param1.data.hits;
-         var _loc3_:uint = 0;
-         var _loc4_:Number = 0;
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc2_.length)
+         var hitsArray:Array = arEvent.data.hits;
+         var hitCount:uint = 0;
+         var thetaSum:Number = 0;
+         for(var i:uint = 0; i < hitsArray.length; i++)
          {
-            if(Boolean(_loc2_[_loc5_].isNew) && !_loc2_[_loc5_].reducedPvpDamage)
+            if(Boolean(hitsArray[i].isNew) && !hitsArray[i].reducedPvpDamage)
             {
-               _loc3_++;
-               _loc4_ += _loc2_[_loc5_].theta;
+               hitCount++;
+               thetaSum += hitsArray[i].theta;
             }
-            _loc5_++;
          }
-         var _loc6_:Number = _loc4_ / _loc3_;
-         _loc6_ = (_loc6_ + 90) % 360;
-         if(_loc6_ < 0)
+         var thetaAverage:Number = thetaSum / hitCount;
+         thetaAverage = (thetaAverage + 90) % 360;
+         if(thetaAverage < 0)
          {
-            _loc6_ = 360 - Math.abs(_loc6_);
+            thetaAverage = 360 - Math.abs(thetaAverage);
          }
-         var _loc7_:Boolean = _loc6_ <= 45 || _loc6_ >= 315;
-         var _loc8_:Boolean = _loc6_ >= 135 && _loc6_ <= 225;
-         var _loc9_:Boolean = _loc6_ >= 225 && _loc6_ <= 315;
-         var _loc10_:Boolean = _loc6_ >= 45 && _loc6_ <= 135;
-         if(_loc7_)
+         var topVis:Boolean = thetaAverage <= 45 || thetaAverage >= 315;
+         var botVis:Boolean = thetaAverage >= 135 && thetaAverage <= 225;
+         var leftVis:Boolean = thetaAverage >= 225 && thetaAverage <= 315;
+         var rightVis:Boolean = thetaAverage >= 45 && thetaAverage <= 135;
+         if(topVis)
          {
             this.Top_mc.gotoAndPlay("hit");
          }
-         if(_loc8_)
+         if(botVis)
          {
             this.Bottom_mc.gotoAndPlay("hit");
          }
-         if(_loc9_)
+         if(leftVis)
          {
             this.Left_mc.gotoAndPlay("hit");
          }
-         if(_loc10_)
+         if(rightVis)
          {
             this.Right_mc.gotoAndPlay("hit");
          }

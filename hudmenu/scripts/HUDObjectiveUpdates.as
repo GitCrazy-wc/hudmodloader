@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol737")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol743")]
    public dynamic class HUDObjectiveUpdates extends BSUIComponent
    {
       
@@ -28,19 +28,17 @@ package
       
       public function HUDObjectiveUpdates()
       {
-         var _loc2_:HUDObjectiveItem = null;
+         var newObjective:HUDObjectiveItem = null;
          super();
          this.ObjectiveDataV = new Vector.<HUDObjectiveItemData>();
          this.ShownObjectivesV = new Vector.<HUDObjectiveItem>();
          this.ObjectiveItemPoolV = new Vector.<HUDObjectiveItem>();
          this.isShowingXP = false;
-         var _loc1_:int = 0;
-         while(_loc1_ < MAX_SHOWN)
+         for(var i:int = 0; i < MAX_SHOWN; i++)
          {
-            _loc2_ = new HUDObjectiveItem();
-            this.ObjectiveItemPoolV.push(_loc2_);
-            addChild(_loc2_);
-            _loc1_++;
+            newObjective = new HUDObjectiveItem();
+            this.ObjectiveItemPoolV.push(newObjective);
+            addChild(newObjective);
          }
       }
       
@@ -49,9 +47,9 @@ package
          return this._topYPosition;
       }
       
-      public function set topYPosition(param1:Number) : *
+      public function set topYPosition(aValue:Number) : *
       {
-         this._topYPosition = param1;
+         this._topYPosition = aValue;
       }
       
       public function get MostRecentItem() : HUDObjectiveItem
@@ -69,90 +67,88 @@ package
          return this._maxClipHeight;
       }
       
-      public function set maxClipHeight_Inspectable(param1:Number) : void
+      public function set maxClipHeight_Inspectable(aMaxClipHeight:Number) : void
       {
-         this._maxClipHeight = param1;
+         this._maxClipHeight = aMaxClipHeight;
       }
       
       public function get ObjectiveFadingIn() : Boolean
       {
-         var _loc1_:* = false;
+         var bfadingin:* = false;
          if(this.ShownObjectivesV.length > 0)
          {
-            _loc1_ = !this.MostRecentItem.fullyFadedIn;
+            bfadingin = !this.MostRecentItem.fullyFadedIn;
          }
-         return _loc1_;
+         return bfadingin;
       }
       
       public function get ObjectivesScrolling() : Boolean
       {
-         var _loc1_:Boolean = false;
-         var _loc2_:int = 0;
-         while(_loc2_ < this.ShownObjectivesV.length)
+         var bscrolling:Boolean = false;
+         for(var i:int = 0; i < this.ShownObjectivesV.length; i++)
          {
-            if(this.GetTargetYForIndex(_loc2_) - this.ShownObjectivesV[_loc2_].y > 0.5)
+            if(this.GetTargetYForIndex(i) - this.ShownObjectivesV[i].y > 0.5)
             {
-               _loc1_ = true;
+               bscrolling = true;
                break;
             }
-            _loc2_++;
          }
-         return _loc1_;
+         return bscrolling;
       }
       
       public function get CanFadeInMostRecent() : Boolean
       {
-         var _loc2_:HUDObjectiveItem = null;
-         var _loc3_:Number = NaN;
-         var _loc1_:* = true;
+         var mostRecent:HUDObjectiveItem = null;
+         var mostRecentBottom:Number = NaN;
+         var bcanfadein:* = true;
          if(this.ShownObjectivesV.length > 0 && this.mostRecentIndex == this.ShownObjectivesV.length - 1)
          {
-            _loc1_ = this.MostRecentItem.CanFadeIn();
+            bcanfadein = this.MostRecentItem.CanFadeIn();
          }
          else if(this.ShownObjectivesV.length > 1)
          {
-            _loc2_ = this.MostRecentItem;
-            if(_loc2_.CanFadeIn())
+            mostRecent = this.MostRecentItem;
+            if(mostRecent.CanFadeIn())
             {
-               _loc3_ = _loc2_.y + _loc2_.height + Y_SPACING;
-               _loc1_ = this.ShownObjectivesV[this.mostRecentIndex + 1].y >= _loc3_;
+               mostRecentBottom = mostRecent.y + mostRecent.height + Y_SPACING;
+               bcanfadein = this.ShownObjectivesV[this.mostRecentIndex + 1].y >= mostRecentBottom;
             }
             else
             {
-               _loc1_ = false;
+               bcanfadein = false;
             }
          }
-         return _loc1_;
+         return bcanfadein;
       }
       
       private function AddObjectiveAtBottom() : *
       {
-         var _loc1_:HUDObjectiveItem = this.ObjectiveItemPoolV.shift();
-         _loc1_.data = this.ObjectiveDataV.shift();
-         _loc1_.redrawUIComponent();
-         this.ShownObjectivesV.push(_loc1_);
+         var item:HUDObjectiveItem = this.ObjectiveItemPoolV.shift();
+         item.data = this.ObjectiveDataV.shift();
+         item.redrawUIComponent();
+         this.ShownObjectivesV.push(item);
          this.mostRecentIndex = this.ShownObjectivesV.length - 1;
-         _loc1_.y = this.GetTargetYForIndex(this.mostRecentIndex);
+         item.y = this.GetTargetYForIndex(this.mostRecentIndex);
       }
       
-      private function AddObjectiveBeforeIndex(param1:Number) : *
+      private function AddObjectiveBeforeIndex(arIndex:Number) : *
       {
-         var _loc2_:HUDObjectiveItem = this.ObjectiveItemPoolV.shift();
-         _loc2_.data = this.ObjectiveDataV.shift();
-         _loc2_.redrawUIComponent();
-         _loc2_.y = this.GetTargetYForIndex(param1);
-         this.ShownObjectivesV.splice(param1,0,_loc2_);
-         this.mostRecentIndex = param1;
+         var item:HUDObjectiveItem = this.ObjectiveItemPoolV.shift();
+         item.data = this.ObjectiveDataV.shift();
+         item.redrawUIComponent();
+         item.y = this.GetTargetYForIndex(arIndex);
+         this.ShownObjectivesV.splice(arIndex,0,item);
+         this.mostRecentIndex = arIndex;
       }
       
-      private function RemoveObjective(param1:HUDObjectiveItem) : *
+      private function RemoveObjective(aObjective:HUDObjectiveItem) : *
       {
-         param1.data = null;
-         param1.ResetFadeState();
-         param1.visible = false;
-         var _loc2_:int = int(this.ShownObjectivesV.indexOf(param1,0));
-         this.ShownObjectivesV.splice(_loc2_,1);
-         this.ObjectiveItemPoolV.push(param1);
+         aObjective.data = null;
+         aObjective.ResetFadeState();
+         aObjective.visible = false;
+         var objectiveIndex:int = int(this.ShownObjectivesV.indexOf(aObjective,0));
+         this.ShownObjectivesV.splice(objectiveIndex,1);
+         this.ObjectiveItemPoolV.push(aObjective);
       }
       
       public function get CanShowXP() : Boolean
@@ -179,9 +175,9 @@ package
          return this.ShownObjectivesV.length > 0 ? this._mostRecentIndex : -1;
       }
       
-      public function set mostRecentIndex(param1:Number) : void
+      public function set mostRecentIndex(value:Number) : void
       {
-         this._mostRecentIndex = param1;
+         this._mostRecentIndex = value;
       }
       
       public function get isShowingXP() : Boolean
@@ -189,9 +185,9 @@ package
          return this._isShowingXP;
       }
       
-      public function set isShowingXP(param1:Boolean) : void
+      public function set isShowingXP(value:Boolean) : void
       {
-         this._isShowingXP = param1;
+         this._isShowingXP = value;
          if(this._isShowingXP)
          {
             this.topYPosition = POSITION_WHEN_SHOWING_XP;
@@ -206,27 +202,25 @@ package
          }
       }
       
-      public function GetTargetYForIndex(param1:int) : Number
+      public function GetTargetYForIndex(index:int) : Number
       {
-         var _loc2_:Number = this.topYPosition;
-         var _loc3_:int = 0;
-         while(_loc3_ < param1)
+         var outval:Number = this.topYPosition;
+         for(var i:int = 0; i < index; i++)
          {
-            _loc2_ += this.ShownObjectivesV[_loc3_].height + Y_SPACING;
-            _loc3_++;
+            outval += this.ShownObjectivesV[i].height + Y_SPACING;
          }
-         return _loc2_;
+         return outval;
       }
       
-      internal function ScrollItems(param1:HUDObjectiveItem, param2:int, param3:Vector.<HUDObjectiveItem>) : Boolean
+      internal function ScrollItems(item:HUDObjectiveItem, index:int, vector:Vector.<HUDObjectiveItem>) : Boolean
       {
-         var _loc4_:Number = this.GetTargetYForIndex(param2);
-         if(_loc4_ > param1.y)
+         var target:Number = this.GetTargetYForIndex(index);
+         if(target > item.y)
          {
-            param1.y += 1;
-            if(param1.y > _loc4_)
+            item.y += 1;
+            if(item.y > target)
             {
-               param1.y = _loc4_;
+               item.y = target;
             }
          }
          return true;

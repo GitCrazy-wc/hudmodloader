@@ -4,7 +4,7 @@ package
    import flash.text.TextField;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol962")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol968")]
    public dynamic class HUDChatWidget extends BSUIComponent
    {
       
@@ -27,11 +27,9 @@ package
       public function updateChat() : *
       {
          this.ChatText_tf.text = "";
-         var _loc1_:Number = 0;
-         while(_loc1_ < this.ChatMessageArray.length)
+         for(var i:Number = 0; i < this.ChatMessageArray.length; i++)
          {
-            this.ChatText_tf.appendText(this.ChatMessageArray[_loc1_]);
-            _loc1_++;
+            this.ChatText_tf.appendText(this.ChatMessageArray[i]);
          }
          this.ChatText_tf.setSelection(this.ChatText_tf.length,this.ChatText_tf.length);
       }
@@ -42,12 +40,12 @@ package
          this.updateChat();
       }
       
-      public function addChatMessage(param1:String, param2:String = "") : *
+      public function addChatMessage(ChatMessage:String, Sender:String = "") : *
       {
-         var _loc3_:* = new String();
+         var FormattedMessage:* = new String();
          setTimeout(this.removeChatMessage,this.DefaultOnscreenTime);
-         _loc3_ = param2 + ": " + param1 + "\n";
-         this.ChatMessageArray.push(_loc3_);
+         FormattedMessage = Sender + ": " + ChatMessage + "\n";
+         this.ChatMessageArray.push(FormattedMessage);
          this.updateChat();
       }
    }

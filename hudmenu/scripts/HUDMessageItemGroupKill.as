@@ -2,7 +2,7 @@ package
 {
    import Shared.GlobalFunc;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol300")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol304")]
    public class HUDMessageItemGroupKill extends HUDMessageItemBase
    {
       
@@ -16,7 +16,7 @@ package
       
       override public function redrawUIComponent() : void
       {
-         var _loc1_:uint = 0;
+         var teamIndex:uint = 0;
          if(data != null)
          {
             visible = true;
@@ -29,11 +29,9 @@ package
             {
                Internal_mc.gotoAndStop("friendly");
             }
-            _loc1_ = 0;
-            while(_loc1_ < MAX_TEAMS)
+            for(teamIndex = 0; teamIndex < MAX_TEAMS; teamIndex++)
             {
-               GlobalFunc.SetText(Internal_mc["Team" + _loc1_ + "Score_tf"],m_Data.data.scores[_loc1_],true);
-               _loc1_++;
+               GlobalFunc.SetText(Internal_mc["Team" + teamIndex + "Score_tf"],m_Data.data.scores[teamIndex],true);
             }
          }
          else

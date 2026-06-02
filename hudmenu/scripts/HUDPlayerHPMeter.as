@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1677")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1684")]
    public class HUDPlayerHPMeter extends HealthMeter
    {
       
@@ -46,20 +46,20 @@ package
          addEventListener(EVENT_GLOW_ROLLOFF_COMPLETE,this.onGlowRollOffComplete);
       }
       
-      public function updateGlowMeter(param1:Number) : void
+      public function updateGlowMeter(aVal:Number) : void
       {
-         if(!this.GlowMeter_mc.visible && param1 == 0)
+         if(!this.GlowMeter_mc.visible && aVal == 0)
          {
             return;
          }
-         this.m_GlowMeterPercent = Math.max(0,param1);
+         this.m_GlowMeterPercent = Math.max(0,aVal);
          if(!this.GlowMeter_mc.visible)
          {
             this.GlowMeter_mc.visible = true;
             this.GlowMeter_mc.Glow_mc.gotoAndPlay("rollOn");
             this.m_MeterTween = new Tween(this.GlowMeter_mc.Meter_mc.Fill_mc,"x",None.easeNone,MIN_METER_X,MIN_METER_X + METER_X_DIFFERENCE * this.m_GlowMeterPercent,ANIM_TIME / 1000,true);
          }
-         else if(param1 == 0)
+         else if(aVal == 0)
          {
             this.m_MeterTween = new Tween(this.GlowMeter_mc.Meter_mc.Fill_mc,"x",None.easeNone,this.GlowMeter_mc.Meter_mc.Fill_mc.x,MIN_METER_X,ANIM_TIME / 1000,true);
             this.m_MeterTween.addEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
@@ -74,18 +74,18 @@ package
          }
       }
       
-      override public function SetMeterPercent(param1:Number) : *
+      override public function SetMeterPercent(afPercent:Number) : *
       {
-         super.SetMeterPercent(param1);
-         this.PercentText_mc.DisplayText_tf.text = Math.round(param1);
+         super.SetMeterPercent(afPercent);
+         this.PercentText_mc.DisplayText_tf.text = Math.round(afPercent);
       }
       
-      private function onGlowRollOffComplete(param1:Event) : void
+      private function onGlowRollOffComplete(aEvent:Event) : void
       {
          this.GlowMeter_mc.visible = false;
       }
       
-      private function onTweenFinish(param1:TweenEvent) : *
+      private function onTweenFinish(aEvent:TweenEvent) : *
       {
          this.m_MeterTween.removeEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
          this.GlowMeter_mc.Glow_mc.gotoAndPlay("rollOff");

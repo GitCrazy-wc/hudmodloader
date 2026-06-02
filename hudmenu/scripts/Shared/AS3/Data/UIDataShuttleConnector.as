@@ -14,39 +14,39 @@ package Shared.AS3.Data
       
       public function AttachToDataManager() : Boolean
       {
-         var _loc1_:UIDataShuttleConnector = BSUIDataManager.ConnectDataShuttleConnector(this);
-         return _loc1_ == this;
+         var connectedShuttle:UIDataShuttleConnector = BSUIDataManager.ConnectDataShuttleConnector(this);
+         return connectedShuttle == this;
       }
       
-      public function Watch(param1:String, param2:Boolean, param3:UIDataFromClient = null) : UIDataFromClient
+      public function Watch(aProviderName:String, aDoDispatch:Boolean, existingDataShuttle:UIDataFromClient = null) : UIDataFromClient
       {
-         var _loc6_:String = null;
-         var _loc4_:Object = new Object();
-         var _loc5_:UIDataFromClient = param3;
-         if(!_loc5_)
+         var k:String = null;
+         var payload:Object = new Object();
+         var fromClient:UIDataFromClient = existingDataShuttle;
+         if(!fromClient)
          {
-            _loc5_ = new UIDataFromClient(_loc4_);
+            fromClient = new UIDataFromClient(payload);
          }
          else
          {
-            _loc4_ = _loc5_.data;
-            for(_loc6_ in _loc4_)
+            payload = fromClient.data;
+            for(k in payload)
             {
-               _loc4_[_loc6_] = undefined;
+               payload[k] = undefined;
             }
          }
-         if(this._Watch(param1,_loc4_))
+         if(this._Watch(aProviderName,payload))
          {
-            _loc5_.isTest = false;
-            _loc5_.SetReady(param2);
-            return _loc5_;
+            fromClient.isTest = false;
+            fromClient.SetReady(aDoDispatch);
+            return fromClient;
          }
          return null;
       }
       
-      public function onFlush(... rest) : void
+      public function onFlush(... args) : void
       {
-         BSUIDataManager.Flush(rest);
+         BSUIDataManager.Flush(args);
       }
    }
 }

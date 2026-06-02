@@ -13,11 +13,11 @@ package aze.motion.specials
       
       private var delta:Number;
       
-      public function PropertyShortRotation(param1:Object, param2:*, param3:*, param4:EazeSpecial)
+      public function PropertyShortRotation(target:Object, property:*, value:*, next:EazeSpecial)
       {
-         super(param1,param2,param3,param4);
-         this.fvalue = param3[0];
-         this.radius = param3[1] ? Math.PI : 180;
+         super(target,property,value,next);
+         this.fvalue = value[0];
+         this.radius = value[1] ? Math.PI : 180;
       }
       
       public static function register() : void
@@ -25,33 +25,33 @@ package aze.motion.specials
          EazeTween.specialProperties["__short"] = PropertyShortRotation;
       }
       
-      override public function init(param1:Boolean) : void
+      override public function init(reverse:Boolean) : void
       {
-         var _loc2_:Number = NaN;
+         var end:Number = NaN;
          this.start = target[property];
-         if(param1)
+         if(reverse)
          {
-            _loc2_ = this.start;
+            end = this.start;
             target[property] = this.start = this.fvalue;
          }
          else
          {
-            _loc2_ = this.fvalue;
+            end = this.fvalue;
          }
-         while(_loc2_ - this.start > this.radius)
+         while(end - this.start > this.radius)
          {
             this.start += this.radius * 2;
          }
-         while(_loc2_ - this.start < -this.radius)
+         while(end - this.start < -this.radius)
          {
             this.start -= this.radius * 2;
          }
-         this.delta = _loc2_ - this.start;
+         this.delta = end - this.start;
       }
       
-      override public function update(param1:Number, param2:Boolean) : void
+      override public function update(ke:Number, isComplete:Boolean) : void
       {
-         target[property] = this.start + param1 * this.delta;
+         target[property] = this.start + ke * this.delta;
       }
    }
 }

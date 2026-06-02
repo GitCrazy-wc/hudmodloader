@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol542")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol548")]
    public dynamic class ClothesIcon extends MovieClip
    {
       
