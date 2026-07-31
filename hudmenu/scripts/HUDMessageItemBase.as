@@ -16,9 +16,9 @@ package
          super();
       }
       
-      public static function set showBottomRight(param1:Boolean) : void
+      public static function set showBottomRight(aVal:Boolean) : void
       {
-         m_ShowBottomRight = param1;
+         m_ShowBottomRight = aVal;
       }
       
       public function get data() : HUDMessageItemData
@@ -26,9 +26,9 @@ package
          return this.m_Data;
       }
       
-      public function set data(param1:HUDMessageItemData) : void
+      public function set data(value:HUDMessageItemData) : void
       {
-         this.m_Data = param1;
+         this.m_Data = value;
          SetIsDirty();
       }
    }

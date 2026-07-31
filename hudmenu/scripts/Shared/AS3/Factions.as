@@ -25,124 +25,119 @@ package Shared.AS3
          super();
       }
       
-      public static function updateFaceIcon(param1:MovieClip, param2:Object) : void
+      public static function updateFaceIcon(aClip:MovieClip, aFactionInfo:Object) : void
       {
-         param1.gotoAndStop(param2.code);
-         param1.Face_mc.gotoAndStop(getReputationFaceFromFromTier(param2.tier));
-         param1.Backer_mc.gotoAndStop(getReputationBackerFrameFromTier(param2.tier));
+         aClip.gotoAndStop(aFactionInfo.code);
+         aClip.Face_mc.gotoAndStop(getReputationFaceFromFromTier(aFactionInfo.tier));
+         aClip.Backer_mc.gotoAndStop(getReputationBackerFrameFromTier(aFactionInfo.tier));
       }
       
-      public static function getFactionByID(param1:uint, param2:Array) : Object
+      public static function getFactionByID(aFactionID:uint, aFactionInfoArray:Array) : Object
       {
-         var _loc3_:uint = 0;
-         while(_loc3_ < param2.length)
+         for(var i:uint = 0; i < aFactionInfoArray.length; )
          {
-            if(param2[_loc3_].factionID == param1)
+            if(aFactionInfoArray[i].factionID == aFactionID)
             {
-               return param2[_loc3_];
+               return aFactionInfoArray[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
-      public static function buildFactionInfo(param1:Object) : Array
+      public static function buildFactionInfo(aReputationData:Object) : Array
       {
-         var _loc4_:Object = null;
-         var _loc5_:String = null;
-         var _loc6_:int = 0;
-         var _loc7_:uint = 0;
-         var _loc2_:Array = new Array();
-         var _loc3_:Array = ["Crater","Foundation"];
-         var _loc8_:uint = 0;
-         while(_loc8_ < _loc3_.length)
+         var curFaction:Object = null;
+         var curName:String = null;
+         var curRep:int = 0;
+         var curTier:uint = 0;
+         var factionInfo:Array = new Array();
+         var factionNames:Array = ["Crater","Foundation"];
+         for(var factionIndex:uint = 0; factionIndex < factionNames.length; factionIndex++)
          {
-            _loc5_ = _loc3_[_loc8_];
-            _loc4_ = param1["factionData" + _loc5_];
-            _loc6_ = int(param1["playerRep" + _loc5_]);
-            _loc7_ = getReputationTier(_loc6_,_loc4_.reputationTiers);
-            _loc2_[_loc8_] = {
-               "name":_loc4_.szFactionName,
-               "code":_loc3_[_loc8_].toLowerCase(),
-               "tier":_loc7_,
-               "factionID":_loc4_.uFactionID,
-               "tierPercent":getNextReputationTierPercent(_loc6_,_loc7_,_loc4_.reputationTiers)
+            curName = factionNames[factionIndex];
+            curFaction = aReputationData["factionData" + curName];
+            curRep = int(aReputationData["playerRep" + curName]);
+            curTier = getReputationTier(curRep,curFaction.reputationTiers);
+            factionInfo[factionIndex] = {
+               "name":curFaction.szFactionName,
+               "code":factionNames[factionIndex].toLowerCase(),
+               "tier":curTier,
+               "factionID":curFaction.uFactionID,
+               "tierPercent":getNextReputationTierPercent(curRep,curTier,curFaction.reputationTiers)
             };
-            _loc8_++;
          }
-         return _loc2_;
+         return factionInfo;
       }
       
-      public static function getNextReputationTierPercent(param1:int, param2:uint, param3:Array) : Number
+      public static function getNextReputationTierPercent(aReputation:int, aCurrentTier:uint, aTierInfo:Array) : Number
       {
-         if(param2 + 1 >= param3.length)
+         if(aCurrentTier + 1 >= aTierInfo.length)
          {
             return 1;
          }
-         var _loc4_:Object = param3[param2];
-         var _loc5_:Object = param3[param2 + 1];
-         var _loc6_:Number = (param1 - _loc4_.fValue) / (_loc5_.fValue - _loc4_.fValue);
-         return GlobalFunc.Clamp(_loc6_,0,1);
+         var tierInfoCur:Object = aTierInfo[aCurrentTier];
+         var tierInfoNext:Object = aTierInfo[aCurrentTier + 1];
+         var tierPercent:Number = (aReputation - tierInfoCur.fValue) / (tierInfoNext.fValue - tierInfoCur.fValue);
+         return GlobalFunc.Clamp(tierPercent,0,1);
       }
       
-      public static function getReputationTier(param1:int, param2:Array) : uint
+      public static function getReputationTier(aReputation:int, aTierInfo:Array) : uint
       {
-         var _loc3_:uint = param2.length - 1;
-         while(_loc3_ > 0)
+         for(var i:uint = aTierInfo.length - 1; i > 0; i--)
          {
-            if(param1 >= param2[_loc3_].fValue)
+            if(aReputation >= aTierInfo[i].fValue)
             {
                break;
             }
-            _loc3_--;
          }
-         return _loc3_;
+         return i;
       }
       
-      public static function getReputationBackerFrameFromTier(param1:uint) : String
+      public static function getReputationBackerFrameFromTier(aTier:uint) : String
       {
-         var _loc2_:String = "";
-         switch(param1)
+         var useFrame:String = "";
+         switch(aTier)
          {
             case THRESHOLD_TIER_HOSTILE:
-               _loc2_ = "hostile";
+               useFrame = "hostile";
                break;
             case THRESHOLD_TIER_ALLY:
-               _loc2_ = "ally";
+               useFrame = "ally";
                break;
             default:
-               _loc2_ = "neutral";
+               useFrame = "neutral";
          }
-         return _loc2_;
+         return useFrame;
       }
       
-      public static function getReputationFaceFromFromTier(param1:uint) : String
+      public static function getReputationFaceFromFromTier(aTier:uint) : String
       {
-         var _loc2_:String = "";
-         switch(param1)
+         var useFrame:String = "";
+         switch(aTier)
          {
             case THRESHOLD_TIER_HOSTILE:
-               _loc2_ = "hostile";
+               useFrame = "hostile";
                break;
             case THRESHOLD_TIER_CAUTIOUS:
-               _loc2_ = "cautious";
+               useFrame = "cautious";
                break;
             case THRESHOLD_TIER_NEUTRAL:
-               _loc2_ = "neutral";
+               useFrame = "neutral";
                break;
             case THRESHOLD_TIER_COOPERATIVE:
-               _loc2_ = "cooperative";
+               useFrame = "cooperative";
                break;
             case THRESHOLD_TIER_FRIENDLY:
-               _loc2_ = "friendly";
+               useFrame = "friendly";
                break;
             case THRESHOLD_TIER_NEIGHBORLY:
-               _loc2_ = "neighborly";
+               useFrame = "neighborly";
                break;
             case THRESHOLD_TIER_ALLY:
-               _loc2_ = "ally";
+               useFrame = "ally";
          }
-         return _loc2_;
+         return useFrame;
       }
    }
 }

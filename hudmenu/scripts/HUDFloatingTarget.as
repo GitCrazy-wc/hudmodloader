@@ -57,22 +57,22 @@ package
          TextFieldEx.setVerticalAlign(this.Objective_mc.TitleText_tf,TextFieldEx.VALIGN_CENTER);
       }
       
-      public function set questDisplayType(param1:uint) : void
+      public function set questDisplayType(aVal:uint) : void
       {
-         if(this.m_QuestDisplayType != param1)
+         if(this.m_QuestDisplayType != aVal)
          {
-            this.m_QuestDisplayType = param1;
+            this.m_QuestDisplayType = aVal;
             SetIsDirty();
          }
       }
       
-      public function set centerMagnitude(param1:Number) : void
+      public function set centerMagnitude(aMag:Number) : void
       {
-         if(param1 != this.m_CenterMagnitude)
+         if(aMag != this.m_CenterMagnitude)
          {
             SetIsDirty();
          }
-         this.m_CenterMagnitude = param1;
+         this.m_CenterMagnitude = aMag;
       }
       
       public function get centerMagnitude() : Number
@@ -80,13 +80,13 @@ package
          return this.m_CenterMagnitude;
       }
       
-      public function set midDistance(param1:Boolean) : void
+      public function set midDistance(aMidDistance:Boolean) : void
       {
-         if(param1 != this.m_MidDistance)
+         if(aMidDistance != this.m_MidDistance)
          {
             SetIsDirty();
          }
-         this.m_MidDistance = param1;
+         this.m_MidDistance = aMidDistance;
       }
       
       public function get midDistance() : Boolean
@@ -94,13 +94,13 @@ package
          return this.m_MidDistance;
       }
       
-      public function set forceShow(param1:Boolean) : void
+      public function set forceShow(aForceShow:Boolean) : void
       {
-         if(param1 != this.m_ForceShow)
+         if(aForceShow != this.m_ForceShow)
          {
             SetIsDirty();
          }
-         this.m_ForceShow = param1;
+         this.m_ForceShow = aForceShow;
       }
       
       public function get forceShow() : Boolean
@@ -108,13 +108,13 @@ package
          return this.m_ForceShow;
       }
       
-      public function set isAI(param1:Boolean) : void
+      public function set isAI(aIsAI:Boolean) : void
       {
-         if(param1 != this.m_IsAI)
+         if(aIsAI != this.m_IsAI)
          {
             SetIsDirty();
          }
-         this.m_IsAI = param1;
+         this.m_IsAI = aIsAI;
       }
       
       public function get isAI() : Boolean
@@ -122,13 +122,13 @@ package
          return this.m_IsAI;
       }
       
-      public function set distanceFromPlayer(param1:Number) : void
+      public function set distanceFromPlayer(aDistance:Number) : void
       {
-         if(param1 != this.m_DistanceFromPlayer)
+         if(aDistance != this.m_DistanceFromPlayer)
          {
             SetIsDirty();
          }
-         this.m_DistanceFromPlayer = param1;
+         this.m_DistanceFromPlayer = aDistance;
       }
       
       public function get distanceFromPlayer() : Number
@@ -136,13 +136,13 @@ package
          return this.m_DistanceFromPlayer;
       }
       
-      public function set isOnScreen(param1:Boolean) : void
+      public function set isOnScreen(aIsOnScreen:Boolean) : void
       {
-         if(param1 != this.m_IsOnScreen)
+         if(aIsOnScreen != this.m_IsOnScreen)
          {
             SetIsDirty();
          }
-         this.m_IsOnScreen = param1;
+         this.m_IsOnScreen = aIsOnScreen;
       }
       
       public function get isOnScreen() : Boolean
@@ -150,36 +150,36 @@ package
          return this.m_IsOnScreen;
       }
       
-      public function set alertState(param1:int) : void
+      public function set alertState(aState:int) : void
       {
-         if(param1 != this.m_AlertState)
+         if(aState != this.m_AlertState)
          {
             SetIsDirty();
          }
-         this.m_AlertState = param1;
+         this.m_AlertState = aState;
       }
       
-      public function set alertMessage(param1:String) : void
+      public function set alertMessage(aMessage:String) : void
       {
-         if(param1 != this.m_AlertMessage)
+         if(aMessage != this.m_AlertMessage)
          {
             SetIsDirty();
          }
-         this.m_AlertMessage = param1;
+         this.m_AlertMessage = aMessage;
       }
       
-      public function set label(param1:String) : void
+      public function set label(aLabel:String) : void
       {
-         if(param1 != this.m_Label)
+         if(aLabel != this.m_Label)
          {
             SetIsDirty();
          }
-         this.m_Label = param1;
+         this.m_Label = aLabel;
       }
       
-      public function set markerID(param1:String) : void
+      public function set markerID(aMarkerID:String) : void
       {
-         this.m_MarkerID = param1;
+         this.m_MarkerID = aMarkerID;
       }
       
       public function get markerID() : String
@@ -187,13 +187,13 @@ package
          return this.m_MarkerID;
       }
       
-      public function set meterValue(param1:Number) : void
+      public function set meterValue(aValue:Number) : void
       {
-         if(this.m_MeterValue != param1)
+         if(this.m_MeterValue != aValue)
          {
             SetIsDirty();
          }
-         this.m_MeterValue = param1;
+         this.m_MeterValue = aValue;
       }
       
       public function get markerType() : String
@@ -201,13 +201,13 @@ package
          return this.m_MarkerType;
       }
       
-      public function set markerType(param1:String) : void
+      public function set markerType(aValue:String) : void
       {
-         if(this.m_MarkerType != param1)
+         if(this.m_MarkerType != aValue)
          {
             SetIsDirty();
          }
-         this.m_MarkerType = param1;
+         this.m_MarkerType = aValue;
       }
       
       private function updateQuestTypeFrame() : void
@@ -230,11 +230,10 @@ package
       
       private function setType() : void
       {
-         var _loc1_:Array = this.Marker_mc.currentLabels;
-         var _loc2_:uint = 0;
-         while(_loc2_ < _loc1_.length)
+         var frameLabels:Array = this.Marker_mc.currentLabels;
+         for(var i:uint = 0; i < frameLabels.length; i++)
          {
-            if(this.m_MarkerType == _loc1_[_loc2_].name)
+            if(this.m_MarkerType == frameLabels[i].name)
             {
                this.Marker_mc.gotoAndStop(this.m_MarkerType);
                if(this.m_MarkerType == "ActiveQuest" || this.m_MarkerType == "InactiveQuest" || this.m_MarkerType == "SharedQuest")
@@ -258,11 +257,10 @@ package
                }
                break;
             }
-            _loc2_++;
          }
       }
       
-      public function set showMeter(param1:Boolean) : void
+      public function set showMeter(aShow:Boolean) : void
       {
       }
       
@@ -271,36 +269,34 @@ package
          return this.m_ShowLabel;
       }
       
-      public function set showLabel(param1:Boolean) : void
+      public function set showLabel(aShow:Boolean) : void
       {
-         if(param1 != this.m_ShowLabel)
+         if(aShow != this.m_ShowLabel)
          {
             SetIsDirty();
          }
-         this.m_ShowLabel = param1;
+         this.m_ShowLabel = aShow;
       }
       
       override public function redrawUIComponent() : void
       {
-         var _loc2_:Array = null;
-         var _loc3_:String = null;
-         var _loc4_:* = undefined;
+         var alertLabels:Array = null;
+         var alertUseLabel:String = null;
+         var i:* = undefined;
          if(this.m_AlertState > ALERT_STATE_NONE)
          {
             this.Alert_mc.visible = true;
-            _loc2_ = this.Alert_mc.currentLabels;
-            _loc3_ = "AlertState1";
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length)
+            alertLabels = this.Alert_mc.currentLabels;
+            alertUseLabel = "AlertState1";
+            for(i = 0; i < alertLabels.length; i++)
             {
-               if(_loc2_[_loc4_].name == "AlertState" + this.m_AlertState)
+               if(alertLabels[i].name == "AlertState" + this.m_AlertState)
                {
-                  _loc3_ = _loc2_[_loc4_].name;
+                  alertUseLabel = alertLabels[i].name;
                   break;
                }
-               _loc4_++;
             }
-            this.Alert_mc.gotoAndPlay(_loc3_);
+            this.Alert_mc.gotoAndPlay(alertUseLabel);
          }
          else
          {
@@ -311,9 +307,9 @@ package
          {
             this.Objective_mc.setTitleData(this.m_Label);
          }
-         var _loc1_:TextField = this.Alert_mc.AlertText_mc.AlertText_tf;
-         _loc1_.text = this.m_AlertMessage != null ? this.m_AlertMessage : "";
-         this.Alert_mc.Backer_mc.Box_mc.width = _loc1_.getLineMetrics(0).width + this.m_AlertSizeBuffer;
+         var alertField:TextField = this.Alert_mc.AlertText_mc.AlertText_tf;
+         alertField.text = this.m_AlertMessage != null ? this.m_AlertMessage : "";
+         this.Alert_mc.Backer_mc.Box_mc.width = alertField.getLineMetrics(0).width + this.m_AlertSizeBuffer;
          this.setType();
       }
    }

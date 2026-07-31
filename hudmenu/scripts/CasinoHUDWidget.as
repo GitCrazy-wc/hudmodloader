@@ -22,6 +22,8 @@ package
       
       private var m_Data:Object = null;
       
+      private var m_WinStateDisplayed:Boolean = false;
+      
       public function CasinoHUDWidget()
       {
          super();
@@ -38,11 +40,17 @@ package
          return this.m_Data != null;
       }
       
-      public function init(param1:Object) : void
+      public function get winStateDisplayed() : Boolean
       {
-         if(param1)
+         return this.m_WinStateDisplayed;
+      }
+      
+      public function init(aData:Object) : void
+      {
+         if(aData)
          {
-            this.m_Data = param1;
+            this.m_WinStateDisplayed = false;
+            this.m_Data = aData;
             if(this.m_Data.casinoGameType == CasinoShared.CASINO_GAME_TYPE_ROULETTE)
             {
                this.WidgetPanel_mc.gotoAndStop(this.m_Data.capsWon == 0 ? "RouletteLose" : "Roulette");
@@ -84,77 +92,77 @@ package
          removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
       }
       
-      private function getBetText(param1:uint, param2:uint) : String
+      private function getBetText(aBet:uint, aGameType:uint) : String
       {
-         var _loc3_:String = "";
-         switch(param2)
+         var betText:String = "";
+         switch(aGameType)
          {
             case CasinoShared.CASINO_GAME_TYPE_ROULETTE:
-               _loc3_ = this.getBetTextRoulette(param1);
+               betText = this.getBetTextRoulette(aBet);
                break;
             case CasinoShared.CASINO_GAME_TYPE_DERBY_RACE:
-               _loc3_ = this.getBetTextDerby(param1);
+               betText = this.getBetTextDerby(aBet);
                break;
             case CasinoShared.CASINO_GAME_TYPE_LUCKY_DICE:
-               _loc3_ = param1.toString();
+               betText = aBet.toString();
          }
-         return _loc3_;
+         return betText;
       }
       
-      private function getBetTextDerby(param1:uint) : String
+      private function getBetTextDerby(aLaneIndex:uint) : String
       {
-         var _loc2_:String = "";
-         switch(param1)
+         var betText:String = "";
+         switch(aLaneIndex)
          {
             case 0:
-               _loc2_ = "$CASINO_DERBY_LANE_ONE";
+               betText = "$CASINO_DERBY_LANE_ONE";
                break;
             case 1:
-               _loc2_ = "$CASINO_DERBY_LANE_TWO";
+               betText = "$CASINO_DERBY_LANE_TWO";
                break;
             case 2:
-               _loc2_ = "$CASINO_DERBY_LANE_THREE";
+               betText = "$CASINO_DERBY_LANE_THREE";
                break;
             case 3:
-               _loc2_ = "$CASINO_DERBY_LANE_FOUR";
+               betText = "$CASINO_DERBY_LANE_FOUR";
                break;
             case 4:
-               _loc2_ = "$CASINO_DERBY_LANE_FIVE";
+               betText = "$CASINO_DERBY_LANE_FIVE";
          }
-         return _loc2_;
+         return betText;
       }
       
-      private function getBetTextRoulette(param1:uint) : String
+      private function getBetTextRoulette(aRouletteOption:uint) : String
       {
-         var _loc2_:String = "";
-         switch(param1)
+         var betText:String = "";
+         switch(aRouletteOption)
          {
             case CasinoShared.ROULETTE_OPTION_JACKPOT:
-               _loc2_ = "0";
+               betText = "0";
                break;
             case CasinoShared.ROULETTE_OPTION_FIRST_THIRD:
-               _loc2_ = "$CASINO_ROULETTE_FIRST_THIRD";
+               betText = "$CASINO_ROULETTE_FIRST_THIRD";
                break;
             case CasinoShared.ROULETTE_OPTION_SECOND_THIRD:
-               _loc2_ = "$CASINO_ROULETTE_SECOND_THIRD";
+               betText = "$CASINO_ROULETTE_SECOND_THIRD";
                break;
             case CasinoShared.ROULETTE_OPTION_LAST_THIRD:
-               _loc2_ = "$CASINO_ROULETTE_LAST_THIRD";
+               betText = "$CASINO_ROULETTE_LAST_THIRD";
                break;
             case CasinoShared.ROULETTE_OPTION_RED_EVEN:
-               _loc2_ = "$$CASINO_ROULETTE_RED / $$CASINO_ROULETTE_EVEN";
+               betText = "$$CASINO_ROULETTE_RED / $$CASINO_ROULETTE_EVEN";
                break;
             case CasinoShared.ROULETTE_OPTION_BLACK_ODD:
-               _loc2_ = "$$CASINO_ROULETTE_BLACK / $$CASINO_ROULETTE_ODD";
+               betText = "$$CASINO_ROULETTE_BLACK / $$CASINO_ROULETTE_ODD";
          }
-         return _loc2_;
+         return betText;
       }
       
-      private function onWidgetAnimComplete(param1:Event) : void
+      private function onWidgetAnimComplete(aEvent:Event) : void
       {
-         if(param1)
+         if(aEvent)
          {
-            param1.stopPropagation();
+            aEvent.stopPropagation();
          }
          removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
          if(this.m_Data)
@@ -187,9 +195,10 @@ package
             }
             GlobalFunc.PlayMenuSound(this.m_Data.capsWon == 0 ? "UICasinoLose" : "UICasinoWin");
          }
+         this.m_WinStateDisplayed = true;
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(aEvent:Event) : void
       {
          if(Boolean(this.m_Data) && this.m_Data.casinoGameType == CasinoShared.CASINO_GAME_TYPE_LUCKY_DICE)
          {

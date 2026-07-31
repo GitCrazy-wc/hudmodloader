@@ -99,84 +99,84 @@ package
          }
       }
       
-      public function set IsHostile(param1:Boolean) : *
+      public function set IsHostile(value:Boolean) : *
       {
-         if(this.m_IsHostile != param1)
+         if(this.m_IsHostile != value)
          {
-            this.m_IsHostile = param1;
+            this.m_IsHostile = value;
             this.UpdateBarFlag();
          }
       }
       
-      public function set IsFriendly(param1:Boolean) : *
+      public function set IsFriendly(value:Boolean) : *
       {
-         if(this.m_IsFriendly != param1)
+         if(this.m_IsFriendly != value)
          {
-            this.m_IsFriendly = param1;
+            this.m_IsFriendly = value;
             this.UpdateBarFlag();
          }
       }
       
-      public function set OwningPlayerName(param1:String) : void
+      public function set OwningPlayerName(aValue:String) : void
       {
-         if(param1 != this.m_OwningPlayerName)
+         if(aValue != this.m_OwningPlayerName)
          {
-            this.m_OwningPlayerName = param1;
+            this.m_OwningPlayerName = aValue;
             SetIsDirty();
          }
       }
       
-      public function set AvatarID(param1:String) : void
+      public function set AvatarID(aValue:String) : void
       {
-         if(param1 != this.m_AvatarID)
+         if(aValue != this.m_AvatarID)
          {
-            this.m_AvatarID = param1;
+            this.m_AvatarID = aValue;
             SetIsDirty();
          }
       }
       
-      public function set IsBoss(param1:Boolean) : *
+      public function set IsBoss(value:Boolean) : *
       {
-         if(this.m_IsBoss != param1)
+         if(this.m_IsBoss != value)
          {
-            this.m_IsBoss = param1;
+            this.m_IsBoss = value;
             this.UpdateBarFlag();
          }
       }
       
-      public function set TargetLevel(param1:int) : *
+      public function set TargetLevel(value:int) : *
       {
-         if(this.m_TargetLevel != param1)
+         if(this.m_TargetLevel != value)
          {
-            this.m_TargetLevel = param1;
+            this.m_TargetLevel = value;
             this.UpdateBarFlag();
          }
       }
       
-      public function set Wanted(param1:Boolean) : *
+      public function set Wanted(value:Boolean) : *
       {
-         if(this.m_Wanted != param1)
+         if(this.m_Wanted != value)
          {
-            this.m_Wanted = param1;
+            this.m_Wanted = value;
             this.UpdateBarFlag();
          }
       }
       
-      public function set DoTDamage(param1:Boolean) : *
+      public function set DoTDamage(aValue:Boolean) : *
       {
-         if(this.m_DoTDamage != param1)
+         if(this.m_DoTDamage != aValue)
          {
-            this.m_DoTDamage = param1;
+            this.m_DoTDamage = aValue;
             this.UpdateBarFlag();
             this.DoTIconsManager_mc.reset();
          }
       }
       
-      public function set EncounterIconType(param1:int) : *
+      public function set EncounterIconType(aValue:int) : *
       {
-         if(this.m_EncounterIconType != param1)
+         if(this.m_EncounterIconType != aValue)
          {
-            this.m_EncounterIconType = param1;
+            this.m_EncounterIconType = aValue;
             SetIsDirty();
          }
          if(Boolean(this.EncounterHolder_mc) && !this.EncounterHolder_mc.hasEventListener(Event.ENTER_FRAME))
@@ -185,11 +185,11 @@ package
          }
       }
       
-      public function set EncounterIconLevel(param1:int) : *
+      public function set EncounterIconLevel(aValue:int) : *
       {
-         if(this.m_EncounterIconLevel != param1)
+         if(this.m_EncounterIconLevel != aValue)
          {
-            this.m_EncounterIconLevel = param1;
+            this.m_EncounterIconLevel = aValue;
             SetIsDirty();
          }
          if(Boolean(this.EncounterHolder_mc) && !this.EncounterHolder_mc.hasEventListener(Event.ENTER_FRAME))
@@ -198,23 +198,23 @@ package
          }
       }
       
-      public function set DoTDamageList(param1:Array) : *
+      public function set DoTDamageList(aValues:Array) : *
       {
          if(this.DoTIconsManager_mc)
          {
-            this.DoTDamage = this.DoTIconsManager_mc.populateIcons(param1);
+            this.DoTDamage = this.DoTIconsManager_mc.populateIcons(aValues);
          }
       }
       
-      public function SetStealthVisible(param1:Boolean) : void
+      public function SetStealthVisible(abStealthVisible:Boolean) : void
       {
          if(this.DoTIconsManager_mc)
          {
-            this.DoTIconsManager_mc.SetStealthMeterStatus(param1);
+            this.DoTIconsManager_mc.SetStealthMeterStatus(abStealthVisible);
          }
       }
       
-      private function onDamageComplete(param1:Event) : void
+      private function onDamageComplete(aEvent:Event) : void
       {
          if(this.DoTIconsManager_mc)
          {
@@ -248,9 +248,9 @@ package
          SetIsDirty();
       }
       
-      public function SetMeterPercent(param1:Number) : *
+      public function SetMeterPercent(afPercent:Number) : *
       {
-         this.MeterBar_mc.Percent = param1 / 100;
+         this.MeterBar_mc.Percent = afPercent / 100;
       }
       
       override public function redrawUIComponent() : void
@@ -271,11 +271,11 @@ package
          }
       }
       
-      public function SetDamageList(param1:Array) : void
+      public function SetDamageList(aDamageList:Array) : void
       {
          if(this.DoTIconsManager_mc)
          {
-            this.DoTDamage = this.DoTIconsManager_mc.populateIcons(param1);
+            this.DoTDamage = this.DoTIconsManager_mc.populateIcons(aDamageList);
          }
       }
       
@@ -285,7 +285,7 @@ package
          {
             this.EncounterHolder_mc.visible = true;
             this.EncounterHolder_mc.SetIcon(this.m_EncounterIconType,this.m_EncounterIconLevel,this.m_IsBoss);
-            this.EncounterHolder_mc.x = this.LevelText_mc.x + this.LevelText_mc.width / 2;
+            this.EncounterHolder_mc.x = this.LevelText_mc.x + this.LevelText_mc.width / 2 - this.EncounterHolder_mc.GetIconLevelFramePadding(this.m_EncounterIconLevel);
          }
          else
          {
@@ -294,11 +294,11 @@ package
          this.EncounterHolder_mc.removeEventListener(Event.ENTER_FRAME,this.onSetEncounterIcon);
       }
       
-      public function set ShowPassiveRepairIcon(param1:Boolean) : *
+      public function set ShowPassiveRepairIcon(aValue:Boolean) : *
       {
-         if(this.m_ShowPassiveRepairIcon != param1)
+         if(this.m_ShowPassiveRepairIcon != aValue)
          {
-            this.m_ShowPassiveRepairIcon = param1;
+            this.m_ShowPassiveRepairIcon = aValue;
             SetIsDirty();
          }
          if(!this.CampRepairIcon_mc.hasEventListener(Event.ENTER_FRAME))

@@ -15,10 +15,10 @@ package aze.motion.specials
       
       private var targetVolume:Boolean;
       
-      public function PropertyVolume(param1:Object, param2:*, param3:*, param4:EazeSpecial)
+      public function PropertyVolume(target:Object, property:*, value:*, next:EazeSpecial)
       {
-         super(param1,param2,param3,param4);
-         this.vvalue = param3;
+         super(target,property,value,next);
+         this.vvalue = value;
       }
       
       public static function register() : void
@@ -26,35 +26,35 @@ package aze.motion.specials
          EazeTween.specialProperties.volume = PropertyVolume;
       }
       
-      override public function init(param1:Boolean) : void
+      override public function init(reverse:Boolean) : void
       {
-         var _loc3_:Number = NaN;
+         var end:Number = NaN;
          this.targetVolume = "soundTransform" in target;
-         var _loc2_:SoundTransform = this.targetVolume ? target.soundTransform : SoundMixer.soundTransform;
-         if(param1)
+         var st:SoundTransform = this.targetVolume ? target.soundTransform : SoundMixer.soundTransform;
+         if(reverse)
          {
             this.start = this.vvalue;
-            _loc3_ = _loc2_.volume;
+            end = st.volume;
          }
          else
          {
-            _loc3_ = this.vvalue;
-            this.start = _loc2_.volume;
+            end = this.vvalue;
+            this.start = st.volume;
          }
-         this.delta = _loc3_ - this.start;
+         this.delta = end - this.start;
       }
       
-      override public function update(param1:Number, param2:Boolean) : void
+      override public function update(ke:Number, isComplete:Boolean) : void
       {
-         var _loc3_:SoundTransform = this.targetVolume ? target.soundTransform : SoundMixer.soundTransform;
-         _loc3_.volume = this.start + this.delta * param1;
+         var st:SoundTransform = this.targetVolume ? target.soundTransform : SoundMixer.soundTransform;
+         st.volume = this.start + this.delta * ke;
          if(this.targetVolume)
          {
-            target.soundTransform = _loc3_;
+            target.soundTransform = st;
          }
          else
          {
-            SoundMixer.soundTransform = _loc3_;
+            SoundMixer.soundTransform = st;
          }
       }
    }

@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.geom.Point;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1836")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1843")]
    public class DamageNumbers extends MovieClip
    {
       
@@ -21,11 +21,11 @@ package
          this.DamageClipVector = new Vector.<MovieClip>();
          super();
          addFrameScript(0,this.frame1);
-         BSUIDataManager.Subscribe("DamageNumberUIData",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("DamageNumberUIData",function(event:FromClientDataEvent):*
          {
-            if(param1.data != null)
+            if(event.data != null)
             {
-               _DamageNumberUIData = param1.data;
+               _DamageNumberUIData = event.data;
                RefreshView();
             }
          });
@@ -38,79 +38,77 @@ package
       
       public function RefreshView() : *
       {
-         var _loc1_:Object = null;
+         var obj:Object = null;
          if(this._DamageNumberUIData != null)
          {
-            for each(_loc1_ in this._DamageNumberUIData.updatedDamageNumbers)
+            for each(obj in this._DamageNumberUIData.updatedDamageNumbers)
             {
-               if(!this.UpdateItem(_loc1_.uniqueId,_loc1_.screenX,_loc1_.screenY))
+               if(!this.UpdateItem(obj.uniqueId,obj.screenX,obj.screenY))
                {
-                  this.CreateNew(_loc1_.uniqueId,_loc1_.enemyId,_loc1_.damageTotal,_loc1_.damageHealth,_loc1_.isBonusDamage,_loc1_.screenX,_loc1_.screenY);
+                  this.CreateNew(obj.uniqueId,obj.enemyId,obj.damageTotal,obj.damageHealth,obj.isBonusDamage,obj.screenX,obj.screenY);
                }
             }
          }
       }
       
-      public function UpdateItem(param1:int, param2:Number, param3:Number) : Boolean
+      public function UpdateItem(uniqueID:int, screenX:Number, screenY:Number) : Boolean
       {
-         var _loc4_:MovieClip = null;
-         var _loc5_:DamageNumberClip = null;
-         var _loc6_:Point = null;
-         for each(_loc4_ in this.DamageClipVector)
+         var clip:MovieClip = null;
+         var damageClip:DamageNumberClip = null;
+         var localPointNormal:Point = null;
+         for each(clip in this.DamageClipVector)
          {
-            _loc5_ = _loc4_ as DamageNumberClip;
-            if(_loc5_ != null && _loc5_.UniqueId == param1)
+            damageClip = clip as DamageNumberClip;
+            if(damageClip != null && damageClip.UniqueId == uniqueID)
             {
-               _loc6_ = MovieClip(_loc5_).parent.globalToLocal(new Point(param2,param3));
-               MovieClip(_loc5_).x = _loc6_.x;
-               MovieClip(_loc5_).y = _loc6_.y;
+               localPointNormal = MovieClip(damageClip).parent.globalToLocal(new Point(screenX,screenY));
+               MovieClip(damageClip).x = localPointNormal.x;
+               MovieClip(damageClip).y = localPointNormal.y;
                return true;
             }
          }
          return false;
       }
       
-      public function CreateNew(param1:int, param2:int, param3:int, param4:int, param5:Boolean, param6:Number, param7:Number) : *
+      public function CreateNew(uniqueID:int, enemyID:int, damageTotal:int, damageHealth:int, headshot:Boolean, xPos:Number, yPos:Number) : *
       {
-         var _loc8_:DamageNumberClip = new DamageNumberClip();
-         _loc8_.ParentObj = this;
-         _loc8_.UniqueId = param1;
-         if(param5)
+         var damageClip:DamageNumberClip = new DamageNumberClip();
+         damageClip.ParentObj = this;
+         damageClip.UniqueId = uniqueID;
+         if(headshot)
          {
-            _loc8_.Crit_mc.Number_mc.txtField.text = param4.toString();
-            _loc8_.Crit_mc.gotoAndPlay("show");
+            damageClip.Crit_mc.Number_mc.txtField.text = damageHealth.toString();
+            damageClip.Crit_mc.gotoAndPlay("show");
          }
          else
          {
-            _loc8_.Base_mc.Number_mc.txtField.text = param4.toString();
-            _loc8_.Base_mc.gotoAndPlay("show");
+            damageClip.Base_mc.Number_mc.txtField.text = damageHealth.toString();
+            damageClip.Base_mc.gotoAndPlay("show");
          }
-         addChild(_loc8_);
-         this.DamageClipVector.push(_loc8_);
-         var _loc9_:Point = MovieClip(_loc8_).parent.globalToLocal(new Point(param6,param7));
-         MovieClip(_loc8_).x = _loc9_.x;
-         MovieClip(_loc8_).y = _loc9_.y;
+         addChild(damageClip);
+         this.DamageClipVector.push(damageClip);
+         var localPointNormal:Point = MovieClip(damageClip).parent.globalToLocal(new Point(xPos,yPos));
+         MovieClip(damageClip).x = localPointNormal.x;
+         MovieClip(damageClip).y = localPointNormal.y;
       }
       
-      public function RemoveDamageNumber(param1:int) : *
+      public function RemoveDamageNumber(uID:int) : *
       {
-         var _loc3_:DamageNumberClip = null;
-         var _loc2_:int = 0;
-         while(_loc2_ < this.DamageClipVector.length)
+         var item:DamageNumberClip = null;
+         for(var i:int = 0; i < this.DamageClipVector.length; i++)
          {
-            _loc3_ = this.DamageClipVector[_loc2_] as DamageNumberClip;
-            if(_loc3_.UniqueId == param1)
+            item = this.DamageClipVector[i] as DamageNumberClip;
+            if(item.UniqueId == uID)
             {
-               this.DamageClipVector.splice(_loc2_,1);
-               removeChild(MovieClip(_loc3_));
+               this.DamageClipVector.splice(i,1);
+               removeChild(MovieClip(item));
             }
-            _loc2_++;
          }
       }
       
-      public function GetRandomNumber(param1:*, param2:*) : *
+      public function GetRandomNumber(minVal:*, maxVal:*) : *
       {
-         return param1 + Math.floor(Math.random() * (param2 + 1 - param1));
+         return minVal + Math.floor(Math.random() * (maxVal + 1 - minVal));
       }
       
       internal function frame1() : *

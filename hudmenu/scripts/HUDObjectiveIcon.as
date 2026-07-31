@@ -27,17 +27,17 @@ package
          return this.m_CharIndex;
       }
       
-      public function setData(param1:String, param2:int) : void
+      public function setData(aIconString:String, aIndex:int) : void
       {
-         this.Icon_mc.gotoAndStop(param1);
-         this.m_CharIndex = param2;
+         this.Icon_mc.gotoAndStop(aIconString);
+         this.m_CharIndex = aIndex;
       }
       
-      public function setColor(param1:uint) : void
+      public function setColor(aColor:uint) : void
       {
-         if(this.m_ColorTransform.color != param1)
+         if(this.m_ColorTransform.color != aColor)
          {
-            this.m_ColorTransform.color = param1;
+            this.m_ColorTransform.color = aColor;
             this.Icon_mc.transform.colorTransform = this.m_ColorTransform;
          }
       }

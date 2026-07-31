@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol733")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol739")]
    public class HUDFloatingTargetManager extends MovieClip
    {
       
@@ -25,7 +25,7 @@ package
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
       }
       
-      private function onAddedToStage(param1:Event) : *
+      private function onAddedToStage(e:Event) : *
       {
          this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.CAMP_PLACEMENT,HUDModes.CROSSHAIR_AND_ACTIVATE_ONLY);
          BSUIDataManager.Subscribe("MapMenuDataChanges",this.onFloatingTargetChange);
@@ -35,218 +35,211 @@ package
          BSUIDataManager.Subscribe("ReconMarkerData",this.onReconMarkerData);
       }
       
-      private function onHudModeDataChange(param1:FromClientDataEvent) : *
+      private function onHudModeDataChange(event:FromClientDataEvent) : *
       {
-         this.visible = param1.data.showFloatingMarkers == true && this.m_ValidHudModes.indexOf(param1.data.hudMode) != -1;
+         this.visible = event.data.showFloatingMarkers == true && this.m_ValidHudModes.indexOf(event.data.hudMode) != -1;
       }
       
-      private function onHotMapMenuData(param1:FromClientDataEvent) : *
+      private function onHotMapMenuData(arEvent:FromClientDataEvent) : *
       {
-         var _loc5_:uint = 0;
-         var _loc2_:Array = BSUIDataManager.GetDataFromClient("MapMenuData").data.MarkerData;
-         var _loc3_:Array = param1.data.updates;
-         var _loc4_:uint = 0;
-         while(_loc4_ < _loc3_.length)
+         var matchIdx:uint = 0;
+         var markerDataArray:Array = BSUIDataManager.GetDataFromClient("MapMenuData").data.MarkerData;
+         var markerChanges:Array = arEvent.data.updates;
+         for(var i:uint = 0; i < markerChanges.length; i++)
          {
-            _loc5_ = this.getTargetByID(this.m_Targets,_loc3_[_loc4_].markerID);
-            if(_loc5_ != uint.MAX_VALUE)
+            matchIdx = this.getTargetByID(this.m_Targets,markerChanges[i].markerID);
+            if(matchIdx != uint.MAX_VALUE)
             {
-               this.updateTargetHot(this.m_Targets[_loc5_],_loc3_[_loc4_]);
+               this.updateTargetHot(this.m_Targets[matchIdx],markerChanges[i]);
             }
-            _loc4_++;
          }
       }
       
-      private function onFloatingTargetChange(param1:FromClientDataEvent) : *
+      private function onFloatingTargetChange(arEvent:FromClientDataEvent) : *
       {
-         var _loc5_:* = undefined;
-         var _loc6_:* = undefined;
-         var _loc7_:* = undefined;
-         var _loc8_:uint = 0;
-         var _loc9_:* = undefined;
-         var _loc10_:* = undefined;
-         var _loc11_:uint = 0;
-         var _loc2_:Array = BSUIDataManager.GetDataFromClient("MapMenuData").data.MarkerData;
-         var _loc3_:Array = param1.data.MarkerChanges;
-         var _loc4_:uint = 0;
-         for(; _loc4_ < _loc3_.length; _loc4_++)
+         var changeIndex:* = undefined;
+         var changeType:* = undefined;
+         var changeMarkerID:* = undefined;
+         var removeIdx:uint = 0;
+         var targetData:* = undefined;
+         var targetID:* = undefined;
+         var matchIdx:uint = 0;
+         var markerDataArray:Array = BSUIDataManager.GetDataFromClient("MapMenuData").data.MarkerData;
+         var markerChanges:Array = arEvent.data.MarkerChanges;
+         for(var i:uint = 0; i < markerChanges.length; i++)
          {
-            _loc5_ = _loc3_[_loc4_].index;
-            _loc6_ = _loc3_[_loc4_].type;
-            _loc7_ = _loc3_[_loc4_].markerID;
-            if(_loc6_ == "RemoveMarker")
+            changeIndex = markerChanges[i].index;
+            changeType = markerChanges[i].type;
+            changeMarkerID = markerChanges[i].markerID;
+            if(changeType == "RemoveMarker")
             {
-               _loc8_ = this.getTargetByID(this.m_Targets,_loc7_);
-               if(_loc8_ != uint.MAX_VALUE)
+               removeIdx = this.getTargetByID(this.m_Targets,changeMarkerID);
+               if(removeIdx != uint.MAX_VALUE)
                {
-                  removeChild(this.m_Targets[_loc8_]);
-                  this.m_Targets.splice(_loc8_,1);
+                  removeChild(this.m_Targets[removeIdx]);
+                  this.m_Targets.splice(removeIdx,1);
                }
                continue;
             }
-            if(_loc5_ >= _loc2_.length)
+            if(changeIndex >= markerDataArray.length)
             {
                continue;
             }
-            _loc9_ = _loc2_[_loc5_];
-            if(_loc9_.markerType != "ActiveQuest" && _loc9_.markerType != "InactiveQuest" && _loc9_.markerType != "SharedQuest" && _loc9_.markerType != "MainActiveQuest")
+            targetData = markerDataArray[changeIndex];
+            if(targetData.markerType != "ActiveQuest" && targetData.markerType != "InactiveQuest" && targetData.markerType != "SharedQuest" && targetData.markerType != "MainActiveQuest")
             {
                continue;
             }
-            _loc10_ = _loc9_.markerID;
-            _loc11_ = this.getTargetByID(this.m_Targets,_loc10_);
-            switch(_loc6_)
+            targetID = targetData.markerID;
+            matchIdx = this.getTargetByID(this.m_Targets,targetID);
+            switch(changeType)
             {
                case "AddMarker":
-                  if(_loc11_ != uint.MAX_VALUE)
+                  if(matchIdx != uint.MAX_VALUE)
                   {
-                     this.updateTarget(this.m_Targets[_loc11_],_loc9_);
+                     this.updateTarget(this.m_Targets[matchIdx],targetData);
                   }
                   else
                   {
-                     this.addTarget(_loc9_);
+                     this.addTarget(targetData);
                   }
                   break;
                case "UpdateMarker":
                case "UpdateScreenCoords":
-                  if(_loc11_ != uint.MAX_VALUE)
+                  if(matchIdx != uint.MAX_VALUE)
                   {
-                     this.updateTarget(this.m_Targets[_loc11_],_loc9_);
+                     this.updateTarget(this.m_Targets[matchIdx],targetData);
                   }
                   else
                   {
-                     this.addTarget(_loc9_);
+                     this.addTarget(targetData);
                   }
                   break;
             }
          }
       }
       
-      private function IsReconMarker(param1:HUDFloatingTarget) : Boolean
+      private function IsReconMarker(aTarget:HUDFloatingTarget) : Boolean
       {
-         return param1.markerType == "Recon" || param1.markerType == "EnemyTargeted";
+         return aTarget.markerType == "Recon" || aTarget.markerType == "EnemyTargeted";
       }
       
-      private function onReconMarkerData(param1:FromClientDataEvent) : *
+      private function onReconMarkerData(arEvent:FromClientDataEvent) : *
       {
-         var _loc5_:Boolean = false;
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
-         var _loc2_:Array = param1.data.reconMarkers;
-         var _loc3_:Array = new Array();
-         var _loc4_:uint = 0;
-         while(_loc4_ < this.m_Targets.length)
+         var removed:Boolean = false;
+         var reconIdx:uint = 0;
+         var matchIdx:uint = 0;
+         var reconArray:Array = arEvent.data.reconMarkers;
+         var removeMarkers:Array = new Array();
+         var i:uint = 0;
+         while(i < this.m_Targets.length)
          {
-            _loc5_ = false;
-            if(this.IsReconMarker(this.m_Targets[_loc4_]))
+            removed = false;
+            if(this.IsReconMarker(this.m_Targets[i]))
             {
-               _loc6_ = this.getTargetByID(_loc2_,this.m_Targets[_loc4_].markerID);
-               if(_loc6_ == uint.MAX_VALUE)
+               reconIdx = this.getTargetByID(reconArray,this.m_Targets[i].markerID);
+               if(reconIdx == uint.MAX_VALUE)
                {
-                  removeChild(this.m_Targets[_loc4_]);
-                  this.m_Targets.splice(_loc4_,1);
-                  _loc5_ = true;
+                  removeChild(this.m_Targets[i]);
+                  this.m_Targets.splice(i,1);
+                  removed = true;
                }
             }
-            if(!_loc5_)
+            if(!removed)
             {
-               _loc4_++;
+               i++;
             }
          }
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         for(i = 0; i < reconArray.length; i++)
          {
-            _loc7_ = this.getTargetByID(this.m_Targets,_loc2_[_loc4_].markerID);
-            if(_loc7_ != uint.MAX_VALUE)
+            matchIdx = this.getTargetByID(this.m_Targets,reconArray[i].markerID);
+            if(matchIdx != uint.MAX_VALUE)
             {
-               if(this.IsReconMarker(this.m_Targets[_loc7_]))
+               if(this.IsReconMarker(this.m_Targets[matchIdx]))
                {
-                  this.updateTarget(this.m_Targets[_loc7_],_loc2_[_loc4_]);
+                  this.updateTarget(this.m_Targets[matchIdx],reconArray[i]);
                }
             }
             else
             {
-               this.addTarget(_loc2_[_loc4_]);
+               this.addTarget(reconArray[i]);
             }
-            _loc4_++;
          }
       }
       
-      private function onReconMarkerHotData(param1:FromClientDataEvent) : *
+      private function onReconMarkerHotData(arEvent:FromClientDataEvent) : *
       {
-         var _loc4_:uint = 0;
-         var _loc5_:* = false;
-         var _loc2_:Array = param1.data.updates;
-         var _loc3_:* = 0;
-         while(_loc3_ < this.m_Targets.length)
+         var reconIdx:uint = 0;
+         var hotDataFound:* = false;
+         var reconHotArray:Array = arEvent.data.updates;
+         for(var i:* = 0; i < this.m_Targets.length; i++)
          {
-            if(this.IsReconMarker(this.m_Targets[_loc3_]))
+            if(this.IsReconMarker(this.m_Targets[i]))
             {
-               _loc4_ = this.getTargetByID(_loc2_,this.m_Targets[_loc3_].markerID);
-               _loc5_ = _loc4_ != uint.MAX_VALUE;
-               this.m_Targets[_loc3_].visible = _loc5_;
-               this.m_Targets[_loc3_].isOnScreen = _loc5_;
-               if(_loc5_)
+               reconIdx = this.getTargetByID(reconHotArray,this.m_Targets[i].markerID);
+               hotDataFound = reconIdx != uint.MAX_VALUE;
+               this.m_Targets[i].visible = hotDataFound;
+               this.m_Targets[i].isOnScreen = hotDataFound;
+               if(hotDataFound)
                {
-                  this.updateTargetHot(this.m_Targets[_loc3_],_loc2_[_loc4_]);
+                  this.updateTargetHot(this.m_Targets[i],reconHotArray[reconIdx]);
                }
             }
-            _loc3_++;
          }
       }
       
-      private function getTargetByID(param1:Array, param2:uint) : uint
+      private function getTargetByID(aData:Array, aMarkerID:uint) : uint
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:uint = uint.MAX_VALUE;
-         var _loc5_:uint = 0;
-         while(!_loc3_ && _loc5_ < param1.length)
+         var foundMember:Boolean = false;
+         var returnIdx:uint = uint.MAX_VALUE;
+         var i:uint = 0;
+         while(!foundMember && i < aData.length)
          {
-            if(param1[_loc5_].markerID == param2)
+            if(aData[i].markerID == aMarkerID)
             {
-               _loc4_ = _loc5_;
-               _loc3_ = true;
+               returnIdx = i;
+               foundMember = true;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc4_;
+         return returnIdx;
       }
       
-      private function updateTargetHot(param1:HUDFloatingTarget, param2:Object) : *
+      private function updateTargetHot(aTarget:HUDFloatingTarget, aTargetData:Object) : *
       {
-         param1.distanceFromPlayer = param2.distanceFromPlayer;
-         param1.visible = true;
-         param1.markerID = param2.markerID;
-         param1.x = param2.screenX;
-         param1.y = param2.screenY;
-         param1.showLabel = param2.showLabel;
-         param1.midDistance = param2.midDistance;
-         param1.forceShow = param2.midDistance;
+         aTarget.distanceFromPlayer = aTargetData.distanceFromPlayer;
+         aTarget.visible = true;
+         aTarget.markerID = aTargetData.markerID;
+         aTarget.x = aTargetData.screenX;
+         aTarget.y = aTargetData.screenY;
+         aTarget.showLabel = aTargetData.showLabel;
+         aTarget.midDistance = aTargetData.midDistance;
+         aTarget.forceShow = aTargetData.midDistance;
       }
       
-      private function updateTarget(param1:HUDFloatingTarget, param2:Object) : *
+      private function updateTarget(aTarget:HUDFloatingTarget, aTargetData:Object) : *
       {
-         param1.distanceFromPlayer = param2.distanceFromPlayer;
-         param1.isOnScreen = false;
-         param1.visible = false;
-         param1.markerID = param2.markerID;
-         param1.markerType = param2.markerType;
-         param1.isAI = param2.isAI;
-         param1.label = param2.text;
-         param1.showMeter = param2.showMeter;
-         param1.meterValue = param2.meterValue;
-         param1.alertState = param2.announceState;
-         param1.alertMessage = param2.announce;
-         param1.questDisplayType = param2.questDisplayType;
+         aTarget.distanceFromPlayer = aTargetData.distanceFromPlayer;
+         aTarget.isOnScreen = false;
+         aTarget.visible = false;
+         aTarget.markerID = aTargetData.markerID;
+         aTarget.markerType = aTargetData.markerType;
+         aTarget.isAI = aTargetData.isAI;
+         aTarget.label = aTargetData.text;
+         aTarget.showMeter = aTargetData.showMeter;
+         aTarget.meterValue = aTargetData.meterValue;
+         aTarget.alertState = aTargetData.announceState;
+         aTarget.alertMessage = aTargetData.announce;
+         aTarget.questDisplayType = aTargetData.questDisplayType;
       }
       
-      private function addTarget(param1:Object) : HUDFloatingTarget
+      private function addTarget(aTargetData:Object) : HUDFloatingTarget
       {
-         var _loc2_:HUDFloatingTarget = new HUDFloatingTarget();
-         addChild(_loc2_);
-         this.m_Targets.push(_loc2_);
-         this.updateTarget(_loc2_,param1);
-         return _loc2_;
+         var newTarget:HUDFloatingTarget = new HUDFloatingTarget();
+         addChild(newTarget);
+         this.m_Targets.push(newTarget);
+         this.updateTarget(newTarget,aTargetData);
+         return newTarget;
       }
    }
 }

@@ -66,27 +66,27 @@ package
          addEventListener(FORCE_HIDE_EVENT,this.onForceHide);
       }
       
-      public static function getModPath(param1:int) : String
+      public static function getModPath(aModIndex:int) : String
       {
-         var _loc2_:String = "";
-         switch(param1)
+         var emoteModPath:String = "";
+         switch(aModIndex)
          {
             case MOD_SAY:
-               _loc2_ = "modSay";
+               emoteModPath = "modSay";
                break;
             case MOD_SHOUT:
-               _loc2_ = "modShout";
+               emoteModPath = "modShout";
                break;
             case MOD_ASK:
-               _loc2_ = "modAsk";
+               emoteModPath = "modAsk";
                break;
             case MOD_BOAST:
-               _loc2_ = "modBoast";
+               emoteModPath = "modBoast";
                break;
             case MOD_THOUGHT:
-               _loc2_ = "modThought";
+               emoteModPath = "modThought";
          }
-         return _loc2_;
+         return emoteModPath;
       }
       
       public function get removed() : Boolean
@@ -94,14 +94,14 @@ package
          return this.m_Removed;
       }
       
-      public function set removed(param1:Boolean) : void
+      public function set removed(aRemoved:Boolean) : void
       {
-         this.m_Removed = param1;
+         this.m_Removed = aRemoved;
       }
       
-      public function set parentWidget(param1:EmoteWidget) : void
+      public function set parentWidget(aWidget:EmoteWidget) : void
       {
-         this.m_ParentWidget = param1;
+         this.m_ParentWidget = aWidget;
       }
       
       public function get image() : String
@@ -109,18 +109,18 @@ package
          return this.m_Image;
       }
       
-      public function setImage(param1:String, param2:uint = 0) : void
+      public function setImage(aImage:String, aVal:uint = 0) : void
       {
-         this.m_Image = param1;
+         this.m_Image = aImage;
          if(this.m_ImageInstance != null)
          {
             this.Image_mc.removeChild(this.m_ImageInstance);
             this.m_ImageInstance = null;
          }
          this.m_ImageInstance = this.Image_mc.setContainerIconClip(this.m_Image,"Components\\Emotes");
-         if(param2 > 0)
+         if(aVal > 0)
          {
-            this.m_ImageInstance.Value_mc.Value_tf.text = param2.toString();
+            this.m_ImageInstance.Value_mc.Value_tf.text = aVal.toString();
          }
          if(this.m_ImageInstance != null)
          {
@@ -133,24 +133,24 @@ package
          return this.m_Mod;
       }
       
-      public function set mod(param1:int) : void
+      public function set mod(aMod:int) : void
       {
-         this.m_Mod = param1;
+         this.m_Mod = aMod;
          if(this.m_ModInstance != null)
          {
             this.Mod_mc.removeChild(this.m_ModInstance);
             this.m_ModInstance = null;
          }
-         this.m_ModInstance = this.Mod_mc.setContainerIconClip(getModPath(param1),"Components\\Emotes");
+         this.m_ModInstance = this.Mod_mc.setContainerIconClip(getModPath(aMod),"Components\\Emotes");
          if(this.m_ModInstance != null)
          {
             this.m_ModInstance.alpha = 0;
          }
       }
       
-      public function set visAlpha(param1:Number) : void
+      public function set visAlpha(aAlpha:Number) : void
       {
-         this.m_VisAlpha = param1;
+         this.m_VisAlpha = aAlpha;
          if(this.m_FadeTween != null)
          {
             this.m_FadeTween.stop();
@@ -163,74 +163,74 @@ package
       
       public function get realWidth() : Number
       {
-         var _loc1_:Number = this.Image_mc.width;
+         var returnWidth:Number = this.Image_mc.width;
          if(this.m_ImageInstance != null)
          {
             if(this.m_ImageInstance.Sizer_mc != null)
             {
-               _loc1_ = Number(this.m_ImageInstance.Sizer_mc.width);
+               returnWidth = Number(this.m_ImageInstance.Sizer_mc.width);
             }
             else
             {
-               _loc1_ = this.m_ImageInstance.width;
+               returnWidth = this.m_ImageInstance.width;
             }
          }
-         return _loc1_;
+         return returnWidth;
       }
       
       public function get realHeight() : Number
       {
-         var _loc1_:Number = this.Image_mc.height;
+         var returnHeight:Number = this.Image_mc.height;
          if(this.m_ImageInstance != null)
          {
             if(this.m_ImageInstance.Sizer_mc != null)
             {
-               _loc1_ = Number(this.m_ImageInstance.Sizer_mc.height);
+               returnHeight = Number(this.m_ImageInstance.Sizer_mc.height);
             }
             else
             {
-               _loc1_ = this.m_ImageInstance.height;
+               returnHeight = this.m_ImageInstance.height;
             }
          }
-         return _loc1_;
+         return returnHeight;
       }
       
-      public function set showMod(param1:Boolean) : void
+      public function set showMod(aShow:Boolean) : void
       {
-         if(!param1 && param1 != this.m_ShowMod)
+         if(!aShow && aShow != this.m_ShowMod)
          {
             this.m_HideModTween = new Tween(this.m_ModInstance,"alpha",None.easeNone,this.m_VisAlpha,0,ANIM_TIME / 1000,true);
          }
-         this.m_ShowMod = param1;
+         this.m_ShowMod = aShow;
       }
       
-      private function set imageAlpha(param1:Number) : void
+      private function set imageAlpha(aAlpha:Number) : void
       {
          if(this.m_ImageInstance != null)
          {
-            this.m_ImageInstance.alpha = param1;
+            this.m_ImageInstance.alpha = aAlpha;
          }
          if(this.m_ShowMod && this.m_ModInstance != null)
          {
-            this.m_ModInstance.alpha = param1;
+            this.m_ModInstance.alpha = aAlpha;
          }
       }
       
-      public function set timeout(param1:int) : void
+      public function set timeout(aTimeout:int) : void
       {
          if(this.m_Timeout != -1)
          {
             clearTimeout(this.m_Timeout);
          }
-         this.m_Timeout = setTimeout(this.hide,param1 * 1000);
+         this.m_Timeout = setTimeout(this.hide,aTimeout * 1000);
       }
       
-      private function onForceHide(param1:Event) : void
+      private function onForceHide(aEvent:Event) : void
       {
          this.hide();
       }
       
-      public function clearTweens(param1:Boolean = false) : void
+      public function clearTweens(aSetPos:Boolean = false) : void
       {
          if(this.m_SlideTween != null)
          {
@@ -246,17 +246,17 @@ package
          }
       }
       
-      public function slideX(param1:Number) : void
+      public function slideX(newX:Number) : void
       {
          if(!this.m_InitialPos)
          {
-            this.x = param1;
+            this.x = newX;
             this.m_InitialPos = true;
          }
          else
          {
             this.clearTweens();
-            this.m_SlideTween = new Tween(this,"x",Regular.easeInOut,this.x,param1,ANIM_TIME / 1000,true);
+            this.m_SlideTween = new Tween(this,"x",Regular.easeInOut,this.x,newX,ANIM_TIME / 1000,true);
          }
       }
       
@@ -265,9 +265,9 @@ package
          this.m_ParentWidget.removeEntry(this,!this.m_RemoveFromTimer);
       }
       
-      public function hide(param1:Boolean = true) : void
+      public function hide(aFromTimer:Boolean = true) : void
       {
-         this.m_RemoveFromTimer = param1;
+         this.m_RemoveFromTimer = aFromTimer;
          if(this.m_Timeout != -1)
          {
             clearTimeout(this.m_Timeout);

@@ -6,7 +6,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol642")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol648")]
    public class AreaVoiceEntry extends BSScrollingListEntry
    {
       
@@ -28,14 +28,14 @@ package
          TextFieldEx.setTextAutoSize(this.LevelText_mc.LevelText_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
       }
       
-      override public function SetEntryText(param1:Object, param2:String) : *
+      override public function SetEntryText(aEntryObject:Object, astrTextOption:String) : *
       {
          this.NameField_mc.textField.text = "$AREA_CHAT_SUFFIX";
-         this.NameField_mc.textField.text = this.NameField_mc.textField.text.replace("{1}",param1.displayName);
-         this.LevelText_mc.LevelText_tf.text = param1.level;
-         GlobalFunc.updateVoiceIndicator(this.SpeakerIcon_mc,true,true,param1.isSpeakingInSameChannel,false,false);
-         var _loc3_:Array = [this.LevelText_mc,this.NameField_mc,this.SpeakerIcon_mc];
-         GlobalFunc.arrangeItems(_loc3_,false,GlobalFunc.ALIGN_LEFT,CLIP_SPACING,false,CLIP_X_OFFSET);
+         this.NameField_mc.textField.text = this.NameField_mc.textField.text.replace("{1}",aEntryObject.displayName);
+         this.LevelText_mc.LevelText_tf.text = aEntryObject.level;
+         GlobalFunc.updateVoiceIndicator(this.SpeakerIcon_mc,true,true,aEntryObject.isSpeakingInSameChannel,false,false);
+         var nameElements:Array = [this.LevelText_mc,this.NameField_mc,this.SpeakerIcon_mc];
+         GlobalFunc.arrangeItems(nameElements,false,GlobalFunc.ALIGN_LEFT,CLIP_SPACING,false,CLIP_X_OFFSET);
       }
    }
 }

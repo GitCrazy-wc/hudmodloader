@@ -13,7 +13,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1572")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1579")]
    public dynamic class QuickContainerWidget extends BSUIComponent
    {
       
@@ -55,8 +55,8 @@ package
       
       public function QuickContainerWidget()
       {
-         var _loc4_:FrameLabel = null;
-         var _loc5_:QuickContainerItem = null;
+         var curFrame:FrameLabel = null;
+         var clip:QuickContainerItem = null;
          this.AButton = new BSButtonHintData("$TAKE","E","PSN_A","Xenon_A",1,null);
          this.XButton = new BSButtonHintData("$QuickContainerTransfer","R","PSN_X","Xenon_X",1,null);
          this.YButton = new BSButtonHintData("Special Action","$SPACEBAR","PSN_Y","Xenon_Y",1,null);
@@ -69,32 +69,28 @@ package
          this.ItemDataA = new Vector.<QuickContainerItemData>();
          this.ItemClipsA = new Vector.<QuickContainerItem>(cuiNumClips,true);
          this.PositionForListSize = new Vector.<int>(cuiNumClips + 1,true);
-         var _loc1_:TextField = this.ListHeaderAndBracket_mc.ContainerName_mc.textField_tf as TextField;
-         this.m_HeaderTextFormat = _loc1_.getTextFormat();
-         _loc1_.multiline = false;
-         _loc1_.wordWrap = false;
-         var _loc2_:Number = 0;
-         while(_loc2_ < cuiNumClips)
+         var containerName_tf:TextField = this.ListHeaderAndBracket_mc.ContainerName_mc.textField_tf as TextField;
+         this.m_HeaderTextFormat = containerName_tf.getTextFormat();
+         containerName_tf.multiline = false;
+         containerName_tf.wordWrap = false;
+         for(var i:Number = 0; i < cuiNumClips; i++)
          {
-            _loc5_ = this.ListItems_mc.getChildByName("ItemText" + _loc2_) as QuickContainerItem;
-            this.ItemClipsA[_loc2_] = _loc5_;
-            this.PositionForListSize[cuiNumClips - _loc2_] = _loc5_.y;
-            _loc2_++;
+            clip = this.ListItems_mc.getChildByName("ItemText" + i) as QuickContainerItem;
+            this.ItemClipsA[i] = clip;
+            this.PositionForListSize[cuiNumClips - i] = clip.y;
          }
          this.PositionForListSize[0] = this.PositionForListSize[1];
          visible = false;
          alpha = 0;
-         var _loc3_:Array = this.currentLabels;
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_.length)
+         var frameList:Array = this.currentLabels;
+         for(i = 0; i < frameList.length; i++)
          {
-            _loc4_ = _loc3_[_loc2_];
-            if(_loc4_.name == "rollOff")
+            curFrame = frameList[i];
+            if(curFrame.name == "rollOff")
             {
-               this.m_PostInventoryFrame = _loc4_.frame;
+               this.m_PostInventoryFrame = curFrame.frame;
                break;
             }
-            _loc2_++;
          }
          this.ButtonHintBar_mc.useVaultTecColor = true;
          this.ButtonHintBar_mc.useBackground = false;
@@ -108,29 +104,29 @@ package
          return cuiNumClips;
       }
       
-      private function onCharacterInfoUpdate(param1:FromClientDataEvent) : void
+      private function onCharacterInfoUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc2_:Number = Math.floor(param1.data.currWeight);
-         var _loc3_:Number = Math.floor(param1.data.maxWeight);
-         var _loc4_:Number = Math.floor(param1.data.absoluteWeightLimit);
-         if(_loc2_ >= _loc4_)
+         var weightCur:Number = Math.floor(arEvent.data.currWeight);
+         var weightMax:Number = Math.floor(arEvent.data.maxWeight);
+         var weightLimit:Number = Math.floor(arEvent.data.absoluteWeightLimit);
+         if(weightCur >= weightLimit)
          {
             this.WeightIcon_mc.gotoAndStop("warning");
             this.WeightText_mc.WeightText_tf.textColor = GlobalFunc.COOR_WARNING;
             this.WeightText_mc.WeightText_tf.text = "$AbsoluteWeightLimitDisplay";
-            this.WeightText_mc.WeightText_tf.text = this.WeightText_mc.WeightText_tf.text.replace("{weight}",_loc2_.toString());
+            this.WeightText_mc.WeightText_tf.text = this.WeightText_mc.WeightText_tf.text.replace("{weight}",weightCur.toString());
          }
-         else if(_loc2_ > _loc3_)
+         else if(weightCur > weightMax)
          {
             this.WeightIcon_mc.gotoAndStop("warning");
             this.WeightText_mc.WeightText_tf.textColor = GlobalFunc.COOR_WARNING;
-            this.WeightText_mc.WeightText_tf.text = _loc2_ + "/" + _loc3_;
+            this.WeightText_mc.WeightText_tf.text = weightCur + "/" + weightMax;
          }
          else
          {
             this.WeightIcon_mc.gotoAndStop("normal");
             this.WeightText_mc.WeightText_tf.textColor = GlobalFunc.COLOR_TEXT_BODY;
-            this.WeightText_mc.WeightText_tf.text = _loc2_ + "/" + _loc3_;
+            this.WeightText_mc.WeightText_tf.text = weightCur + "/" + weightMax;
          }
       }
       
@@ -165,11 +161,9 @@ package
             this.gotoAndStop("off");
          }
          this.Spinner_mc.visible = false;
-         var _loc1_:uint = 0;
-         while(_loc1_ < cuiNumClips)
+         for(var i:uint = 0; i < cuiNumClips; i++)
          {
-            this.ItemClipsA[_loc1_].data = null;
-            _loc1_++;
+            this.ItemClipsA[i].data = null;
          }
       }
       
@@ -180,37 +174,35 @@ package
       
       protected function PopulateButtonBar() : void
       {
-         var _loc1_:Vector.<BSButtonHintData> = new Vector.<BSButtonHintData>();
-         _loc1_.push(this.AButton);
-         _loc1_.push(this.XButton);
-         _loc1_.push(this.YButton);
+         var buttonHintDataV:Vector.<BSButtonHintData> = new Vector.<BSButtonHintData>();
+         buttonHintDataV.push(this.AButton);
+         buttonHintDataV.push(this.XButton);
+         buttonHintDataV.push(this.YButton);
          this.XButton.ButtonVisible = false;
          this.AButton.ButtonVisible = false;
          this.YButton.ButtonVisible = false;
-         this.ButtonHintBar_mc.SetButtonHintData(_loc1_);
+         this.ButtonHintBar_mc.SetButtonHintData(buttonHintDataV);
       }
       
-      public function UpdateList(param1:int, param2:Boolean) : void
+      public function UpdateList(aSelectedIndex:int, aIsNewContainer:Boolean) : void
       {
-         var _loc4_:QuickContainerItem = null;
-         this._selectedIndex = param1;
-         var _loc3_:uint = 0;
-         while(_loc3_ < cuiNumClips)
+         var clip:QuickContainerItem = null;
+         this._selectedIndex = aSelectedIndex;
+         for(var i:uint = 0; i < cuiNumClips; i++)
          {
-            _loc4_ = this.ItemClipsA[_loc3_];
-            if(_loc3_ < this.ItemDataA.length)
+            clip = this.ItemClipsA[i];
+            if(i < this.ItemDataA.length)
             {
-               _loc4_.data = this.ItemDataA[_loc3_];
-               _loc4_.selected = this._selectedIndex == _loc3_;
-               _loc4_.ConditionMeterEnabled = this._ConditionMeterEnabled;
+               clip.data = this.ItemDataA[i];
+               clip.selected = this._selectedIndex == i;
+               clip.ConditionMeterEnabled = this._ConditionMeterEnabled;
             }
             else
             {
-               _loc4_.data = null;
+               clip.data = null;
             }
-            _loc3_++;
          }
-         if(param2 && this._bracketsVisible && this.ItemClipsA[0].data == null)
+         if(aIsNewContainer && this._bracketsVisible && this.ItemClipsA[0].data == null)
          {
             this.Spinner_mc.gotoAndPlay(1);
             this.Spinner_mc.visible = true;
@@ -222,14 +214,14 @@ package
          this.Spinner_mc.visible = false;
       }
       
-      public function set containerName(param1:String) : *
+      public function set containerName(astrName:String) : *
       {
-         GlobalFunc.SetText(this.ListHeaderAndBracket_mc.ContainerName_mc.textField_tf,param1,false,true);
+         GlobalFunc.SetText(this.ListHeaderAndBracket_mc.ContainerName_mc.textField_tf,astrName,false,true);
       }
       
-      public function set bracketsVisible(param1:Boolean) : void
+      public function set bracketsVisible(value:Boolean) : void
       {
-         this._bracketsVisible = param1;
+         this._bracketsVisible = value;
       }
       
       public function DisableConditionMeter() : *

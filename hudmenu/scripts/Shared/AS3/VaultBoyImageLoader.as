@@ -44,9 +44,9 @@ package Shared.AS3
          return this._bUseFixedQuestStageSize;
       }
       
-      public function set bUseFixedQuestStageSize_Inspectable(param1:Boolean) : *
+      public function set bUseFixedQuestStageSize_Inspectable(abUseFixedQuestStageSize:Boolean) : *
       {
-         this._bUseFixedQuestStageSize = param1;
+         this._bUseFixedQuestStageSize = abUseFixedQuestStageSize;
       }
       
       public function get bPlayClipOnce_Inspectable() : Boolean
@@ -54,9 +54,9 @@ package Shared.AS3
          return this._bPlayClipOnce;
       }
       
-      public function set bPlayClipOnce_Inspectable(param1:Boolean) : *
+      public function set bPlayClipOnce_Inspectable(abPlayClipOnce:Boolean) : *
       {
-         this._bPlayClipOnce = param1;
+         this._bPlayClipOnce = abPlayClipOnce;
       }
       
       public function get ClipAlignment_Inspectable() : String
@@ -64,9 +64,9 @@ package Shared.AS3
          return this._clipAlignment;
       }
       
-      public function set ClipAlignment_Inspectable(param1:String) : *
+      public function set ClipAlignment_Inspectable(aClipAlignment:String) : *
       {
-         this._clipAlignment = param1;
+         this._clipAlignment = aClipAlignment;
       }
       
       public function get DefaultBoySwfName_Inspectable() : String
@@ -74,9 +74,9 @@ package Shared.AS3
          return this._defaultBoySwfName;
       }
       
-      public function set DefaultBoySwfName_Inspectable(param1:String) : *
+      public function set DefaultBoySwfName_Inspectable(aDefaultBoySwfName:String) : *
       {
-         this._defaultBoySwfName = param1;
+         this._defaultBoySwfName = aDefaultBoySwfName;
       }
       
       public function get questAnimStageWidth_Inspectable() : Number
@@ -84,9 +84,9 @@ package Shared.AS3
          return this._questAnimStageWidth;
       }
       
-      public function set questAnimStageWidth_Inspectable(param1:Number) : void
+      public function set questAnimStageWidth_Inspectable(aQuestAnimStageWidth:Number) : void
       {
-         this._questAnimStageWidth = param1;
+         this._questAnimStageWidth = aQuestAnimStageWidth;
       }
       
       public function get questAnimStageHeight_Inspectable() : Number
@@ -94,9 +94,9 @@ package Shared.AS3
          return this._questAnimStageHeight;
       }
       
-      public function set questAnimStageHeight_Inspectable(param1:Number) : void
+      public function set questAnimStageHeight_Inspectable(aQuestAnimStageHeight:Number) : void
       {
-         this._questAnimStageHeight = param1;
+         this._questAnimStageHeight = aQuestAnimStageHeight;
       }
       
       public function get maxClipHeight_Inspectable() : Number
@@ -104,25 +104,24 @@ package Shared.AS3
          return this._maxClipHeight;
       }
       
-      public function set maxClipHeight_Inspectable(param1:Number) : void
+      public function set maxClipHeight_Inspectable(aMaxClipHeight:Number) : void
       {
-         this._maxClipHeight = param1;
+         this._maxClipHeight = aMaxClipHeight;
       }
       
-      public function SWFLoad(param1:String) : void
+      public function SWFLoad(aSwfLoaderURL:String) : void
       {
          var loadCompleteCallback:Function;
          var menuLoadRequest:URLRequest;
-         var aSwfLoaderURL:String = param1;
          this.VaultBoyImageInternal_mc.visible = false;
          if(this.menuLoader)
          {
             this.menuLoader.close();
          }
          this.SWFUnload();
-         loadCompleteCallback = function(param1:Event):*
+         loadCompleteCallback = function(loadCompleteEvent:Event):*
          {
-            onMenuLoadComplete(param1,aSwfLoaderURL);
+            onMenuLoadComplete(loadCompleteEvent,aSwfLoaderURL);
          };
          menuLoadRequest = new URLRequest(aSwfLoaderURL ? aSwfLoaderURL : this.DefaultBoySwfName_Inspectable);
          this.menuLoader = new Loader();
@@ -131,14 +130,14 @@ package Shared.AS3
          SetIsDirty();
       }
       
-      public function onMenuLoadComplete(param1:Event, param2:String) : void
+      public function onMenuLoadComplete(loadCompleteEvent:Event, aSwfLoaderURL:String) : void
       {
-         var _loc3_:MovieClip = null;
-         if(param1 && param1.currentTarget && Boolean(param1.currentTarget.content))
+         var nextQuestClip:MovieClip = null;
+         if(loadCompleteEvent && loadCompleteEvent.currentTarget && Boolean(loadCompleteEvent.currentTarget.content))
          {
-            _loc3_ = param1.currentTarget.content as MovieClip;
-            _loc3_.SwfLoaderURL = param2;
-            this.SetQuestMovieClip(_loc3_);
+            nextQuestClip = loadCompleteEvent.currentTarget.content as MovieClip;
+            nextQuestClip.SwfLoaderURL = aSwfLoaderURL;
+            this.SetQuestMovieClip(nextQuestClip);
          }
          else
          {
@@ -146,11 +145,11 @@ package Shared.AS3
          }
       }
       
-      public function SetQuestMovieClip(param1:MovieClip) : void
+      public function SetQuestMovieClip(nextQuestMovieClip:MovieClip) : void
       {
-         var _loc4_:Graphics = null;
+         var bgGraphics:Graphics = null;
          this.VaultBoyImageInternal_mc.visible = true;
-         this.SWF = param1;
+         this.SWF = nextQuestMovieClip;
          this.VaultBoyImageInternal_mc.addChild(this.SWF);
          if(this.bPlayClipOnce_Inspectable)
          {
@@ -158,30 +157,30 @@ package Shared.AS3
          }
          if(this.bUseFixedQuestStageSize_Inspectable)
          {
-            _loc4_ = this.SWF.graphics;
-            _loc4_.clear();
-            _loc4_.beginFill(0,0);
-            _loc4_.drawRect(0,0,this.questAnimStageWidth_Inspectable,this.questAnimStageHeight_Inspectable);
-            _loc4_.endFill();
+            bgGraphics = this.SWF.graphics;
+            bgGraphics.clear();
+            bgGraphics.beginFill(0,0);
+            bgGraphics.drawRect(0,0,this.questAnimStageWidth_Inspectable,this.questAnimStageHeight_Inspectable);
+            bgGraphics.endFill();
          }
-         var _loc2_:Number = this._maxClipHeight;
-         var _loc3_:Number = _loc2_ / this.SWF.height;
-         this.SWF.scaleX = _loc3_;
-         this.SWF.scaleY = _loc3_;
+         var allowedHeight:Number = this._maxClipHeight;
+         var scaleToFit:Number = allowedHeight / this.SWF.height;
+         this.SWF.scaleX = scaleToFit;
+         this.SWF.scaleY = scaleToFit;
          if(this.ClipAlignment_Inspectable == "Center")
          {
-            this.SWF.x = -this.questAnimStageWidth_Inspectable * 0.5 * _loc3_;
-            this.SWF.y = -this.questAnimStageHeight_Inspectable * 0.5 * _loc3_;
+            this.SWF.x = -this.questAnimStageWidth_Inspectable * 0.5 * scaleToFit;
+            this.SWF.y = -this.questAnimStageHeight_Inspectable * 0.5 * scaleToFit;
          }
          this.menuLoader = null;
          SetIsDirty();
       }
       
-      public function onLastFrame_Impl(param1:String) : *
+      public function onLastFrame_Impl(aSwfName:String) : *
       {
       }
       
-      public function onSWFEnterFrame(param1:Event) : *
+      public function onSWFEnterFrame(aEvent:Event) : *
       {
          if(this.bPlayClipOnce_Inspectable && this.SWF && this.SWF.currentFrame == this.SWF.totalFrames)
          {

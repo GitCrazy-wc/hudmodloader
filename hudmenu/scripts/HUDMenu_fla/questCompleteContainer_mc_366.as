@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol853")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol859")]
    public dynamic class questCompleteContainer_mc_366 extends MovieClip
    {
       
@@ -48,11 +48,11 @@ package HUDMenu_fla
          addEventListener(Event.FRAME_CONSTRUCTED,this.__setTab_handler,false,0,true);
       }
       
-      internal function __setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_58(param1:int) : *
+      internal function __setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_58(curFrame:int) : *
       {
-         if(this.FanfareType_mc != null && param1 >= 59 && param1 <= 60 && (this.__setTabDict[this.FanfareType_mc] == undefined || !(int(this.__setTabDict[this.FanfareType_mc]) >= 59 && int(this.__setTabDict[this.FanfareType_mc]) <= 60)))
+         if(this.FanfareType_mc != null && curFrame >= 59 && curFrame <= 60 && (this.__setTabDict[this.FanfareType_mc] == undefined || !(int(this.__setTabDict[this.FanfareType_mc]) >= 59 && int(this.__setTabDict[this.FanfareType_mc]) <= 60)))
          {
-            this.__setTabDict[this.FanfareType_mc] = param1;
+            this.__setTabDict[this.FanfareType_mc] = curFrame;
             this.FanfareType_mc.tabIndex = 2;
          }
       }
@@ -66,25 +66,25 @@ package HUDMenu_fla
          }
       }
       
-      internal function __setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_213(param1:int) : *
+      internal function __setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_213(curFrame:int) : *
       {
-         if(this.FanfareType_mc != null && param1 >= 214 && param1 <= 215 && (this.__setTabDict[this.FanfareType_mc] == undefined || !(int(this.__setTabDict[this.FanfareType_mc]) >= 214 && int(this.__setTabDict[this.FanfareType_mc]) <= 215)))
+         if(this.FanfareType_mc != null && curFrame >= 214 && curFrame <= 215 && (this.__setTabDict[this.FanfareType_mc] == undefined || !(int(this.__setTabDict[this.FanfareType_mc]) >= 214 && int(this.__setTabDict[this.FanfareType_mc]) <= 215)))
          {
-            this.__setTabDict[this.FanfareType_mc] = param1;
+            this.__setTabDict[this.FanfareType_mc] = curFrame;
             this.FanfareType_mc.tabIndex = 2;
          }
       }
       
-      internal function __setTab_handler(param1:Object) : *
+      internal function __setTab_handler(e:Object) : *
       {
-         var _loc2_:int = currentFrame;
-         if(this.__lastFrameTab == _loc2_)
+         var curFrame:int = currentFrame;
+         if(this.__lastFrameTab == curFrame)
          {
             return;
          }
-         this.__lastFrameTab = _loc2_;
-         this.__setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_58(_loc2_);
-         this.__setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_213(_loc2_);
+         this.__lastFrameTab = curFrame;
+         this.__setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_58(curFrame);
+         this.__setTab_FanfareType_mc_questCompleteContainer_mc_FanfareType_mc_213(curFrame);
       }
       
       internal function frame1() : *

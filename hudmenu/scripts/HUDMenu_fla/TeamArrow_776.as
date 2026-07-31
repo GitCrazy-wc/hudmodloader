@@ -2,14 +2,14 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol196")]
-   public dynamic class reputationWonkPlate_747 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol140")]
+   public dynamic class TeamArrow_776 extends MovieClip
    {
       
-      public function reputationWonkPlate_747()
+      public function TeamArrow_776()
       {
          super();
-         addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3);
+         addFrameScript(0,this.frame1,1,this.frame2,2,this.frame3,3,this.frame4);
       }
       
       internal function frame1() : *
@@ -23,6 +23,11 @@ package HUDMenu_fla
       }
       
       internal function frame3() : *
+      {
+         stop();
+      }
+      
+      internal function frame4() : *
       {
          stop();
       }

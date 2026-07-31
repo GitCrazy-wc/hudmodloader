@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol725")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol731")]
    public dynamic class DeadPlayerPing_477 extends MovieClip
    {
       

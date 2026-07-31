@@ -45,9 +45,9 @@ package
          addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
       }
       
-      public function set entityID(param1:uint) : void
+      public function set entityID(aID:uint) : void
       {
-         this.m_EntityID = param1;
+         this.m_EntityID = aID;
       }
       
       public function get entityID() : uint
@@ -65,29 +65,27 @@ package
          return this.m_MaxEmoteHeight;
       }
       
-      public function set displayMax(param1:uint) : void
+      public function set displayMax(aMax:uint) : void
       {
-         this.m_DisplayMax = param1;
+         this.m_DisplayMax = aMax;
          this.clear();
       }
       
-      public function set scale(param1:Number) : void
+      public function set scale(aScale:Number) : void
       {
-         this.m_Scale = param1;
-         var _loc2_:int = 0;
-         while(_loc2_ < this.numChildren)
+         this.m_Scale = aScale;
+         for(var i:int = 0; i < this.numChildren; i++)
          {
-            this.getChildElement(_loc2_).scaleX = this.m_Scale;
-            this.getChildElement(_loc2_).scaleY = this.m_Scale;
-            _loc2_++;
+            this.getChildElement(i).scaleX = this.m_Scale;
+            this.getChildElement(i).scaleY = this.m_Scale;
          }
       }
       
-      public function set align(param1:uint) : void
+      public function set align(aAlign:uint) : void
       {
-         if(param1 != this.m_Align)
+         if(aAlign != this.m_Align)
          {
-            this.m_Align = param1;
+            this.m_Align = aAlign;
             if(this.numChildren > 0)
             {
                this.updatePositions();
@@ -95,12 +93,12 @@ package
          }
       }
       
-      public function onAddedToStage(param1:Event) : void
+      public function onAddedToStage(e:Event) : void
       {
          this.m_ProviderCallback = BSUIDataManager.Subscribe("ActiveEmoteData",this.onEmoteUpdate);
       }
       
-      public function onRemovedFromStage(param1:Event) : void
+      public function onRemovedFromStage(e:Event) : void
       {
          if(this.m_ProviderCallback != null)
          {
@@ -108,111 +106,104 @@ package
          }
       }
       
-      private function getChildElement(param1:int) : EmoteContainer
+      private function getChildElement(aIndex:int) : EmoteContainer
       {
-         return this.getChildAt(param1) as EmoteContainer;
+         return this.getChildAt(aIndex) as EmoteContainer;
       }
       
       private function updatePositions() : void
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:EmoteContainer = null;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc7_:Boolean = false;
-         var _loc8_:int = 0;
-         var _loc9_:uint = 0;
-         var _loc1_:Number = 0;
-         var _loc2_:int = 0;
-         while(_loc2_ < this.numChildren)
+         var fullWidth:Number = NaN;
+         var curChild:EmoteContainer = null;
+         var emoteSpacing:Number = NaN;
+         var posX:Number = NaN;
+         var hasDisplayed:Boolean = false;
+         var childCount:int = 0;
+         var posChildCount:uint = 0;
+         var emoteCount:Number = 0;
+         for(var i:int = 0; i < this.numChildren; )
          {
-            if(!this.getChildElement(_loc2_).removed)
+            if(!this.getChildElement(i).removed)
             {
-               _loc1_++;
+               emoteCount++;
             }
-            _loc2_++;
+            i++;
          }
-         if(_loc1_ > 0)
+         if(emoteCount > 0)
          {
-            _loc3_ = 0;
-            _loc4_ = this.getChildElement(0);
-            _loc5_ = EMOTE_SPACING * this.m_Scale;
-            _loc6_ = 0;
-            _loc7_ = false;
+            fullWidth = 0;
+            curChild = this.getChildElement(0);
+            emoteSpacing = EMOTE_SPACING * this.m_Scale;
+            posX = 0;
+            hasDisplayed = false;
             this.m_MaxEmoteWidth = 0;
             this.m_MaxEmoteHeight = 0;
-            _loc2_ = 0;
-            while(_loc2_ < this.numChildren)
+            for(i = 0; i < this.numChildren; i++)
             {
-               _loc4_ = this.getChildElement(_loc2_);
-               this.m_MaxEmoteWidth = Math.max(this.maxEmoteWidth,_loc4_.realWidth * this.m_Scale);
-               this.m_MaxEmoteHeight = Math.max(this.maxEmoteHeight,_loc4_.realHeight * this.m_Scale);
-               if(!_loc4_.removed)
+               curChild = this.getChildElement(i);
+               this.m_MaxEmoteWidth = Math.max(this.maxEmoteWidth,curChild.realWidth * this.m_Scale);
+               this.m_MaxEmoteHeight = Math.max(this.maxEmoteHeight,curChild.realHeight * this.m_Scale);
+               if(!curChild.removed)
                {
-                  if(_loc7_)
+                  if(hasDisplayed)
                   {
-                     _loc3_ += _loc5_;
-                     _loc3_ += _loc4_.realWidth * this.m_Scale;
+                     fullWidth += emoteSpacing;
+                     fullWidth += curChild.realWidth * this.m_Scale;
                   }
-                  _loc7_ = true;
+                  hasDisplayed = true;
                }
-               _loc2_++;
             }
             if(this.m_Align != ALIGN_LEFT)
             {
-               _loc6_ -= _loc3_;
+               posX -= fullWidth;
                if(this.m_Align == ALIGN_CENTER)
                {
-                  _loc6_ /= 2;
+                  posX /= 2;
                }
             }
-            _loc8_ = this.numChildren;
-            _loc9_ = 0;
-            _loc2_ = 0;
-            while(_loc2_ < _loc8_)
+            childCount = this.numChildren;
+            posChildCount = 0;
+            for(i = 0; i < childCount; i++)
             {
-               _loc4_ = this.getChildElement(_loc2_);
-               if(!_loc4_.removed)
+               curChild = this.getChildElement(i);
+               if(!curChild.removed)
                {
-                  if(_loc2_ != _loc8_ - 1)
+                  if(i != childCount - 1)
                   {
-                     _loc4_.showMod = false;
+                     curChild.showMod = false;
                   }
-                  if(_loc9_ >= 1)
+                  if(posChildCount >= 1)
                   {
-                     _loc6_ += _loc5_;
+                     posX += emoteSpacing;
                   }
                   if(FADE_OLDER)
                   {
-                     _loc4_.visAlpha = 1 - (_loc1_ - 1 - _loc9_) * (1 / this.m_DisplayMax);
+                     curChild.visAlpha = 1 - (emoteCount - 1 - posChildCount) * (1 / this.m_DisplayMax);
                   }
                   else
                   {
-                     _loc4_.visAlpha = 1;
+                     curChild.visAlpha = 1;
                   }
-                  this.getChildElement(_loc2_).slideX(_loc6_);
-                  _loc6_ += _loc4_.realWidth * this.m_Scale;
-                  _loc9_++;
+                  this.getChildElement(i).slideX(posX);
+                  posX += curChild.realWidth * this.m_Scale;
+                  posChildCount++;
                }
-               _loc2_++;
             }
          }
       }
       
       private function clear() : void
       {
-         var _loc1_:int = 0;
-         while(_loc1_ < this.numChildren)
+         for(var i:int = 0; i < this.numChildren; i++)
          {
-            this.getChildElement(_loc1_).hide(false);
-            _loc1_++;
+            this.getChildElement(i).hide(false);
          }
          this.m_HasPrompt = false;
       }
       
-      public function removeEntry(param1:EmoteContainer, param2:Boolean = true) : void
+      public function removeEntry(aEntry:EmoteContainer, aReposition:Boolean = true) : void
       {
-         this.removeChild(param1);
+         this.removeChild(aEntry);
          if(this.numChildren == 0)
          {
             dispatchEvent(new Event(EVENT_CLEARED,true));
@@ -220,48 +211,48 @@ package
          this.updatePositions();
       }
       
-      private function onEmoteUpdate(param1:FromClientDataEvent) : *
+      private function onEmoteUpdate(arEvent:FromClientDataEvent) : *
       {
-         var _loc2_:String = null;
-         var _loc3_:EmoteContainer = null;
-         var _loc4_:EmoteContainer = null;
-         if(param1.data.entityID == this.m_EntityID)
+         var emoteName:String = null;
+         var newClip:EmoteContainer = null;
+         var firstEntry:EmoteContainer = null;
+         if(arEvent.data.entityID == this.m_EntityID)
          {
-            _loc2_ = param1.data.emoteName;
-            if(_loc2_ == null || _loc2_.length == 0)
+            emoteName = arEvent.data.emoteName;
+            if(emoteName == null || emoteName.length == 0)
             {
                this.clear();
             }
             else
             {
-               if(param1.data.emoteMod == EmoteContainer.MOD_PROMPT)
+               if(arEvent.data.emoteMod == EmoteContainer.MOD_PROMPT)
                {
                   this.clear();
                }
                if(this.numChildren > 0 && this.numChildren == this.m_DisplayMax)
                {
-                  _loc4_ = this.getChildElement(0);
-                  if(_loc4_.mod == EmoteContainer.MOD_PROMPT)
+                  firstEntry = this.getChildElement(0);
+                  if(firstEntry.mod == EmoteContainer.MOD_PROMPT)
                   {
                      this.m_HasPrompt = false;
                   }
-                  _loc4_.hide(false);
+                  firstEntry.hide(false);
                }
-               _loc3_ = new EmoteContainer();
-               _loc3_.scaleX = this.m_Scale;
-               _loc3_.scaleY = this.m_Scale;
-               _loc3_.setImage(_loc2_,param1.data.displayValue);
-               _loc3_.mod = param1.data.emoteMod;
-               if(param1.data.emoteMod == EmoteContainer.MOD_PROMPT)
+               newClip = new EmoteContainer();
+               newClip.scaleX = this.m_Scale;
+               newClip.scaleY = this.m_Scale;
+               newClip.setImage(emoteName,arEvent.data.displayValue);
+               newClip.mod = arEvent.data.emoteMod;
+               if(arEvent.data.emoteMod == EmoteContainer.MOD_PROMPT)
                {
                   this.m_HasPrompt = true;
                }
-               if(param1.data.ignoreDuration == false)
+               if(arEvent.data.ignoreDuration == false)
                {
-                  _loc3_.timeout = param1.data.duration;
+                  newClip.timeout = arEvent.data.duration;
                }
-               _loc3_.parentWidget = this;
-               addChild(_loc3_);
+               newClip.parentWidget = this;
+               addChild(newClip);
                if(this.numChildren == 1)
                {
                   dispatchEvent(new Event(EVENT_ACTIVE,true));

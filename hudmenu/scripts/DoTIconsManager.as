@@ -4,7 +4,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1037")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1044")]
    public class DoTIconsManager extends MovieClip
    {
       
@@ -47,9 +47,9 @@ package
          addEventListener(DoTDamageIcon.EVENT_DAMAGE_COMPLETE,this.onDamageComplete);
       }
       
-      public function set alignment(param1:uint) : *
+      public function set alignment(aVal:uint) : *
       {
-         this.m_Alignment = param1;
+         this.m_Alignment = aVal;
       }
       
       public function reset() : void
@@ -61,14 +61,14 @@ package
          addChild(this.IconContainer_mc);
       }
       
-      public function SetStealthMeterAwareness(param1:Boolean) : void
+      public function SetStealthMeterAwareness(aVal:Boolean) : void
       {
-         this.m_bAffectedByStealth = param1;
+         this.m_bAffectedByStealth = aVal;
       }
       
-      public function SetStealthMeterStatus(param1:Boolean) : void
+      public function SetStealthMeterStatus(aVal:Boolean) : void
       {
-         this.y = this.ORIG_Y + (this.m_bAffectedByStealth && param1 ? this.STEALTH_BAR_HEIGHT + this.STEALTH_BAR_HEIGHT_MARGIN : 0);
+         this.y = this.ORIG_Y + (this.m_bAffectedByStealth && aVal ? this.STEALTH_BAR_HEIGHT + this.STEALTH_BAR_HEIGHT_MARGIN : 0);
       }
       
       public function isActive() : Boolean
@@ -81,111 +81,101 @@ package
          return this.m_NumIcons;
       }
       
-      public function populateIcons(param1:Array) : Boolean
+      public function populateIcons(aTypes:Array) : Boolean
       {
-         var _loc3_:Array = null;
-         var _loc4_:* = undefined;
-         var _loc5_:* = false;
-         var _loc6_:Boolean = false;
-         var _loc7_:* = undefined;
-         var _loc8_:* = undefined;
-         var _loc9_:* = undefined;
-         var _loc10_:DoTDamageIcon = null;
-         var _loc2_:* = false;
-         if(param1.length == 0)
+         var damageTypes:Array = null;
+         var i:* = undefined;
+         var newBatch:* = false;
+         var hasType:Boolean = false;
+         var j:* = undefined;
+         var x:* = undefined;
+         var nextX:* = undefined;
+         var newIcon:DoTDamageIcon = null;
+         var activeDOT:* = false;
+         if(aTypes.length == 0)
          {
             this.visible = false;
          }
          else
          {
-            _loc3_ = new Array();
-            _loc4_ = 0;
-            while(_loc4_ < param1.length)
+            damageTypes = new Array();
+            for(i = 0; i < aTypes.length; i++)
             {
-               _loc6_ = false;
-               _loc7_ = 0;
-               while(_loc7_ < _loc3_.length)
+               hasType = false;
+               for(j = 0; j < damageTypes.length; j++)
                {
-                  if(_loc3_[_loc7_].damageType == param1[_loc4_].damageType)
+                  if(damageTypes[j].damageType == aTypes[i].damageType)
                   {
-                     _loc6_ = true;
-                     _loc3_[_loc7_].remainingDuration = Math.max(_loc3_[_loc7_].remainingDuration,param1[_loc4_].remainingDuration);
-                     _loc3_[_loc7_].totalDuration = Math.max(_loc3_[_loc7_].totalDuration,param1[_loc4_].remainingDuration);
+                     hasType = true;
+                     damageTypes[j].remainingDuration = Math.max(damageTypes[j].remainingDuration,aTypes[i].remainingDuration);
+                     damageTypes[j].totalDuration = Math.max(damageTypes[j].totalDuration,aTypes[i].remainingDuration);
                      break;
                   }
-                  _loc7_++;
                }
-               if(!_loc6_)
+               if(!hasType)
                {
-                  _loc3_.push(param1[_loc4_]);
+                  damageTypes.push(aTypes[i]);
                }
-               _loc4_++;
             }
-            _loc5_ = _loc3_.length != this.m_IconArray.length;
-            if(!_loc5_)
+            newBatch = damageTypes.length != this.m_IconArray.length;
+            if(!newBatch)
             {
-               _loc8_ = 0;
-               while(_loc8_ < _loc3_.length)
+               for(x = 0; x < damageTypes.length; x++)
                {
-                  if(_loc3_[_loc8_].remainingDuration - this.m_IconArray[_loc8_].remainingDuration > NEW_ICON_THRESHOLD)
+                  if(damageTypes[x].remainingDuration - this.m_IconArray[x].remainingDuration > NEW_ICON_THRESHOLD)
                   {
-                     _loc5_ = true;
+                     newBatch = true;
                      break;
                   }
-                  _loc8_++;
                }
             }
-            if(_loc5_)
+            if(newBatch)
             {
                this.reset();
                this.visible = true;
-               _loc9_ = 0;
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_.length)
+               nextX = 0;
+               for(i = 0; i < damageTypes.length; i++)
                {
-                  _loc10_ = new DoTDamageIcon();
-                  _loc10_.setType(_loc3_[_loc4_].damageType,_loc3_[_loc4_].positive,_loc3_[_loc4_].remainingDuration,_loc3_[_loc4_].totalDuration);
-                  this.IconContainer_mc.addChild(_loc10_);
-                  _loc10_.x = _loc9_;
-                  _loc9_ += ICON_WIDTH_WITH_GAP;
-                  this.m_IconArray.push(_loc10_);
+                  newIcon = new DoTDamageIcon();
+                  newIcon.setType(damageTypes[i].damageType,damageTypes[i].positive,damageTypes[i].remainingDuration,damageTypes[i].totalDuration);
+                  this.IconContainer_mc.addChild(newIcon);
+                  newIcon.x = nextX;
+                  nextX += ICON_WIDTH_WITH_GAP;
+                  this.m_IconArray.push(newIcon);
                   ++this.m_NumIcons;
-                  _loc4_++;
                }
                this.alignIcons();
             }
-            _loc2_ = this.m_NumIcons > 0;
+            activeDOT = this.m_NumIcons > 0;
          }
-         return _loc2_;
+         return activeDOT;
       }
       
-      private function onDamageComplete(param1:Event) : void
+      private function onDamageComplete(aEvent:Event) : void
       {
          --this.m_NumIcons;
-         this.IconContainer_mc.removeChild(param1.target as DisplayObject);
+         this.IconContainer_mc.removeChild(aEvent.target as DisplayObject);
          this.alignIcons();
-         param1.stopPropagation();
+         aEvent.stopPropagation();
          if(this.m_NumIcons == 0)
          {
             dispatchEvent(new Event(EVENT_DOT_COMPLETE,true,true));
          }
       }
       
-      private function alignIcons(param1:Boolean = false) : void
+      private function alignIcons(aIsRealign:Boolean = false) : void
       {
-         var _loc5_:DisplayObject = null;
-         var _loc2_:* = 0;
-         var _loc3_:uint = uint(this.IconContainer_mc.numChildren);
-         var _loc4_:uint = 0;
-         while(_loc4_ < _loc3_)
+         var curIcon:DisplayObject = null;
+         var nextX:* = 0;
+         var numChild:uint = uint(this.IconContainer_mc.numChildren);
+         for(var i:uint = 0; i < numChild; i++)
          {
-            _loc5_ = this.IconContainer_mc.getChildAt(_loc4_);
-            if(_loc5_ is DoTDamageIcon && (_loc5_ as DoTDamageIcon).remainingDuration > 0)
+            curIcon = this.IconContainer_mc.getChildAt(i);
+            if(curIcon is DoTDamageIcon && (curIcon as DoTDamageIcon).remainingDuration > 0)
             {
-               _loc5_.x = _loc2_;
-               _loc2_ += ICON_WIDTH_WITH_GAP;
+               curIcon.x = nextX;
+               nextX += ICON_WIDTH_WITH_GAP;
             }
-            _loc4_++;
          }
          switch(this.m_Alignment)
          {
@@ -193,7 +183,7 @@ package
                this.IconContainer_mc.x = this.Sizer_mc.width / 2 - this.m_NumIcons * ICON_WIDTH_WITH_GAP / 2;
                break;
             case ALIGNMENT_LEFT:
-               this.IconContainer_mc.x = param1 ? this.IconContainer_mc.x - ICON_WIDTH_WITH_GAP : this.Sizer_mc.x;
+               this.IconContainer_mc.x = aIsRealign ? this.IconContainer_mc.x - ICON_WIDTH_WITH_GAP : this.Sizer_mc.x;
                break;
             case ALIGNMENT_RIGHT:
                this.IconContainer_mc.x = this.Sizer_mc.width - this.m_NumIcons * ICON_WIDTH_WITH_GAP;

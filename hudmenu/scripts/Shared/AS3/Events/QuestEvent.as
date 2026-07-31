@@ -15,11 +15,11 @@ package Shared.AS3.Events
       
       public var pvpFlag:Boolean;
       
-      public function QuestEvent(param1:String, param2:Object, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false)
+      public function QuestEvent(aType:String, aQuestData:Object, aBubbles:Boolean = false, aCancelable:Boolean = false, aPVPFlag:Boolean = false)
       {
-         this.m_Data = param2;
-         this.pvpFlag = param5;
-         super(param1,param3,param4);
+         this.m_Data = aQuestData;
+         this.pvpFlag = aPVPFlag;
+         super(aType,aBubbles,aCancelable);
       }
       
       public function get data() : Object

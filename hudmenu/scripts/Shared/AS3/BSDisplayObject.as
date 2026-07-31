@@ -36,11 +36,11 @@ package Shared.AS3
       
       public function SetIsDirty() : void
       {
-         var _loc1_:Error = null;
+         var e:Error = null;
          if(this._bIsDrawing)
          {
-            _loc1_ = new Error();
-            GlobalFunc.BSASSERT(false,"BSDisplayObject: " + getQualifiedClassName(this) + ": " + this.name + ": SetIsDirty was called during onRenderEvent" + _loc1_.getStackTrace().toString());
+            e = new Error();
+            GlobalFunc.BSASSERT(false,"BSDisplayObject: " + getQualifiedClassName(this) + ": " + this.name + ": SetIsDirty was called during onRenderEvent" + e.getStackTrace().toString());
          }
          this._bIsDirty = true;
          this.requestRedraw();
@@ -51,7 +51,7 @@ package Shared.AS3
          this._bIsDirty = false;
       }
       
-      final private function onLoadedInitEvent(param1:Event) : void
+      final private function onLoadedInitEvent(arEvent:Event) : void
       {
          if(loaderInfo is LoaderInfo)
          {
@@ -60,7 +60,7 @@ package Shared.AS3
          this.onLoadedInit();
       }
       
-      final private function onAddedToStageEvent(param1:Event) : void
+      final private function onAddedToStageEvent(arEvent:Event) : void
       {
          removeEventListener(Event.ADDED_TO_STAGE,this.onAddedToStageEvent);
          this.onAddedToStage();
@@ -71,7 +71,7 @@ package Shared.AS3
          addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStageEvent);
       }
       
-      final private function onRemovedFromStageEvent(param1:Event) : void
+      final private function onRemovedFromStageEvent(arEvent:Event) : void
       {
          removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStageEvent);
          if(stage)
@@ -82,7 +82,7 @@ package Shared.AS3
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStageEvent);
       }
       
-      final private function onRenderEvent(param1:Event) : void
+      final private function onRenderEvent(arEvent:Event) : void
       {
          this._bIsDrawing = true;
          if(stage)
@@ -123,24 +123,24 @@ package Shared.AS3
       {
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         var _loc2_:DisplayObject = super.addChild(param1);
+         var returnChild:DisplayObject = super.addChild(child);
          if(this.onAddChild is Function)
          {
-            this.onAddChild(param1,getQualifiedClassName(param1));
+            this.onAddChild(child,getQualifiedClassName(child));
          }
-         return _loc2_;
+         return returnChild;
       }
       
-      override public function removeChild(param1:DisplayObject) : DisplayObject
+      override public function removeChild(child:DisplayObject) : DisplayObject
       {
-         var _loc2_:DisplayObject = super.removeChild(param1);
+         var returnChild:DisplayObject = super.removeChild(child);
          if(this.onRemoveChild is Function)
          {
-            this.onRemoveChild(param1,getQualifiedClassName(param1));
+            this.onRemoveChild(child,getQualifiedClassName(child));
          }
-         return _loc2_;
+         return returnChild;
       }
    }
 }

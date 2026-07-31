@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1397")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1404")]
    public dynamic class crosshairLoop_240 extends MovieClip
    {
       

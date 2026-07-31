@@ -1,8 +1,12 @@
 package
 {
+   import Shared.AS3.BSButtonHintBar;
+   import Shared.AS3.BSButtonHintData;
+   import Shared.AS3.Events.PlatformChangeEvent;
+   import flash.events.Event;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol255")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol259")]
    public class HUDMessageItemRecentActivity extends HUDMessageItemBase
    {
       
@@ -10,7 +14,13 @@ package
       
       public static const EVENT_ON_FADE_IN_COMPLETE:* = "HUDMessage::RecentActivityOnFadeInComplete";
       
-      public function HUDMessageItemRecentActivity()
+      public static const EVENT_JOIN:* = "HUDMessage::RecentActivityJoin";
+      
+      public var ButtonHintBar_mc:BSButtonHintBar;
+      
+      private var m_DownButton:BSButtonHintData;
+      
+      public function HUDMessageItemRecentActivity(auiPlatform:uint = 0)
       {
          super();
          addFrameScript(4,this.frame5,15,this.frame16,177,this.frame178);
@@ -21,34 +31,47 @@ package
          Internal_mc.Icon_mc.clipScale = 1;
          Internal_mc.Icon_mc.clipXOffset = Internal_mc.Icon_mc.clipWidth / 2;
          Internal_mc.Icon_mc.clipYOffset = Internal_mc.Icon_mc.clipHeight / 2;
+         this.m_DownButton = new BSButtonHintData("$JoinEvent","G","_DPad_Down","_DPad_Down",1,null,EVENT_JOIN,auiPlatform == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE ? "Emotes" : "QuickkeyDown");
+         this.m_DownButton.canHold = true;
+         this.ButtonHintBar_mc = Internal_mc.ButtonHintBar_mc;
+         this.ButtonHintBar_mc.SetButtonHintData(new <BSButtonHintData>[this.m_DownButton]);
+         this.m_DownButton.ButtonVisible = false;
       }
       
       override public function redrawUIComponent() : void
       {
-         var _loc1_:String = null;
+         var icon:String = null;
          if(Boolean(data) && Boolean(data.data))
          {
+            this.m_DownButton.ButtonVisible = false;
             Internal_mc.gotoAndStop(m_ShowBottomRight ? "bottomRight" : "default");
             visible = true;
-            _loc1_ = "";
+            icon = "";
             switch(data.type)
             {
                case HUDMessageItemData.TYPE_DAILY_OPS:
                   Internal_mc.Icon_mc.clipWidth = Internal_mc.Icon_mc.width;
                   Internal_mc.Icon_mc.clipHeight = Internal_mc.Icon_mc.height;
-                  _loc1_ = "DOMode_Uplink2";
+                  icon = "DOMode_Uplink2";
                   break;
                case HUDMessageItemData.TYPE_MUTATED_EVENT:
                   Internal_mc.Icon_mc.clipWidth = Internal_mc.Icon_mc.width * 0.75;
                   Internal_mc.Icon_mc.clipHeight = Internal_mc.Icon_mc.height * 0.75;
-                  _loc1_ = "InWorldMutatedPublicEventIcon";
+                  icon = "InWorldMutatedPublicEventIcon";
                   break;
                case HUDMessageItemData.TYPE_RAID:
                   Internal_mc.Icon_mc.clipWidth = Internal_mc.Icon_mc.width;
                   Internal_mc.Icon_mc.clipHeight = Internal_mc.Icon_mc.height;
-                  _loc1_ = "RaidEventIcon";
+                  icon = "RaidEventIcon";
+                  break;
+               case HUDMessageItemData.TYPE_INFESTATION:
+                  Internal_mc.Icon_mc.clipWidth = Internal_mc.Icon_mc.width;
+                  Internal_mc.Icon_mc.clipHeight = Internal_mc.Icon_mc.height;
+                  icon = "InfestationIcon";
+                  this.m_DownButton.ButtonVisible = true;
+                  this.m_DownButton.DispatchDataID = data.data.recentActivityId;
             }
-            Internal_mc.Icon_mc.setContainerIconClip(_loc1_);
+            Internal_mc.Icon_mc.setContainerIconClip(icon);
             Internal_mc.TitleText_tf.text = data.data.titleText;
             Internal_mc.TitleText_tf.text = Internal_mc.TitleText_tf.text.toUpperCase();
             Internal_mc.BodyText_tf.text = data.data.messageText;
@@ -66,13 +89,13 @@ package
       
       internal function frame16() : *
       {
-         OnFadeInComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeInComplete",true));
          stop();
       }
       
       internal function frame178() : *
       {
-         OnFadeOutComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeOutComplete",true));
          stop();
       }
    }

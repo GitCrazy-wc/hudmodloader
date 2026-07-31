@@ -7,11 +7,11 @@ package
       
       private var m_ObjectiveToRemove:HUDQuestTrackerObjective;
       
-      public function RemoveObjectiveData(param1:HUDQuestTrackerObjective, param2:HUDQuestTrackerEntry)
+      public function RemoveObjectiveData(aObjectiveToRemove:HUDQuestTrackerObjective, aOwningQuest:HUDQuestTrackerEntry)
       {
          super();
-         this.m_OwningQuest = param2;
-         this.m_ObjectiveToRemove = param1;
+         this.m_OwningQuest = aOwningQuest;
+         this.m_ObjectiveToRemove = aObjectiveToRemove;
       }
       
       public function get owningQuest() : HUDQuestTrackerEntry

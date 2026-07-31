@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import scaleform.gfx.Extensions;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol726")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol732")]
    public class PingMarker extends MovieClip
    {
       
@@ -44,16 +44,16 @@ package
          this.m_baseArrowY = this.PingArrow_mc.y;
       }
       
-      public function SetData(param1:Object) : *
+      public function SetData(aDataObj:Object) : *
       {
-         if(param1 == null)
+         if(aDataObj == null)
          {
             return;
          }
-         this.m_AvatarID = param1.playerIconResource;
-         this.m_ContextType = param1.contextType;
-         this.m_IsOnScreen = param1.isOnScreen;
-         this.m_OffScreenAngle = param1.offScreenAngle;
+         this.m_AvatarID = aDataObj.playerIconResource;
+         this.m_ContextType = aDataObj.contextType;
+         this.m_IsOnScreen = aDataObj.isOnScreen;
+         this.m_OffScreenAngle = aDataObj.offScreenAngle;
       }
       
       public function ClearData() : *
@@ -65,24 +65,24 @@ package
          stop();
       }
       
-      private function RotateAroundPoint(param1:Number, param2:Number, param3:Number, param4:MovieClip) : void
+      private function RotateAroundPoint(aCx:Number, aCy:Number, aAngle:Number, aObj:MovieClip) : void
       {
-         var _loc5_:Number = Math.sin(param3 * Math.PI / 180);
-         var _loc6_:Number = Math.cos(param3 * Math.PI / 180);
-         param4.x -= param1;
-         param4.y -= param2;
-         var _loc7_:Number = param4.x * _loc6_ - param4.y * _loc5_;
-         var _loc8_:Number = param4.x * _loc5_ + param4.y * _loc6_;
-         param4.x = _loc7_ + param1;
-         param4.y = _loc8_ + param2;
+         var s:Number = Math.sin(aAngle * Math.PI / 180);
+         var c:Number = Math.cos(aAngle * Math.PI / 180);
+         aObj.x -= aCx;
+         aObj.y -= aCy;
+         var xnew:Number = aObj.x * c - aObj.y * s;
+         var ynew:Number = aObj.x * s + aObj.y * c;
+         aObj.x = xnew + aCx;
+         aObj.y = ynew + aCy;
       }
       
       public function Redraw() : void
       {
-         var _loc1_:String = this.getContextString();
-         if(currentFrameLabel != _loc1_)
+         var newLabel:String = this.getContextString();
+         if(currentFrameLabel != newLabel)
          {
-            gotoAndStop(_loc1_);
+            gotoAndStop(newLabel);
          }
          this.PingArrow_mc.visible = !this.m_IsOnScreen;
          if(this.PingArrow_mc.visible)
@@ -96,9 +96,9 @@ package
          }
       }
       
-      public function GoToAnimationFrame(param1:int) : void
+      public function GoToAnimationFrame(frame:int) : void
       {
-         this.PingAnimated_mc.gotoAndStop(param1);
+         this.PingAnimated_mc.gotoAndStop(frame);
       }
       
       private function getContextString() : String

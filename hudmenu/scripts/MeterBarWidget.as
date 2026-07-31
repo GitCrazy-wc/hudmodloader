@@ -24,12 +24,12 @@ package
          return this._percent;
       }
       
-      public function set Percent(param1:Number) : *
+      public function set Percent(aPercent:Number) : *
       {
          this._previousPercent = this._percent;
-         if(this._percent != param1)
+         if(this._percent != aPercent)
          {
-            this._percent = param1;
+            this._percent = aPercent;
             SetIsDirty();
          }
       }
@@ -39,11 +39,11 @@ package
          return this._barAlpha;
       }
       
-      public function set BarAlpha(param1:Number) : *
+      public function set BarAlpha(aBarAlpha:Number) : *
       {
-         if(this._barAlpha != param1)
+         if(this._barAlpha != aBarAlpha)
          {
-            this._barAlpha = param1;
+            this._barAlpha = aBarAlpha;
             SetIsDirty();
          }
       }

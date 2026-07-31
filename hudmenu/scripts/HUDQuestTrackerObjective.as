@@ -11,7 +11,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol693")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol699")]
    public class HUDQuestTrackerObjective extends BSDisplayObject
    {
       
@@ -135,42 +135,40 @@ package
          }
       }
       
-      public function onQuestDataChange(param1:Array) : void
+      public function onQuestDataChange(aQuests:Array) : void
       {
-         var _loc2_:Object = null;
-         var _loc4_:uint = 0;
-         var _loc3_:uint = 0;
-         while(_loc3_ < param1.length)
+         var objectiveData:Object = null;
+         var obIndex:uint = 0;
+         for(var quIndex:uint = 0; quIndex < aQuests.length; quIndex++)
          {
-            if(param1[_loc3_].questID == this.m_QuestID)
+            if(aQuests[quIndex].questID == this.m_QuestID)
             {
-               _loc4_ = 0;
-               while(param1[_loc3_].objectives.length)
+               obIndex = 0;
+               while(aQuests[quIndex].objectives.length)
                {
-                  _loc2_ = param1[_loc3_].objectives[_loc4_];
-                  if(_loc2_.contextQuestID == this.m_ContextQuestID && _loc2_.objectiveID == this.m_ObjectiveID)
+                  objectiveData = aQuests[quIndex].objectives[obIndex];
+                  if(objectiveData.contextQuestID == this.m_ContextQuestID && objectiveData.objectiveID == this.m_ObjectiveID)
                   {
-                     this.meterType = _loc2_.isTwoWayProgressMeter ? METER_TYPE_TWO_WAY : METER_TYPE_DEFAULT;
-                     this.meterTextLeft = _loc2_.twoWayProgressMeterTextLeft;
-                     this.meterTextRight = _loc2_.twoWayProgressMeterTextRight;
-                     this.progress = _loc2_.progressMeter;
-                     this.timer = _loc2_.timer;
-                     this.alertState = _loc2_.announceState;
-                     this.alertMessage = _loc2_.announce;
-                     this.isMergedLeaderObjective = _loc2_.isMergedLeaderObj;
+                     this.meterType = objectiveData.isTwoWayProgressMeter ? METER_TYPE_TWO_WAY : METER_TYPE_DEFAULT;
+                     this.meterTextLeft = objectiveData.twoWayProgressMeterTextLeft;
+                     this.meterTextRight = objectiveData.twoWayProgressMeterTextRight;
+                     this.progress = objectiveData.progressMeter;
+                     this.timer = objectiveData.timer;
+                     this.alertState = objectiveData.announceState;
+                     this.alertMessage = objectiveData.announce;
+                     this.isMergedLeaderObjective = objectiveData.isMergedLeaderObj;
                      return;
                   }
-                  _loc4_++;
+                  obIndex++;
                }
             }
-            _loc3_++;
          }
       }
       
-      private function onProviderUpdate(param1:FromClientDataEvent) : *
+      private function onProviderUpdate(arEvent:FromClientDataEvent) : *
       {
-         var _loc2_:Array = param1.data.quests;
-         this.onQuestDataChange(_loc2_);
+         var quests:Array = arEvent.data.quests;
+         this.onQuestDataChange(quests);
       }
       
       override public function onRemovedFromStage() : void
@@ -181,29 +179,27 @@ package
          }
       }
       
-      private function onProximityTrackersData(param1:FromClientDataEvent) : *
+      private function onProximityTrackersData(aEvent:FromClientDataEvent) : *
       {
-         var _loc2_:uint = 0;
-         if(this.isProximityTracker && param1 && param1.data && Boolean(param1.data.proximityTrackers))
+         var i:uint = 0;
+         if(this.isProximityTracker && aEvent && aEvent.data && Boolean(aEvent.data.proximityTrackers))
          {
-            _loc2_ = 0;
-            while(_loc2_ < param1.data.proximityTrackers.length)
+            for(i = 0; i < aEvent.data.proximityTrackers.length; i++)
             {
-               if(param1.data.proximityTrackers[_loc2_].questId == this.questID && param1.data.proximityTrackers[_loc2_].objectiveId == this.objectiveID)
+               if(aEvent.data.proximityTrackers[i].questId == this.questID && aEvent.data.proximityTrackers[i].objectiveId == this.objectiveID)
                {
-                  this.progress = Math.max(param1.data.proximityTrackers[_loc2_].progress,0);
+                  this.progress = Math.max(aEvent.data.proximityTrackers[i].progress,0);
                   break;
                }
-               _loc2_++;
             }
          }
       }
       
-      public function set useProvider(param1:Boolean) : void
+      public function set useProvider(aUse:Boolean) : void
       {
-         if(param1 != this.m_UseProvider)
+         if(aUse != this.m_UseProvider)
          {
-            this.m_UseProvider = param1;
+            this.m_UseProvider = aUse;
             if(this.m_ProviderCallback != null)
             {
                BSUIDataManager.Unsubscribe("QuestTrackerData",this.m_ProviderCallback);
@@ -215,30 +211,28 @@ package
          }
       }
       
-      public function set alertState(param1:int) : void
+      public function set alertState(aState:int) : void
       {
-         var _loc2_:Array = null;
-         var _loc3_:String = null;
-         var _loc4_:* = undefined;
-         if(param1 != this.m_AlertState)
+         var alertLabels:Array = null;
+         var alertUseLabel:String = null;
+         var i:* = undefined;
+         if(aState != this.m_AlertState)
          {
-            this.m_AlertState = param1;
+            this.m_AlertState = aState;
             if(this.m_AlertState > ALERT_STATE_NONE)
             {
                this.Alert_mc.Internal_mc.visible = true;
-               _loc2_ = this.Alert_mc.Internal_mc.currentLabels;
-               _loc3_ = "AlertState1";
-               _loc4_ = 0;
-               while(_loc4_ < _loc2_.length)
+               alertLabels = this.Alert_mc.Internal_mc.currentLabels;
+               alertUseLabel = "AlertState1";
+               for(i = 0; i < alertLabels.length; i++)
                {
-                  if(_loc2_[_loc4_].name == "AlertState" + this.m_AlertState)
+                  if(alertLabels[i].name == "AlertState" + this.m_AlertState)
                   {
-                     _loc3_ = _loc2_[_loc4_].name;
+                     alertUseLabel = alertLabels[i].name;
                      break;
                   }
-                  _loc4_++;
                }
-               this.Alert_mc.Internal_mc.gotoAndPlay(_loc3_);
+               this.Alert_mc.Internal_mc.gotoAndPlay(alertUseLabel);
                this.updateAlertPos();
             }
             else
@@ -248,22 +242,22 @@ package
          }
       }
       
-      public function set alertMessage(param1:String) : void
+      public function set alertMessage(aMessage:String) : void
       {
-         var _loc2_:TextField = null;
-         if(this.m_AlertMessage != param1)
+         var alertField:TextField = null;
+         if(this.m_AlertMessage != aMessage)
          {
-            this.m_AlertMessage = param1;
-            _loc2_ = this.Alert_mc.Internal_mc.AlertText_mc.AlertText_tf;
-            _loc2_.text = this.m_AlertMessage;
+            this.m_AlertMessage = aMessage;
+            alertField = this.Alert_mc.Internal_mc.AlertText_mc.AlertText_tf;
+            alertField.text = this.m_AlertMessage;
          }
       }
       
-      public function set isMergedLeaderObjective(param1:Boolean) : void
+      public function set isMergedLeaderObjective(aFlag:Boolean) : void
       {
-         if(this.m_IsMergedLeaderObjective != param1)
+         if(this.m_IsMergedLeaderObjective != aFlag)
          {
-            this.m_IsMergedLeaderObjective = param1;
+            this.m_IsMergedLeaderObjective = aFlag;
             this.handleIconVisibility();
          }
       }
@@ -273,11 +267,11 @@ package
          return this.m_Timer;
       }
       
-      public function set timer(param1:Number) : void
+      public function set timer(aTimer:Number) : void
       {
-         if(this.m_Timer != param1)
+         if(this.m_Timer != aTimer)
          {
-            this.m_Timer = param1;
+            this.m_Timer = aTimer;
             this.m_IsPrefixSuffixDirty = true;
          }
       }
@@ -287,9 +281,9 @@ package
          return this.m_UseCountdownTimer;
       }
       
-      public function set useCountdownTimer(param1:Boolean) : void
+      public function set useCountdownTimer(aBool:Boolean) : void
       {
-         this.m_UseCountdownTimer = param1;
+         this.m_UseCountdownTimer = aBool;
       }
       
       public function get isTimerPaused() : Boolean
@@ -297,16 +291,16 @@ package
          return this.m_IsTimerPaused;
       }
       
-      public function set isTimerPaused(param1:Boolean) : void
+      public function set isTimerPaused(aBool:Boolean) : void
       {
-         this.m_IsTimerPaused = param1;
+         this.m_IsTimerPaused = aBool;
       }
       
-      public function set meterType(param1:uint) : void
+      public function set meterType(aType:uint) : void
       {
-         if(param1 != this.m_MeterType)
+         if(aType != this.m_MeterType)
          {
-            this.m_MeterType = param1;
+            this.m_MeterType = aType;
             switch(this.m_MeterType)
             {
                case METER_TYPE_TWO_WAY:
@@ -316,27 +310,27 @@ package
                   this.Meter_mc.gotoAndStop("plain");
             }
             this.updateProgress();
-            if(param1 == METER_TYPE_TWO_WAY)
+            if(aType == METER_TYPE_TWO_WAY)
             {
                this.updateMeterText();
             }
          }
       }
       
-      public function set meterTextLeft(param1:String) : void
+      public function set meterTextLeft(aText:String) : void
       {
-         if(param1 != this.m_MeterTextLeft)
+         if(aText != this.m_MeterTextLeft)
          {
-            this.m_MeterTextLeft = param1;
+            this.m_MeterTextLeft = aText;
             this.updateMeterText();
          }
       }
       
-      public function set meterTextRight(param1:String) : void
+      public function set meterTextRight(aText:String) : void
       {
-         if(param1 != this.m_MeterTextRight)
+         if(aText != this.m_MeterTextRight)
          {
-            this.m_MeterTextRight = param1;
+            this.m_MeterTextRight = aText;
             this.updateMeterText();
          }
       }
@@ -352,18 +346,18 @@ package
          }
       }
       
-      public function set progress(param1:Number) : void
+      public function set progress(aProgress:Number) : void
       {
-         if(this.m_Progress != param1)
+         if(this.m_Progress != aProgress)
          {
-            this.m_Progress = param1;
+            this.m_Progress = aProgress;
             this.updateProgress();
          }
       }
       
       private function updateProgress() : void
       {
-         var _loc1_:HUDQuestTrackerEntry = null;
+         var entry:HUDQuestTrackerEntry = null;
          if(this.m_Progress >= 0)
          {
             this.Meter_mc.visible = true;
@@ -375,10 +369,10 @@ package
             {
                this.Meter_mc.Internal_mc.gotoAndStop(Math.floor(this.m_Progress * this.m_MeterFrames));
             }
-            _loc1_ = this.parent as HUDQuestTrackerEntry;
-            if(_loc1_ != null)
+            entry = this.parent as HUDQuestTrackerEntry;
+            if(entry != null)
             {
-               _loc1_.arrangeObjectives();
+               entry.arrangeObjectives();
             }
          }
          else
@@ -392,11 +386,11 @@ package
          return this.m_IsProximityTracker;
       }
       
-      public function set isProximityTracker(param1:Boolean) : void
+      public function set isProximityTracker(aBool:Boolean) : void
       {
-         if(this.m_IsProximityTracker != param1)
+         if(this.m_IsProximityTracker != aBool)
          {
-            this.m_IsProximityTracker = param1;
+            this.m_IsProximityTracker = aBool;
             if(this.m_IsProximityTracker)
             {
                BSUIDataManager.Subscribe("ProximityTrackersProvider",this.onProximityTrackersData);
@@ -408,9 +402,9 @@ package
          }
       }
       
-      public function set toRemove(param1:Boolean) : *
+      public function set toRemove(aRemove:Boolean) : *
       {
-         this.m_ToRemove = param1;
+         this.m_ToRemove = aRemove;
       }
       
       public function get toRemove() : Boolean
@@ -423,30 +417,30 @@ package
          return this.m_DisplayIndex;
       }
       
-      public function set displayIndex(param1:int) : void
+      public function set displayIndex(aIndex:int) : void
       {
-         this.m_DisplayIndex = param1;
+         this.m_DisplayIndex = aIndex;
       }
       
       private function updateAlertPos() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:MovieClip = null;
+         var textWidth:Number = NaN;
+         var useClip:MovieClip = null;
          if(this.m_AlertState > ALERT_STATE_NONE || this.m_IsMergedLeaderObjective == true)
          {
-            _loc1_ = 0;
+            textWidth = 0;
             if(this.m_State >= HUDQuestTracker.QUEST_STATE_COMPLETE)
             {
-               _loc2_ = this.TitleCompleted_mc;
+               useClip = this.TitleCompleted_mc;
             }
             else
             {
-               _loc2_ = this.Title_mc;
+               useClip = this.Title_mc;
             }
-            _loc1_ = Number(_loc2_.textField.getLineMetrics(0).width);
+            textWidth = Number(useClip.textField.getLineMetrics(0).width);
             if(this.m_AlertState > ALERT_STATE_NONE)
             {
-               this.Alert_mc.Internal_mc.x = _loc2_.x - _loc1_;
+               this.Alert_mc.Internal_mc.x = useClip.x - textWidth;
             }
          }
       }
@@ -461,39 +455,39 @@ package
       
       private function updateTitlePrefixSuffix() : void
       {
-         var _loc1_:* = "";
-         var _loc2_:* = "";
+         var countSuffix:* = "";
+         var timerPrefix:* = "";
          if(this.m_Timer > 0)
          {
-            _loc2_ = GlobalFunc.FormatTimeString(this.m_Timer) + " ";
+            timerPrefix = GlobalFunc.FormatTimeString(this.m_Timer) + " ";
          }
          if(this.m_CountMax > 0)
          {
-            _loc1_ = " (" + this.m_Count + "/" + this.m_CountMax + ")";
+            countSuffix = " (" + this.m_Count + "/" + this.m_CountMax + ")";
          }
          if(this.m_IsOptional)
          {
-            this.Title_mc.ShowTitleText(OPTIONAL_LABEL + " " + _loc2_,_loc1_);
+            this.Title_mc.ShowTitleText(OPTIONAL_LABEL + " " + timerPrefix,countSuffix);
          }
          else
          {
-            this.Title_mc.ShowTitleText(_loc2_,_loc1_);
+            this.Title_mc.ShowTitleText(timerPrefix,countSuffix);
          }
          if(this.m_State == HUDQuestTracker.QUEST_STATE_FAILED)
          {
-            this.TitleCompleted_mc.ShowTitleText(FAILED_LABEL + " " + _loc2_,_loc1_);
+            this.TitleCompleted_mc.ShowTitleText(FAILED_LABEL + " " + timerPrefix,countSuffix);
          }
          else
          {
-            this.TitleCompleted_mc.ShowTitleText(COMPLETED_LABEL + " " + _loc2_,_loc1_);
+            this.TitleCompleted_mc.ShowTitleText(COMPLETED_LABEL + " " + timerPrefix,countSuffix);
          }
          this.updateAlertPos();
          this.m_IsPrefixSuffixDirty = false;
       }
       
-      public function set questID(param1:uint) : void
+      public function set questID(aQuestID:uint) : void
       {
-         this.m_QuestID = param1;
+         this.m_QuestID = aQuestID;
       }
       
       public function get questID() : uint
@@ -501,9 +495,9 @@ package
          return this.m_QuestID;
       }
       
-      public function set objectiveID(param1:uint) : void
+      public function set objectiveID(aObjectiveID:uint) : void
       {
-         this.m_ObjectiveID = param1;
+         this.m_ObjectiveID = aObjectiveID;
       }
       
       public function get objectiveID() : uint
@@ -511,9 +505,9 @@ package
          return this.m_ObjectiveID;
       }
       
-      public function set isOrObjective(param1:Boolean) : void
+      public function set isOrObjective(aIsOrObjective:Boolean) : void
       {
-         this.m_IsOrObjective = param1;
+         this.m_IsOrObjective = aIsOrObjective;
       }
       
       public function get isOrObjective() : Boolean
@@ -521,9 +515,9 @@ package
          return this.m_IsOrObjective;
       }
       
-      public function set isOffMap(param1:Boolean) : void
+      public function set isOffMap(aIsOffMap:Boolean) : void
       {
-         this.m_IsOffMap = param1;
+         this.m_IsOffMap = aIsOffMap;
          this.handleIconVisibility();
       }
       
@@ -546,9 +540,9 @@ package
          }
       }
       
-      public function set contextQuestID(param1:uint) : void
+      public function set contextQuestID(aContextQuestID:uint) : void
       {
-         this.m_ContextQuestID = param1;
+         this.m_ContextQuestID = aContextQuestID;
       }
       
       public function get contextQuestID() : uint
@@ -561,29 +555,29 @@ package
          return this.m_Count;
       }
       
-      public function set count(param1:Number) : void
+      public function set count(aCount:Number) : void
       {
-         if(this.m_Count != param1)
+         if(this.m_Count != aCount)
          {
-            this.m_Count = param1;
+            this.m_Count = aCount;
             this.m_IsPrefixSuffixDirty = true;
          }
       }
       
-      public function set countMax(param1:Number) : void
+      public function set countMax(aCount:Number) : void
       {
-         if(this.m_CountMax != param1)
+         if(this.m_CountMax != aCount)
          {
-            this.m_CountMax = param1;
+            this.m_CountMax = aCount;
             this.m_IsPrefixSuffixDirty = true;
          }
       }
       
-      public function set state(param1:Number) : *
+      public function set state(aState:Number) : *
       {
-         if(this.m_State != param1)
+         if(this.m_State != aState)
          {
-            this.m_State = param1;
+            this.m_State = aState;
             this.m_IsPrefixSuffixDirty = true;
          }
       }
@@ -595,19 +589,19 @@ package
       
       public function fadeIn() : void
       {
-         var _loc1_:Number = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
-         gotoAndPlay(2 + _loc1_);
+         var Offset:Number = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
+         gotoAndPlay(2 + Offset);
       }
       
-      public function fadeOut(param1:Boolean = false) : void
+      public function fadeOut(aFast:Boolean = false) : void
       {
          if(this.m_State >= HUDQuestTracker.QUEST_STATE_COMPLETE)
          {
-            gotoAndPlay(param1 ? "FadeOutFast" : "FadeOut");
+            gotoAndPlay(aFast ? "FadeOutFast" : "FadeOut");
          }
          else
          {
-            gotoAndPlay(param1 ? "FadeOutIncompleteFast" : "FadeOutIncomplete");
+            gotoAndPlay(aFast ? "FadeOutIncompleteFast" : "FadeOutIncomplete");
          }
       }
       
@@ -623,12 +617,12 @@ package
          }
       }
       
-      public function stateUpdate(param1:Boolean = false) : void
+      public function stateUpdate(aAnimate:Boolean = false) : void
       {
-         var _loc2_:Boolean = this.m_State == HUDQuestTracker.QUEST_STATE_COMPLETE || this.m_State == HUDQuestTracker.QUEST_STATE_FAILED;
-         if(_loc2_)
+         var completed:Boolean = this.m_State == HUDQuestTracker.QUEST_STATE_COMPLETE || this.m_State == HUDQuestTracker.QUEST_STATE_FAILED;
+         if(completed)
          {
-            if(param1)
+            if(aAnimate)
             {
                gotoAndPlay("Complete");
             }
@@ -653,20 +647,20 @@ package
          gotoAndPlay("MergeLeaderChange");
       }
       
-      public function set isOptional(param1:Boolean) : *
+      public function set isOptional(aIsOptional:Boolean) : *
       {
-         if(this.m_IsOptional != param1)
+         if(this.m_IsOptional != aIsOptional)
          {
-            this.m_IsOptional = param1;
+            this.m_IsOptional = aIsOptional;
             this.m_IsPrefixSuffixDirty = true;
          }
       }
       
-      public function set title(param1:String) : *
+      public function set title(aTitle:String) : *
       {
-         if(this.m_Title != param1)
+         if(this.m_Title != aTitle)
          {
-            this.m_Title = param1;
+            this.m_Title = aTitle;
             this.m_IsTitleDirty = true;
          }
       }
@@ -676,16 +670,16 @@ package
          return this.m_Title;
       }
       
-      public function setYPos(param1:Number, param2:Boolean = false) : void
+      public function setYPos(aPos:Number, aAnimate:Boolean = false) : void
       {
          this.clearTween();
-         if(param2 && visible)
+         if(aAnimate && visible)
          {
-            this.m_posTween = new Tween(this,"y",Regular.easeInOut,this.y,param1,HUDQuestTracker.EVENT_DURATION_REARRANGE / 1000,true);
+            this.m_posTween = new Tween(this,"y",Regular.easeInOut,this.y,aPos,HUDQuestTracker.EVENT_DURATION_REARRANGE / 1000,true);
          }
          else
          {
-            this.y = param1;
+            this.y = aPos;
          }
       }
       

@@ -364,6 +364,11 @@ package Shared
          "PSN_L2_Alt":"y"
       };
       
+      private static const ButtonMappingToFontKeyGen9:Object = {
+         "PSN_Select":"}",
+         "PSN_Start":"|"
+      };
+      
       public static const IMAGE_FRAME_MAP:Object = {
          "a":1,
          "b":2,
@@ -408,647 +413,645 @@ package Shared
          super();
       }
       
-      public static function GetButtonFontKey(param1:String) : String
+      public static function GetButtonFontKey(aMapping:String, bIsGen9:Boolean = false) : String
       {
-         var _loc2_:String = "";
-         if(ButtonMappingToFontKey.hasOwnProperty(param1))
+         var fontKey:String = "";
+         if(bIsGen9 && Boolean(ButtonMappingToFontKeyGen9.hasOwnProperty(aMapping)))
          {
-            _loc2_ = ButtonMappingToFontKey[param1];
+            fontKey = ButtonMappingToFontKeyGen9[aMapping];
          }
-         return _loc2_;
-      }
-      
-      public static function CloneObject(param1:Object) : *
-      {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeObject(param1);
-         _loc2_.position = 0;
-         return _loc2_.readObject();
-      }
-      
-      public static function GenerateNameAndTitle(param1:String) : String
-      {
-         var _loc5_:uint = 0;
-         var _loc2_:String = "";
-         var _loc3_:Array = param1.split(CUSTOM_TITLE_DELIMITER);
-         _loc2_ = _loc3_[0];
-         var _loc4_:Boolean = _loc3_.length > 2 ? !(_loc3_[1] == "" && _loc3_[2] == "") : _loc3_.length > 1 && _loc3_[1] != "";
-         if(_loc4_)
+         else if(ButtonMappingToFontKey.hasOwnProperty(aMapping))
          {
-            _loc2_ += CUSTOM_TITLE_DIVIDER;
-            _loc5_ = 1;
-            while(_loc5_ < _loc3_.length)
+            fontKey = ButtonMappingToFontKey[aMapping];
+         }
+         return fontKey;
+      }
+      
+      public static function CloneObject(aObjectToClone:Object) : *
+      {
+         var byteArray:ByteArray = new ByteArray();
+         byteArray.writeObject(aObjectToClone);
+         byteArray.position = 0;
+         return byteArray.readObject();
+      }
+      
+      public static function GenerateNameAndTitle(nameSource:String) : String
+      {
+         var x:uint = 0;
+         var builtName:String = "";
+         var splitNames:Array = nameSource.split(CUSTOM_TITLE_DELIMITER);
+         builtName = splitNames[0];
+         var hasTitle:Boolean = splitNames.length > 2 ? !(splitNames[1] == "" && splitNames[2] == "") : splitNames.length > 1 && splitNames[1] != "";
+         if(hasTitle)
+         {
+            builtName += CUSTOM_TITLE_DIVIDER;
+            for(x = 1; x < splitNames.length; x++)
             {
-               _loc2_ += " " + _loc3_[_loc5_];
-               _loc5_++;
+               builtName += " " + splitNames[x];
             }
          }
-         return _loc2_;
+         return builtName;
       }
       
-      public static function GenerateName(param1:String) : String
+      public static function GenerateName(nameSource:String) : String
       {
-         return param1.split(CUSTOM_TITLE_DELIMITER)[0];
+         return nameSource.split(CUSTOM_TITLE_DELIMITER)[0];
       }
       
-      public static function HasPlayerTitle(param1:String) : Boolean
+      public static function HasPlayerTitle(nameSource:String) : Boolean
       {
-         return param1.indexOf(CUSTOM_TITLE_DELIMITER) > -1;
+         return nameSource.indexOf(CUSTOM_TITLE_DELIMITER) > -1;
       }
       
-      public static function HasCampTitle(param1:String) : Boolean
+      public static function HasCampTitle(nameSource:String) : Boolean
       {
-         var _loc2_:Array = param1.split(CUSTOM_TITLE_DELIMITER);
-         return _loc2_.length > 2 && !(_loc2_[1] == "" && _loc2_[2] == "");
+         var splitNames:Array = nameSource.split(CUSTOM_TITLE_DELIMITER);
+         return splitNames.length > 2 && !(splitNames[1] == "" && splitNames[2] == "");
       }
       
-      public static function GenerateTitle(param1:String) : String
+      public static function GenerateTitle(nameSource:String) : String
       {
-         var _loc4_:uint = 0;
-         var _loc2_:String = "";
-         var _loc3_:Array = param1.split(CUSTOM_TITLE_DELIMITER);
-         if(_loc3_.length > 1)
+         var x:uint = 0;
+         var builtTitle:String = "";
+         var splitNames:Array = nameSource.split(CUSTOM_TITLE_DELIMITER);
+         if(splitNames.length > 1)
          {
-            _loc2_ = _loc3_[1];
-            _loc4_ = 2;
-            while(_loc4_ < _loc3_.length)
+            builtTitle = splitNames[1];
+            for(x = 2; x < splitNames.length; x++)
             {
-               if(_loc3_[_loc4_].length > 0)
+               if(splitNames[x].length > 0)
                {
-                  _loc2_ += " " + _loc3_[_loc4_];
+                  builtTitle += " " + splitNames[x];
                }
-               _loc4_++;
             }
          }
-         return _loc2_;
+         return builtTitle;
       }
       
-      public static function GenerateNameAndTitleArray(param1:String) : Array
+      public static function GenerateNameAndTitleArray(nameSource:String) : Array
       {
-         var _loc5_:uint = 0;
-         var _loc2_:Array = param1.split(CUSTOM_TITLE_DELIMITER);
-         var _loc3_:String = "";
-         if(_loc2_.length > 1)
+         var x:uint = 0;
+         var splitNames:Array = nameSource.split(CUSTOM_TITLE_DELIMITER);
+         var builtTitle:String = "";
+         if(splitNames.length > 1)
          {
-            _loc3_ = _loc2_[1];
-            _loc5_ = 2;
-            while(_loc5_ < _loc2_.length)
+            builtTitle = splitNames[1];
+            for(x = 2; x < splitNames.length; x++)
             {
-               if(_loc2_[_loc5_].length > 0)
+               if(splitNames[x].length > 0)
                {
-                  _loc3_ += " " + _loc2_[_loc5_];
+                  builtTitle += " " + splitNames[x];
                }
-               _loc5_++;
             }
          }
-         var _loc4_:Array = new Array(_loc2_[0]);
-         if(_loc3_ != "")
+         var builtStrings:Array = new Array(splitNames[0]);
+         if(builtTitle != "")
          {
-            _loc4_.push(_loc3_);
+            builtStrings.push(builtTitle);
          }
-         return _loc4_;
+         return builtStrings;
       }
       
-      public static function Lerp(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Boolean) : Number
+      public static function Lerp(aTargetMin:Number, aTargetMax:Number, aSourceMin:Number, aSourceMax:Number, aSource:Number, abClamp:Boolean) : Number
       {
-         var _loc7_:Number = param1 + (param5 - param3) / (param4 - param3) * (param2 - param1);
-         if(param6)
+         var fresult:Number = aTargetMin + (aSource - aSourceMin) / (aSourceMax - aSourceMin) * (aTargetMax - aTargetMin);
+         if(abClamp)
          {
-            if(param1 < param2)
+            if(aTargetMin < aTargetMax)
             {
-               _loc7_ = Math.min(Math.max(_loc7_,param1),param2);
+               fresult = Math.min(Math.max(fresult,aTargetMin),aTargetMax);
             }
             else
             {
-               _loc7_ = Math.min(Math.max(_loc7_,param2),param1);
+               fresult = Math.min(Math.max(fresult,aTargetMax),aTargetMin);
             }
          }
-         return _loc7_;
+         return fresult;
       }
       
-      public static function PadNumber(param1:Number, param2:uint) : String
+      public static function PadNumber(aNumber:Number, aLength:uint) : String
       {
-         var _loc3_:String = "" + param1;
-         while(_loc3_.length < param2)
+         var output:String = "" + aNumber;
+         while(output.length < aLength)
          {
-            _loc3_ = "0" + _loc3_;
+            output = "0" + output;
          }
-         return _loc3_;
+         return output;
       }
       
-      public static function setChallengeRewardIcon(param1:SWFLoaderClip, param2:uint, param3:String = "") : MovieClip
+      public static function setChallengeRewardIcon(aClip:SWFLoaderClip, aChallengeType:uint, aCustomIcon:String = "") : MovieClip
       {
-         var _loc4_:String = null;
-         switch(param2)
+         var rewardIcon:String = null;
+         switch(aChallengeType)
          {
             case REWARD_TYPE_ENUM_ATOMS:
-               _loc4_ = "IconCR_Atoms";
+               rewardIcon = "IconCR_Atoms";
                break;
             case REWARD_TYPE_ENUM_PERK_PACKS:
-               _loc4_ = "IconCR_PerkPack";
+               rewardIcon = "IconCR_PerkPack";
                break;
             case REWARD_TYPE_ENUM_PERK_COIN:
-               _loc4_ = "IconCR_PerkCoin";
+               rewardIcon = "IconCR_PerkCoin";
                break;
             case REWARD_TYPE_ENUM_PHOTO_FRAMES:
-               _loc4_ = "IconCR_PhotoMode";
+               rewardIcon = "IconCR_PhotoMode";
                break;
             case REWARD_TYPE_ENUM_EMOTES:
-               _loc4_ = "IconCR_Emote";
+               rewardIcon = "IconCR_Emote";
                break;
             case REWARD_TYPE_ENUM_ICONS:
-               _loc4_ = "IconCR_PlayerIcon";
+               rewardIcon = "IconCR_PlayerIcon";
                break;
             case REWARD_TYPE_ENUM_WEAPON:
-               _loc4_ = "IconCR_Weapon";
+               rewardIcon = "IconCR_Weapon";
                break;
             case REWARD_TYPE_ENUM_WEAPON_MOD:
-               _loc4_ = "IconCR_WeaponMod";
+               rewardIcon = "IconCR_WeaponMod";
                break;
             case REWARD_TYPE_ENUM_ARMOR:
-               _loc4_ = "IconCR_Armor";
+               rewardIcon = "IconCR_Armor";
                break;
             case REWARD_TYPE_ENUM_ARMOR_MOD:
-               _loc4_ = "IconCR_ArmorMod";
+               rewardIcon = "IconCR_ArmorMod";
                break;
             case REWARD_TYPE_ENUM_AMMO:
-               _loc4_ = "IconCR_Ammo";
+               rewardIcon = "IconCR_Ammo";
                break;
             case REWARD_TYPE_ENUM_PHOTO_POSE:
-               _loc4_ = "IconCR_PhotoMode";
+               rewardIcon = "IconCR_PhotoMode";
                break;
             case REWARD_TYPE_ENUM_COMPONENTS:
-               _loc4_ = "IconCR_Components";
+               rewardIcon = "IconCR_Components";
                break;
             case REWARD_TYPE_ENUM_EXPERIENCE:
-               _loc4_ = "IconCR_Experience";
+               rewardIcon = "IconCR_Experience";
                break;
             case REWARD_TYPE_ENUM_BADGES:
-               _loc4_ = "IconCR_Badges";
+               rewardIcon = "IconCR_Badges";
                break;
             case REWARD_TYPE_ENUM_STIMPAKS:
-               _loc4_ = "IconCR_Stimpaks";
+               rewardIcon = "IconCR_Stimpaks";
                break;
             case REWARD_TYPE_ENUM_CHEMS:
-               _loc4_ = "IconCR_Chems";
+               rewardIcon = "IconCR_Chems";
                break;
             case REWARD_TYPE_ENUM_BOOK:
-               _loc4_ = "IconCR_Recipe";
+               rewardIcon = "IconCR_Recipe";
                break;
             case REWARD_TYPE_ENUM_CAPS:
-               _loc4_ = "IconCR_Caps";
+               rewardIcon = "IconCR_Caps";
                break;
             case REWARD_TYPE_ENUM_LEGENDARY_TOKENS:
-               _loc4_ = "IconCR_LegendaryToken";
+               rewardIcon = "IconCR_LegendaryToken";
                break;
             case REWARD_TYPE_ENUM_POSSUM_BADGES:
             case REWARD_TYPE_ENUM_TADPOLE_BADGES:
-               _loc4_ = "IconCR_Caps";
+               rewardIcon = "IconCR_Caps";
                break;
             case REWARD_TYPE_ENUM_CUSTOM_ICON:
-               if(param3.length > 0)
+               if(aCustomIcon.length > 0)
                {
-                  _loc4_ = param3;
+                  rewardIcon = aCustomIcon;
                   break;
                }
                throw new Error("GlobalFunc.setChallengeRewardIcon: No custom icon specified.");
                break;
             case REWARD_TYPE_ENUM_CAMP:
-               _loc4_ = "IconCR_Camp";
+               rewardIcon = "IconCR_Camp";
                break;
             case REWARD_TYPE_ENUM_GOLD_BULLION:
-               _loc4_ = "IconCR_GoldBullion";
+               rewardIcon = "IconCR_GoldBullion";
                break;
             case REWARD_TYPE_ENUM_SCORE:
-               _loc4_ = "IconCR_Score";
+               rewardIcon = "IconCR_Score";
                break;
             case REWARD_TYPE_ENUM_REPAIR_KIT:
-               _loc4_ = "IconCR_RepairKit";
+               rewardIcon = "IconCR_RepairKit";
                break;
             case REWARD_TYPE_ENUM_LUNCH_BOX:
-               _loc4_ = "IconCR_LunchBox";
+               rewardIcon = "IconCR_LunchBox";
                break;
             case REWARD_TYPE_ENUM_PREMIUM:
-               _loc4_ = "IconCR_Premium";
+               rewardIcon = "IconCR_Premium";
                break;
             case REWARD_TYPE_ENUM_SCORE_BOOST:
-               _loc4_ = "IconCR_ScoreBoost";
+               rewardIcon = "IconCR_ScoreBoost";
                break;
             case REWARD_TYPE_ENUM_STAMPS:
-               _loc4_ = "IconCR_Stamps";
+               rewardIcon = "IconCR_Stamps";
                break;
             case REWARD_TYPE_ENUM_SCOUT_BACKPACK:
-               _loc4_ = "IconCR_ScoutBackpack";
+               rewardIcon = "IconCR_ScoutBackpack";
                break;
             case REWARD_TYPE_ENUM_SCOUT_BANNER:
-               _loc4_ = "IconCR_ScoutBanner";
+               rewardIcon = "IconCR_ScoutBanner";
                break;
             case REWARD_TYPE_ENUM_FOOD_AND_DRINK:
-               _loc4_ = "IconCR_FoodAndDrink";
+               rewardIcon = "IconCR_FoodAndDrink";
                break;
             case REWARD_TYPE_ENUM_RE_ROLLER:
-               _loc4_ = "IconCR_ReRoller";
+               rewardIcon = "IconCR_ReRoller";
                break;
             case REWARD_TYPE_ENUM_SCORE_BOOSTER_CONSUMABLE:
-               _loc4_ = "IconCR_ScoreBoosterConsumable";
+               rewardIcon = "IconCR_ScoreBoosterConsumable";
                break;
             case REWARD_TYPE_ENUM_FLAIR:
-               _loc4_ = "IconCR_Flair";
+               rewardIcon = "IconCR_Flair";
                break;
             case REWARD_TYPE_ENUM_TICKETS:
-               _loc4_ = "IconCR_Ticket";
+               rewardIcon = "IconCR_Ticket";
                break;
             case REWARD_TYPE_ENUM_PLAYER_TITLE:
-               _loc4_ = "IconCR_PlayerTitle";
+               rewardIcon = "IconCR_PlayerTitle";
          }
-         return param1.setContainerIconClip(_loc4_);
+         return aClip.setContainerIconClip(rewardIcon);
       }
       
-      public static function parseStatValue(param1:Number, param2:uint) : String
+      public static function parseStatValue(aValue:Number, aValueType:uint) : String
       {
-         switch(param2)
+         switch(aValueType)
          {
             case GlobalFunc.STAT_VALUE_TYPE_TIME:
-               return ShortTimeString(param1);
+               return ShortTimeString(aValue);
             default:
-               return param1.toString();
+               return aValue.toString();
          }
       }
       
-      public static function ShortTimeStringMinutes(param1:Number) : String
+      public static function ShortTimeStringMinutes(aSeconds:Number) : String
       {
-         var _loc2_:TextField = new TextField();
-         var _loc3_:Number = 0;
-         var _loc4_:Number = Math.floor(param1 / 86400);
-         _loc3_ = param1 % 86400;
-         var _loc5_:Number = Math.floor(_loc3_ / 3600);
-         _loc3_ = param1 % 3600;
-         var _loc6_:Number = Math.floor(_loc3_ / 60);
-         var _loc7_:* = 0;
-         if(_loc4_ >= 1)
+         var tmpText:TextField = new TextField();
+         var remain:Number = 0;
+         var days:Number = Math.floor(aSeconds / 86400);
+         remain = aSeconds % 86400;
+         var hours:Number = Math.floor(remain / 3600);
+         remain = aSeconds % 3600;
+         var mins:Number = Math.floor(remain / 60);
+         var timeVal:* = 0;
+         if(days >= 1)
          {
-            _loc2_.text = "$ShortTimeDays";
-            _loc7_ = _loc4_;
+            tmpText.text = "$ShortTimeDays";
+            timeVal = days;
          }
-         else if(_loc5_ >= 1)
+         else if(hours >= 1)
          {
-            _loc2_.text = "$ShortTimeHours";
-            _loc7_ = _loc5_;
+            tmpText.text = "$ShortTimeHours";
+            timeVal = hours;
          }
          else
          {
-            _loc2_.text = "$ShortTimeMinutes";
-            _loc7_ = _loc6_;
+            tmpText.text = "$ShortTimeMinutes";
+            timeVal = mins;
          }
-         _loc2_.text = _loc2_.text.replace("{time}",_loc7_.toString());
-         return _loc2_.text;
+         tmpText.text = tmpText.text.replace("{time}",timeVal.toString());
+         return tmpText.text;
       }
       
-      public static function ShortTimeString(param1:Number) : String
+      public static function ShortTimeString(aSeconds:Number) : String
       {
-         var _loc2_:Number = 0;
-         var _loc3_:TextField = new TextField();
-         var _loc4_:Number = Math.floor(param1 / 86400);
-         _loc2_ = param1 % 86400;
-         var _loc5_:Number = Math.floor(_loc2_ / 3600);
-         _loc2_ = param1 % 3600;
-         var _loc6_:Number = Math.floor(_loc2_ / 60);
-         _loc2_ = param1 % 60;
-         var _loc7_:Number = Math.floor(_loc2_);
-         var _loc8_:* = 0;
-         if(_loc4_ >= 1)
+         var remain:Number = 0;
+         var tmpText:TextField = new TextField();
+         var days:Number = Math.floor(aSeconds / 86400);
+         remain = aSeconds % 86400;
+         var hours:Number = Math.floor(remain / 3600);
+         remain = aSeconds % 3600;
+         var mins:Number = Math.floor(remain / 60);
+         remain = aSeconds % 60;
+         var secs:Number = Math.floor(remain);
+         var timeVal:* = 0;
+         if(days >= 1)
          {
-            _loc3_.text = "$ShortTimeDays";
-            _loc8_ = _loc4_;
+            tmpText.text = "$ShortTimeDays";
+            timeVal = days;
          }
-         else if(_loc5_ >= 1)
+         else if(hours >= 1)
          {
-            _loc3_.text = "$ShortTimeHours";
-            _loc8_ = _loc5_;
+            tmpText.text = "$ShortTimeHours";
+            timeVal = hours;
          }
-         else if(_loc6_ >= 1)
+         else if(mins >= 1)
          {
-            _loc3_.text = "$ShortTimeMinutes";
-            _loc8_ = _loc6_;
+            tmpText.text = "$ShortTimeMinutes";
+            timeVal = mins;
          }
-         else if(_loc7_ >= 1)
+         else if(secs >= 1)
          {
-            _loc3_.text = "$ShortTimeSeconds";
-            _loc8_ = _loc7_;
+            tmpText.text = "$ShortTimeSeconds";
+            timeVal = secs;
          }
          else
          {
-            _loc3_.text = "$ShortTimeSecond";
-            _loc8_ = _loc7_;
+            tmpText.text = "$ShortTimeSecond";
+            timeVal = secs;
          }
-         if(_loc8_ != 0)
+         if(timeVal != 0)
          {
-            _loc3_.text = _loc3_.text.replace("{time}",_loc8_.toString());
-            return _loc3_.text;
+            tmpText.text = tmpText.text.replace("{time}",timeVal.toString());
+            return tmpText.text;
          }
          return "0";
       }
       
-      public static function SimpleTimeString(param1:Number) : String
+      public static function SimpleTimeString(aSeconds:Number) : String
       {
-         var _loc2_:Number = 0;
-         var _loc3_:TextField = new TextField();
-         var _loc4_:Number = Math.floor(param1 / 86400);
-         _loc2_ = param1 % 86400;
-         var _loc5_:Number = Math.floor(_loc2_ / 3600);
-         _loc2_ = param1 % 3600;
-         var _loc6_:Number = Math.floor(_loc2_ / 60);
-         _loc2_ = param1 % 60;
-         var _loc7_:Number = Math.floor(_loc2_);
-         var _loc8_:* = 0;
-         if(_loc4_ > 1)
+         var remain:Number = 0;
+         var tmpText:TextField = new TextField();
+         var days:Number = Math.floor(aSeconds / 86400);
+         remain = aSeconds % 86400;
+         var hours:Number = Math.floor(remain / 3600);
+         remain = aSeconds % 3600;
+         var mins:Number = Math.floor(remain / 60);
+         remain = aSeconds % 60;
+         var secs:Number = Math.floor(remain);
+         var timeVal:* = 0;
+         if(days > 1)
          {
-            _loc3_.text = "$SimpleTimeDays";
-            _loc8_ = _loc4_;
+            tmpText.text = "$SimpleTimeDays";
+            timeVal = days;
          }
-         else if(_loc4_ == 1)
+         else if(days == 1)
          {
-            _loc3_.text = "$SimpleTimeDay";
-            _loc8_ = _loc4_;
+            tmpText.text = "$SimpleTimeDay";
+            timeVal = days;
          }
-         else if(_loc5_ > 1)
+         else if(hours > 1)
          {
-            _loc3_.text = "$SimpleTimeHours";
-            _loc8_ = _loc5_;
+            tmpText.text = "$SimpleTimeHours";
+            timeVal = hours;
          }
-         else if(_loc5_ == 1)
+         else if(hours == 1)
          {
-            _loc3_.text = "$SimpleTimeHour";
-            _loc8_ = _loc5_;
+            tmpText.text = "$SimpleTimeHour";
+            timeVal = hours;
          }
-         else if(_loc6_ > 1)
+         else if(mins > 1)
          {
-            _loc3_.text = "$SimpleTimeMinutes";
-            _loc8_ = _loc6_;
+            tmpText.text = "$SimpleTimeMinutes";
+            timeVal = mins;
          }
-         else if(_loc6_ == 1)
+         else if(mins == 1)
          {
-            _loc3_.text = "$SimpleTimeMinute";
-            _loc8_ = _loc6_;
+            tmpText.text = "$SimpleTimeMinute";
+            timeVal = mins;
          }
-         else if(_loc7_ > 1)
+         else if(secs > 1)
          {
-            _loc3_.text = "$SimpleTimeSeconds";
-            _loc8_ = _loc7_;
+            tmpText.text = "$SimpleTimeSeconds";
+            timeVal = secs;
          }
-         else if(_loc7_ == 1)
+         else if(secs == 1)
          {
-            _loc3_.text = "$SimpleTimeSecond";
-            _loc8_ = _loc7_;
+            tmpText.text = "$SimpleTimeSecond";
+            timeVal = secs;
          }
-         if(_loc8_ != 0)
+         if(timeVal != 0)
          {
-            _loc3_.text = _loc3_.text.replace("{time}",_loc8_.toString());
-            return _loc3_.text;
+            tmpText.text = tmpText.text.replace("{time}",timeVal.toString());
+            return tmpText.text;
          }
          return "0";
       }
       
-      public static function FormatTimeString(param1:Number) : String
+      public static function FormatTimeString(aSeconds:Number) : String
       {
-         var _loc2_:Number = 0;
-         var _loc3_:Number = Math.floor(param1 / 86400);
-         _loc2_ = param1 % 86400;
-         var _loc4_:Number = Math.floor(_loc2_ / 3600);
-         _loc2_ = param1 % 3600;
-         var _loc5_:Number = Math.floor(_loc2_ / 60);
-         _loc2_ = param1 % 60;
-         var _loc6_:Number = Math.floor(_loc2_);
-         var _loc7_:Boolean = false;
-         var _loc8_:* = "";
-         if(_loc3_ > 0)
+         var remain:Number = 0;
+         var days:Number = Math.floor(aSeconds / 86400);
+         remain = aSeconds % 86400;
+         var hours:Number = Math.floor(remain / 3600);
+         remain = aSeconds % 3600;
+         var minutes:Number = Math.floor(remain / 60);
+         remain = aSeconds % 60;
+         var seconds:Number = Math.floor(remain);
+         var hasTime:Boolean = false;
+         var output:* = "";
+         if(days > 0)
          {
-            _loc8_ = PadNumber(_loc3_,2);
-            _loc7_ = true;
+            output = PadNumber(days,2);
+            hasTime = true;
          }
-         if(_loc3_ > 0 || _loc4_ > 0)
+         if(days > 0 || hours > 0)
          {
-            if(_loc7_)
+            if(hasTime)
             {
-               _loc8_ += ":";
+               output += ":";
             }
             else
             {
-               _loc7_ = true;
+               hasTime = true;
             }
-            _loc8_ += PadNumber(_loc4_,2);
+            output += PadNumber(hours,2);
          }
-         if(_loc3_ > 0 || _loc4_ > 0 || _loc5_ > 0)
+         if(days > 0 || hours > 0 || minutes > 0)
          {
-            if(_loc7_)
+            if(hasTime)
             {
-               _loc8_ += ":";
+               output += ":";
             }
             else
             {
-               _loc7_ = true;
+               hasTime = true;
             }
-            _loc8_ += PadNumber(_loc5_,2);
+            output += PadNumber(minutes,2);
          }
-         if(_loc3_ > 0 || _loc4_ > 0 || _loc5_ > 0 || _loc6_ > 0)
+         if(days > 0 || hours > 0 || minutes > 0 || seconds > 0)
          {
-            if(_loc7_)
+            if(hasTime)
             {
-               _loc8_ += ":";
+               output += ":";
             }
-            else if(_loc3_ == 0 && _loc4_ == 0 && _loc5_ == 0)
+            else if(days == 0 && hours == 0 && minutes == 0)
             {
-               _loc8_ = "0:";
+               output = "0:";
             }
-            _loc8_ += PadNumber(_loc6_,2);
+            output += PadNumber(seconds,2);
          }
-         return _loc8_;
+         return output;
       }
       
-      public static function ImageFrameFromCharacter(param1:String) : uint
+      public static function ImageFrameFromCharacter(aInput:String) : uint
       {
-         var _loc2_:String = null;
-         if(param1 != null && param1.length > 0)
+         var firstChar:String = null;
+         if(aInput != null && aInput.length > 0)
          {
-            _loc2_ = param1.substring(0,1).toLowerCase();
-            if(IMAGE_FRAME_MAP[_loc2_] != null)
+            firstChar = aInput.substring(0,1).toLowerCase();
+            if(IMAGE_FRAME_MAP[firstChar] != null)
             {
-               return IMAGE_FRAME_MAP[_loc2_];
+               return IMAGE_FRAME_MAP[firstChar];
             }
          }
          return 1;
       }
       
-      public static function GetAccountIconPath(param1:String) : String
+      public static function GetAccountIconPath(aInput:String) : String
       {
-         if(param1 == null || param1.length == 0)
+         if(aInput == null || aInput.length == 0)
          {
-            param1 = "Textures/ATX/Storefront/Player/PlayerIcons/ATX_PlayerIcon_VaultBoy_76.dds";
+            aInput = "Textures/ATX/Storefront/Player/PlayerIcons/ATX_PlayerIcon_VaultBoy_76.dds";
          }
-         return param1;
+         return aInput;
       }
       
-      public static function RoundDecimal(param1:Number, param2:Number) : Number
+      public static function RoundDecimal(aNumber:Number, aPrecision:Number) : Number
       {
-         var _loc3_:Number = Math.pow(10,param2);
-         return Math.round(_loc3_ * param1) / _loc3_;
+         var decimal:Number = Math.pow(10,aPrecision);
+         return Math.round(decimal * aNumber) / decimal;
       }
       
-      public static function CloseToNumber(param1:Number, param2:Number, param3:Number = 0.001) : Boolean
+      public static function CloseToNumber(aNumber1:Number, aNumber2:Number, aEpsilon:Number = 0.001) : Boolean
       {
-         return Math.abs(param1 - param2) < param3;
+         return Math.abs(aNumber1 - aNumber2) < aEpsilon;
       }
       
-      public static function Clamp(param1:Number, param2:Number, param3:Number) : Number
+      public static function Clamp(val:Number, min:Number, max:Number) : Number
       {
-         return Math.max(param2,Math.min(param3,param1));
+         return Math.max(min,Math.min(max,val));
       }
       
       public static function MaintainTextFormat() : *
       {
-         TextField.prototype.SetText = function(param1:String, param2:Boolean = false, param3:Boolean = false):*
+         TextField.prototype.SetText = function(aText:String, abHTMLText:Boolean = false, aUpperCase:Boolean = false):*
          {
-            var _loc5_:Number = NaN;
-            var _loc6_:Boolean = false;
-            if(!param1 || param1 == "")
+            var oldSpacing:Number = NaN;
+            var oldKerning:Boolean = false;
+            if(!aText || aText == "")
             {
-               param1 = " ";
+               aText = " ";
             }
-            if(param3 && param1.charAt(0) != "$")
+            if(aUpperCase && aText.charAt(0) != "$")
             {
-               param1 = param1.toUpperCase();
+               aText = aText.toUpperCase();
             }
-            var _loc4_:TextFormat = this.getTextFormat();
-            if(param2)
+            var format:TextFormat = this.getTextFormat();
+            if(abHTMLText)
             {
-               _loc5_ = Number(_loc4_.letterSpacing);
-               _loc6_ = Boolean(_loc4_.kerning);
-               this.htmlText = param1;
-               _loc4_ = this.getTextFormat();
-               _loc4_.letterSpacing = _loc5_;
-               _loc4_.kerning = _loc6_;
-               this.setTextFormat(_loc4_);
-               this.htmlText = param1;
+               oldSpacing = Number(format.letterSpacing);
+               oldKerning = Boolean(format.kerning);
+               this.htmlText = aText;
+               format = this.getTextFormat();
+               format.letterSpacing = oldSpacing;
+               format.kerning = oldKerning;
+               this.setTextFormat(format);
+               this.htmlText = aText;
             }
             else
             {
-               this.text = param1;
-               this.setTextFormat(_loc4_);
-               this.text = param1;
+               this.text = aText;
+               this.setTextFormat(format);
+               this.text = aText;
             }
          };
       }
       
-      public static function TruncateSingleLineText(param1:TextField) : *
+      public static function TruncateSingleLineText(aTextField:TextField) : *
       {
-         var _loc2_:int = 0;
-         if(param1.text.length > 3)
+         var lastVisibleIndex:int = 0;
+         if(aTextField.text.length > 3)
          {
-            _loc2_ = param1.getCharIndexAtPoint(param1.width,0);
-            if(_loc2_ > 0)
+            lastVisibleIndex = aTextField.getCharIndexAtPoint(aTextField.width,0);
+            if(lastVisibleIndex > 0)
             {
-               param1.replaceText(_loc2_ - 1,param1.length,"…");
+               aTextField.replaceText(lastVisibleIndex - 1,aTextField.length,"…");
             }
          }
       }
       
-      public static function SetTruncatedMultilineText(param1:TextField, param2:String, param3:Boolean = false) : *
+      public static function SetTruncatedMultilineText(aTextField:TextField, aText:String, abUpperCase:Boolean = false) : *
       {
-         var _loc8_:* = null;
-         var _loc9_:int = 0;
-         var _loc10_:* = undefined;
-         var _loc4_:TextLineMetrics = param1.getLineMetrics(0);
-         var _loc5_:int = param1.height / _loc4_.height;
-         param1.text = "W";
-         var _loc6_:int = param1.width / param1.textWidth;
-         GlobalFunc.SetText(param1,param2,false,param3);
-         var _loc7_:int = Math.min(_loc5_,param1.numLines);
-         if(param1.numLines > _loc5_)
+         var stringToDisplay:* = null;
+         var lastLineTextStartsAt:int = 0;
+         var truncateAt:* = undefined;
+         var metrics:TextLineMetrics = aTextField.getLineMetrics(0);
+         var maxVisibleLines:int = aTextField.height / metrics.height;
+         aTextField.text = "W";
+         var maxCharactersPerLine:int = aTextField.width / aTextField.textWidth;
+         GlobalFunc.SetText(aTextField,aText,false,abUpperCase);
+         var numVisibleLines:int = Math.min(maxVisibleLines,aTextField.numLines);
+         if(aTextField.numLines > maxVisibleLines)
          {
-            _loc8_ = param2;
-            _loc9_ = param1.getLineOffset(_loc5_ - 1);
-            _loc10_ = _loc9_ + _loc6_ - 1;
-            if(_loc8_.charAt(_loc10_ - 1) == " ")
+            stringToDisplay = aText;
+            lastLineTextStartsAt = aTextField.getLineOffset(maxVisibleLines - 1);
+            truncateAt = lastLineTextStartsAt + maxCharactersPerLine - 1;
+            if(stringToDisplay.charAt(truncateAt - 1) == " ")
             {
-               _loc10_--;
+               truncateAt--;
             }
-            _loc8_ = _loc8_.substr(0,_loc10_) + "…";
-            GlobalFunc.SetText(param1,_loc8_,false,param3);
+            stringToDisplay = stringToDisplay.substr(0,truncateAt) + "…";
+            GlobalFunc.SetText(aTextField,stringToDisplay,false,abUpperCase);
          }
       }
       
-      public static function SetText(param1:TextField, param2:String, param3:Boolean = false, param4:Boolean = false, param5:* = false) : *
+      public static function SetText(aTextField:TextField, aText:String, abHTMLText:Boolean = false, abUpperCase:Boolean = false, abTruncate:* = false) : *
       {
-         var _loc6_:TextFormat = null;
-         var _loc7_:Number = NaN;
-         var _loc8_:Boolean = false;
-         if(!param2 || param2 == "")
+         var format:TextFormat = null;
+         var oldSpacing:Number = NaN;
+         var oldKerning:Boolean = false;
+         if(!aText || aText == "")
          {
-            param2 = " ";
+            aText = " ";
          }
-         if(param4 && param2.charAt(0) != "$")
+         if(abUpperCase && aText.charAt(0) != "$")
          {
-            param2 = param2.toUpperCase();
+            aText = aText.toUpperCase();
          }
-         if(param3)
+         if(abHTMLText)
          {
-            _loc6_ = param1.getTextFormat();
-            _loc7_ = Number(_loc6_.letterSpacing);
-            _loc8_ = Boolean(_loc6_.kerning);
-            param1.htmlText = param2;
-            _loc6_ = param1.getTextFormat();
-            _loc6_.letterSpacing = _loc7_;
-            _loc6_.kerning = _loc8_;
-            param1.setTextFormat(_loc6_);
+            format = aTextField.getTextFormat();
+            oldSpacing = Number(format.letterSpacing);
+            oldKerning = Boolean(format.kerning);
+            aTextField.htmlText = aText;
+            format = aTextField.getTextFormat();
+            format.letterSpacing = oldSpacing;
+            format.kerning = oldKerning;
+            aTextField.setTextFormat(format);
          }
          else
          {
-            param1.text = param2;
+            aTextField.text = aText;
          }
-         if(param5)
+         if(abTruncate)
          {
-            if(param1.textWidth > param1.width)
+            if(aTextField.textWidth > aTextField.width)
             {
-               GlobalFunc.TruncateSingleLineText(param1);
+               GlobalFunc.TruncateSingleLineText(aTextField);
             }
-            else if(param1.multiline)
+            else if(aTextField.multiline)
             {
-               GlobalFunc.SetTruncatedMultilineText(param1,param2,param4);
+               GlobalFunc.SetTruncatedMultilineText(aTextField,aText,abUpperCase);
             }
          }
       }
       
-      public static function LockToSafeRect(param1:DisplayObject, param2:String, param3:Number = 0, param4:Number = 0) : *
+      public static function LockToSafeRect(aDisplayObject:DisplayObject, aPosition:String, aSafeX:Number = 0, aSafeY:Number = 0) : *
       {
-         var _loc5_:Rectangle = Extensions.visibleRect;
-         var _loc6_:Point = new Point(_loc5_.x + param3,_loc5_.y + param4);
-         var _loc7_:Point = new Point(_loc5_.x + _loc5_.width - param3,_loc5_.y + _loc5_.height - param4);
-         var _loc8_:Point = param1.parent.globalToLocal(_loc6_);
-         var _loc9_:Point = param1.parent.globalToLocal(_loc7_);
-         var _loc10_:Point = Point.interpolate(_loc8_,_loc9_,0.5);
-         if(param2 == "T" || param2 == "TL" || param2 == "TR" || param2 == "TC")
+         var visibleRect:Rectangle = Extensions.visibleRect;
+         var topLeft_Global:Point = new Point(visibleRect.x + aSafeX,visibleRect.y + aSafeY);
+         var bottomRight_Global:Point = new Point(visibleRect.x + visibleRect.width - aSafeX,visibleRect.y + visibleRect.height - aSafeY);
+         var topLeft:Point = aDisplayObject.parent.globalToLocal(topLeft_Global);
+         var bottomRight:Point = aDisplayObject.parent.globalToLocal(bottomRight_Global);
+         var centerPoint:Point = Point.interpolate(topLeft,bottomRight,0.5);
+         if(aPosition == "T" || aPosition == "TL" || aPosition == "TR" || aPosition == "TC")
          {
-            param1.y = _loc8_.y;
+            aDisplayObject.y = topLeft.y;
          }
-         if(param2 == "CR" || param2 == "CC" || param2 == "CL")
+         if(aPosition == "CR" || aPosition == "CC" || aPosition == "CL")
          {
-            param1.y = _loc10_.y;
+            aDisplayObject.y = centerPoint.y;
          }
-         if(param2 == "B" || param2 == "BL" || param2 == "BR" || param2 == "BC")
+         if(aPosition == "B" || aPosition == "BL" || aPosition == "BR" || aPosition == "BC")
          {
-            param1.y = _loc9_.y;
+            aDisplayObject.y = bottomRight.y;
          }
-         if(param2 == "L" || param2 == "TL" || param2 == "BL" || param2 == "CL")
+         if(aPosition == "L" || aPosition == "TL" || aPosition == "BL" || aPosition == "CL")
          {
-            param1.x = _loc8_.x;
+            aDisplayObject.x = topLeft.x;
          }
-         if(param2 == "TC" || param2 == "CC" || param2 == "BC")
+         if(aPosition == "TC" || aPosition == "CC" || aPosition == "BC")
          {
-            param1.x = _loc10_.x;
+            aDisplayObject.x = centerPoint.x;
          }
-         if(param2 == "R" || param2 == "TR" || param2 == "BR" || param2 == "CR")
+         if(aPosition == "R" || aPosition == "TR" || aPosition == "BR" || aPosition == "CR")
          {
-            param1.x = _loc9_.x;
+            aDisplayObject.x = bottomRight.x;
          }
       }
       
@@ -1056,72 +1059,70 @@ package Shared
       {
          MovieClip.prototype.getMovieClips = function():Array
          {
-            var _loc2_:* = undefined;
-            var _loc1_:* = new Array();
-            for(_loc2_ in this)
+            var i:* = undefined;
+            var movieClips:* = new Array();
+            for(i in this)
             {
-               if(this[_loc2_] is MovieClip && this[_loc2_] != this)
+               if(this[i] is MovieClip && this[i] != this)
                {
-                  _loc1_.push(this[_loc2_]);
+                  movieClips.push(this[i]);
                }
             }
-            return _loc1_;
+            return movieClips;
          };
          MovieClip.prototype.showMovieClips = function():*
          {
-            var _loc1_:* = undefined;
-            for(_loc1_ in this)
+            var i:* = undefined;
+            for(i in this)
             {
-               if(this[_loc1_] is MovieClip && this[_loc1_] != this)
+               if(this[i] is MovieClip && this[i] != this)
                {
-                  trace(this[_loc1_]);
-                  this[_loc1_].showMovieClips();
+                  trace(this[i]);
+                  this[i].showMovieClips();
                }
             }
          };
       }
       
-      public static function TraceFunction(param1:Boolean = false, ... rest) : *
+      public static function TraceFunction(bShowCallstack:Boolean = false, ... args) : *
       {
-         var _loc5_:Array = null;
-         var _loc6_:* = null;
-         var _loc7_:* = undefined;
-         var _loc8_:String = null;
-         var _loc3_:String = new Error().getStackTrace();
-         var _loc4_:Array = _loc3_.split("\n");
-         if(_loc4_.length >= 2)
+         var functionLine:Array = null;
+         var paramString:* = null;
+         var i:* = undefined;
+         var callstackString:String = null;
+         var callStack:String = new Error().getStackTrace();
+         var callStackA:Array = callStack.split("\n");
+         if(callStackA.length >= 2)
          {
-            _loc5_ = _loc4_[2].split(" ")[1].split("()");
-            _loc6_ = "";
-            _loc7_ = 0;
-            while(_loc7_ < rest.length)
+            functionLine = callStackA[2].split(" ")[1].split("()");
+            paramString = "";
+            for(i = 0; i < args.length; i++)
             {
-               _loc6_ += rest[_loc7_];
-               if(_loc7_ < rest.length - 1)
+               paramString += args[i];
+               if(i < args.length - 1)
                {
-                  _loc6_ += ", ";
+                  paramString += ", ";
                }
-               _loc7_++;
             }
-            _loc8_ = "";
-            if(param1 && _loc4_.length > 2)
+            callstackString = "";
+            if(bShowCallstack && callStackA.length > 2)
             {
-               _loc8_ = "\n" + _loc4_.slice(3).join("\n");
+               callstackString = "\n" + callStackA.slice(3).join("\n");
             }
-            trace(new Array("[FUNCTION TRACE] ",_loc5_[0],"(",_loc6_,")",_loc8_).join(""));
+            trace(new Array("[FUNCTION TRACE] ",functionLine[0],"(",paramString,")",callstackString).join(""));
          }
       }
       
-      public static function InspectObject(param1:Object, param2:Boolean = false, param3:Boolean = false) : void
+      public static function InspectObject(aObject:Object, abRecursive:Boolean = false, abIncludeProperties:Boolean = false) : void
       {
-         var _loc4_:String = getQualifiedClassName(param1);
-         trace("Inspecting object with type " + _loc4_);
+         var className:String = getQualifiedClassName(aObject);
+         trace("Inspecting object with type " + className);
          trace("{");
-         InspectObjectHelper(param1,param2,param3);
+         InspectObjectHelper(aObject,abRecursive,abIncludeProperties);
          trace("}");
       }
       
-      private static function InspectObjectHelper(param1:Object, param2:Boolean, param3:Boolean, param4:String = "\t") : void
+      private static function InspectObjectHelper(aObject:Object, abRecursive:Boolean, abIncludeProperties:Boolean, astrIndent:String = "\t") : void
       {
          var member:XML = null;
          var constMember:XML = null;
@@ -1136,10 +1137,6 @@ package Shared
          var value:Object = null;
          var subid:String = null;
          var subvalue:Object = null;
-         var aObject:Object = param1;
-         var abRecursive:Boolean = param2;
-         var abIncludeProperties:Boolean = param3;
-         var astrIndent:String = param4;
          var typeDef:XML = describeType(aObject);
          if(abIncludeProperties)
          {
@@ -1195,15 +1192,15 @@ package Shared
       
       public static function AddReverseFunctions() : *
       {
-         MovieClip.prototype.PlayReverseCallback = function(param1:Event):*
+         MovieClip.prototype.PlayReverseCallback = function(event:Event):*
          {
-            if(param1.currentTarget.currentFrame > 1)
+            if(event.currentTarget.currentFrame > 1)
             {
-               param1.currentTarget.gotoAndStop(param1.currentTarget.currentFrame - 1);
+               event.currentTarget.gotoAndStop(event.currentTarget.currentFrame - 1);
             }
             else
             {
-               param1.currentTarget.removeEventListener(Event.ENTER_FRAME,param1.currentTarget.PlayReverseCallback);
+               event.currentTarget.removeEventListener(Event.ENTER_FRAME,event.currentTarget.PlayReverseCallback);
             }
          };
          MovieClip.prototype.PlayReverse = function():*
@@ -1218,324 +1215,316 @@ package Shared
                this.gotoAndStop(1);
             }
          };
-         MovieClip.prototype.PlayForward = function(param1:String):*
+         MovieClip.prototype.PlayForward = function(aFrameLabel:String):*
          {
             delete this.onEnterFrame;
-            this.gotoAndPlay(param1);
+            this.gotoAndPlay(aFrameLabel);
          };
-         MovieClip.prototype.PlayForward = function(param1:Number):*
+         MovieClip.prototype.PlayForward = function(aFrame:Number):*
          {
             delete this.onEnterFrame;
-            this.gotoAndPlay(param1);
+            this.gotoAndPlay(aFrame);
          };
       }
       
-      public static function PlayPipboySound(param1:String) : *
+      public static function PlayPipboySound(aSoundID:String) : *
       {
          BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{
-            "soundID":param1,
+            "soundID":aSoundID,
             "soundFormID":0,
             "overrideOutput":false
          }));
       }
       
-      public static function PlayMenuSound(param1:String) : *
+      public static function PlayMenuSound(aSoundID:String) : *
       {
          BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{
-            "soundID":param1,
+            "soundID":aSoundID,
             "soundFormID":0,
             "overrideOutput":true
          }));
       }
       
-      public static function PlayMenuSoundWithFormID(param1:uint) : *
+      public static function PlayMenuSoundWithFormID(aSoundFormID:uint) : *
       {
          BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{
             "soundID":"",
-            "soundFormID":param1,
+            "soundFormID":aSoundFormID,
             "overrideOutput":true
          }));
       }
       
-      public static function ShowHUDMessage(param1:String) : *
+      public static function ShowHUDMessage(aMessage:String) : *
       {
-         BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.SHOW_HUD_MESSAGE,{"text":param1}));
+         BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.SHOW_HUD_MESSAGE,{"text":aMessage}));
       }
       
-      public static function updateConditionMeter(param1:MovieClip, param2:Number, param3:Number, param4:Number) : void
+      public static function updateConditionMeter(aBar:MovieClip, aCurrentHealth:Number, aMaximumHealth:Number, aDurability:Number) : void
       {
-         var _loc5_:MovieClip = null;
-         if(param3 > 0)
+         var conditionInternal:MovieClip = null;
+         if(aMaximumHealth > 0)
          {
-            param1.visible = true;
-            _loc5_ = param1.MeterClip_mc;
-            param1.gotoAndStop(GlobalFunc.Lerp(param1.totalFrames,1,0,DURABILITY_MAX,param4,true));
-            if(param2 > 0)
+            aBar.visible = true;
+            conditionInternal = aBar.MeterClip_mc;
+            aBar.gotoAndStop(GlobalFunc.Lerp(aBar.totalFrames,1,0,DURABILITY_MAX,aDurability,true));
+            if(aCurrentHealth > 0)
             {
-               _loc5_.gotoAndStop(GlobalFunc.Lerp(_loc5_.totalFrames,2,0,param3 * 2,param2,true));
+               conditionInternal.gotoAndStop(GlobalFunc.Lerp(conditionInternal.totalFrames,2,0,aMaximumHealth * 2,aCurrentHealth,true));
             }
             else
             {
-               _loc5_.gotoAndStop(1);
+               conditionInternal.gotoAndStop(1);
             }
          }
          else
          {
-            param1.visible = false;
+            aBar.visible = false;
          }
       }
       
-      public static function updateVoiceIndicator(param1:MovieClip, param2:Boolean, param3:Boolean, param4:Boolean, param5:Boolean = true, param6:Boolean = false) : void
+      public static function updateVoiceIndicator(aClip:MovieClip, aVoiceEnabled:Boolean, aSpeaking:Boolean, aSameChannel:Boolean, aIsAlly:Boolean = true, aIsEnemy:Boolean = false) : void
       {
-         if(!param2)
+         if(!aVoiceEnabled)
          {
-            param1.gotoAndStop("muted");
+            aClip.gotoAndStop("muted");
          }
-         else if(!param4)
+         else if(!aSameChannel)
          {
-            param1.gotoAndStop("hasMicSpeakingChannel");
+            aClip.gotoAndStop("hasMicSpeakingChannel");
          }
-         else if(param3)
+         else if(aSpeaking)
          {
-            param1.gotoAndStop("hasMicSpeaking");
+            aClip.gotoAndStop("hasMicSpeaking");
          }
          else
          {
-            param1.gotoAndStop("hasMic");
+            aClip.gotoAndStop("hasMic");
          }
-         if(param1.Icon_mc)
+         if(aClip.Icon_mc)
          {
-            if(param6)
+            if(aIsEnemy)
             {
-               param1.Icon_mc.gotoAndStop("enemy");
+               aClip.Icon_mc.gotoAndStop("enemy");
             }
-            else if(param5)
+            else if(aIsAlly)
             {
-               param1.Icon_mc.gotoAndStop("ally");
+               aClip.Icon_mc.gotoAndStop("ally");
             }
             else
             {
-               param1.Icon_mc.gotoAndStop("neutral");
+               aClip.Icon_mc.gotoAndStop("neutral");
             }
          }
       }
       
-      public static function quickMultiLineShrinkToFit(param1:TextField, param2:Number = 0, param3:Number = 0) : void
+      public static function quickMultiLineShrinkToFit(aField:TextField, aBaseSize:Number = 0, aBaseLeading:Number = 0) : void
       {
-         var _loc4_:TextFormat = param1.getTextFormat();
-         if(param2 == 0)
+         var thisTextFormat:TextFormat = aField.getTextFormat();
+         if(aBaseSize == 0)
          {
-            param2 = _loc4_.size as Number;
+            aBaseSize = thisTextFormat.size as Number;
          }
-         _loc4_.size = param2;
-         _loc4_.leading = param3;
-         param1.setTextFormat(_loc4_);
-         var _loc5_:Boolean = false;
-         if(getTextfieldSize(param1) > param1.height)
+         thisTextFormat.size = aBaseSize;
+         thisTextFormat.leading = aBaseLeading;
+         aField.setTextFormat(thisTextFormat);
+         var needEvaluateSize:Boolean = false;
+         if(getTextfieldSize(aField) > aField.height)
          {
-            _loc4_.size = TEXT_SIZE_VERYSMALL;
-            _loc4_.leading = TEXT_LEADING_MIN;
-            param1.setTextFormat(_loc4_);
-            _loc5_ = true;
+            thisTextFormat.size = TEXT_SIZE_VERYSMALL;
+            thisTextFormat.leading = TEXT_LEADING_MIN;
+            aField.setTextFormat(thisTextFormat);
+            needEvaluateSize = true;
          }
-         if(_loc5_ && getTextfieldSize(param1) > param1.height)
+         if(needEvaluateSize && getTextfieldSize(aField) > aField.height)
          {
-            _loc4_.size = TEXT_SIZE_MIN;
-            _loc4_.leading = TEXT_LEADING_MIN;
-            param1.setTextFormat(_loc4_);
+            thisTextFormat.size = TEXT_SIZE_MIN;
+            thisTextFormat.leading = TEXT_LEADING_MIN;
+            aField.setTextFormat(thisTextFormat);
          }
       }
       
-      public static function shrinkMultiLineTextToFit(param1:TextField, param2:Number = 0, param3:Number = 0) : void
+      public static function shrinkMultiLineTextToFit(aField:TextField, aBaseSize:Number = 0, aBottomPadding:Number = 0) : void
       {
-         var _loc4_:TextFormat = param1.getTextFormat();
-         if(param2 == 0)
+         var thisTextFormat:TextFormat = aField.getTextFormat();
+         if(aBaseSize == 0)
          {
-            param2 = _loc4_.size as Number;
+            aBaseSize = thisTextFormat.size as Number;
          }
-         var _loc5_:Number = param2;
-         _loc4_.size = _loc5_;
-         param1.setTextFormat(_loc4_);
-         while(getTextfieldSize(param1) > param1.height - param3 && _loc5_ > TEXT_SIZE_MIN)
+         var curSize:Number = aBaseSize;
+         thisTextFormat.size = curSize;
+         aField.setTextFormat(thisTextFormat);
+         while(getTextfieldSize(aField) > aField.height - aBottomPadding && curSize > TEXT_SIZE_MIN)
          {
-            _loc5_--;
-            _loc4_.size = _loc5_;
-            param1.setTextFormat(_loc4_);
-         }
-      }
-      
-      public static function shrinkMultilineToFitLines(param1:TextField, param2:String, param3:Boolean = false) : *
-      {
-         var _loc4_:TextFormat = param1.getTextFormat();
-         var _loc5_:Number = _loc4_.size as Number;
-         var _loc6_:TextLineMetrics = param1.getLineMetrics(0);
-         var _loc7_:int = param1.height / _loc6_.height;
-         GlobalFunc.SetText(param1,param2,false,param3);
-         while(param1.numLines > _loc7_ && _loc5_ > TEXT_SIZE_MIN)
-         {
-            _loc5_--;
-            _loc4_.size = _loc5_;
-            param1.setTextFormat(_loc4_);
-            GlobalFunc.SetText(param1,param2,false,param3);
+            curSize--;
+            thisTextFormat.size = curSize;
+            aField.setTextFormat(thisTextFormat);
          }
       }
       
-      public static function shrinkToFitText(param1:TextField) : *
+      public static function shrinkMultilineToFitLines(aTextField:TextField, aText:String, abUpperCase:Boolean = false) : *
       {
-         var _loc2_:TextFormat = param1.getTextFormat();
-         var _loc3_:Number = _loc2_.size as Number;
-         while(param1.textWidth > param1.width && _loc3_ >= MINIMUM_FONT_SIZE)
+         var thisTextFormat:TextFormat = aTextField.getTextFormat();
+         var curSize:Number = thisTextFormat.size as Number;
+         var metrics:TextLineMetrics = aTextField.getLineMetrics(0);
+         var maxVisibleLines:int = aTextField.height / metrics.height;
+         GlobalFunc.SetText(aTextField,aText,false,abUpperCase);
+         while(aTextField.numLines > maxVisibleLines && curSize > TEXT_SIZE_MIN)
          {
-            _loc3_--;
-            _loc2_.size = _loc3_;
-            param1.setTextFormat(_loc2_);
+            curSize--;
+            thisTextFormat.size = curSize;
+            aTextField.setTextFormat(thisTextFormat);
+            GlobalFunc.SetText(aTextField,aText,false,abUpperCase);
          }
       }
       
-      public static function getTextfieldSize(param1:TextField, param2:Boolean = true) : *
+      public static function shrinkToFitText(aTextField:TextField) : *
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:uint = 0;
-         if(param1.multiline)
+         var textFormat:TextFormat = aTextField.getTextFormat();
+         var currentSize:Number = textFormat.size as Number;
+         while(aTextField.textWidth > aTextField.width && currentSize >= MINIMUM_FONT_SIZE)
          {
-            _loc3_ = 0;
-            _loc4_ = 0;
-            while(_loc4_ < param1.numLines)
+            currentSize--;
+            textFormat.size = currentSize;
+            aTextField.setTextFormat(textFormat);
+         }
+      }
+      
+      public static function getTextfieldSize(aTextfield:TextField, aVertical:Boolean = true) : *
+      {
+         var totalSize:Number = NaN;
+         var i:uint = 0;
+         if(aTextfield.multiline)
+         {
+            totalSize = 0;
+            for(i = 0; i < aTextfield.numLines; i++)
             {
-               _loc3_ += param2 ? param1.getLineMetrics(_loc4_).height : param1.getLineMetrics(_loc4_).width;
-               _loc4_++;
+               totalSize += aVertical ? aTextfield.getLineMetrics(i).height : aTextfield.getLineMetrics(i).width;
             }
-            return _loc3_;
+            return totalSize;
          }
-         return param2 ? param1.textHeight : param1.textWidth;
+         return aVertical ? aTextfield.textHeight : aTextfield.textWidth;
       }
       
-      public static function getDisplayObjectSize(param1:DisplayObject, param2:Boolean = false) : *
+      public static function getDisplayObjectSize(aObject:DisplayObject, aVertical:Boolean = false) : *
       {
-         if(param1 is BSScrollingList)
+         if(aObject is BSScrollingList)
          {
-            return (param1 as BSScrollingList).shownItemsHeight;
+            return (aObject as BSScrollingList).shownItemsHeight;
          }
-         if(param1 is BCGridList)
+         if(aObject is BCGridList)
          {
-            return (param1 as BCGridList).displayHeight;
+            return (aObject as BCGridList).displayHeight;
          }
-         if(param1 is MovieClip)
+         if(aObject is MovieClip)
          {
-            if(param1["Sizer_mc"] != undefined && param1["Sizer_mc"] != null)
+            if(aObject["Sizer_mc"] != undefined && aObject["Sizer_mc"] != null)
             {
-               return param2 ? param1["Sizer_mc"].height : param1["Sizer_mc"].width;
+               return aVertical ? aObject["Sizer_mc"].height : aObject["Sizer_mc"].width;
             }
-            if(param1["textField"] != null)
+            if(aObject["textField"] != null)
             {
-               return getTextfieldSize(param1["textField"],param2);
+               return getTextfieldSize(aObject["textField"],aVertical);
             }
-            if(param1["displayHeight"] != null)
+            if(aObject["displayHeight"] != null)
             {
-               return param1["displayHeight"];
+               return aObject["displayHeight"];
             }
-            return param2 ? param1.height : param1.width;
+            return aVertical ? aObject.height : aObject.width;
          }
-         if(param1 is TextField)
+         if(aObject is TextField)
          {
-            return getTextfieldSize(param1 as TextField,param2);
+            return getTextfieldSize(aObject as TextField,aVertical);
          }
          throw new Error("GlobalFunc.getDisplayObjectSize: unsupported object type");
       }
       
-      public static function arrangeItems(param1:Array, param2:Boolean, param3:uint = 0, param4:Number = 0, param5:Boolean = false, param6:Number = 0) : Number
+      public static function arrangeItems(aItems:Array, aVertical:Boolean, aAlign:uint = 0, aSpacing:Number = 0, aReverse:Boolean = false, aOffset:Number = 0) : Number
       {
-         var _loc9_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc11_:uint = 0;
-         var _loc12_:Object = null;
-         var _loc13_:Array = null;
-         var _loc14_:uint = 0;
-         var _loc7_:uint = param1.length;
-         var _loc8_:Number = 0;
-         if(_loc7_ > 0)
+         var positionOrigin:Number = NaN;
+         var offsetMultiplier:Number = NaN;
+         var itemIndex:uint = 0;
+         var curItem:Object = null;
+         var itemSizes:Array = null;
+         var itemCount:uint = 0;
+         var itemLength:uint = aItems.length;
+         var totalDistance:Number = 0;
+         if(itemLength > 0)
          {
-            _loc9_ = 0;
-            _loc10_ = param5 ? -1 : 1;
-            _loc13_ = [];
-            _loc14_ = param1.length;
-            _loc11_ = 0;
-            while(_loc11_ < _loc14_)
+            positionOrigin = 0;
+            offsetMultiplier = aReverse ? -1 : 1;
+            itemSizes = [];
+            itemCount = aItems.length;
+            for(itemIndex = 0; itemIndex < itemCount; itemIndex++)
             {
-               if(_loc11_ > 0)
+               if(itemIndex > 0)
                {
-                  _loc8_ += param4;
+                  totalDistance += aSpacing;
                }
-               _loc13_[_loc11_] = getDisplayObjectSize(param1[_loc11_],param2);
-               _loc8_ += _loc13_[_loc11_];
-               _loc11_++;
+               itemSizes[itemIndex] = getDisplayObjectSize(aItems[itemIndex],aVertical);
+               totalDistance += itemSizes[itemIndex];
             }
-            if(param3 == ALIGN_CENTER)
+            if(aAlign == ALIGN_CENTER)
             {
-               _loc9_ = _loc8_ * -0.5;
+               positionOrigin = totalDistance * -0.5;
             }
-            else if(param3 == ALIGN_RIGHT)
+            else if(aAlign == ALIGN_RIGHT)
             {
-               _loc9_ = -_loc8_ - _loc13_[0];
+               positionOrigin = -totalDistance - itemSizes[0];
             }
-            if(param5)
+            if(aReverse)
             {
-               param1.reverse();
-               _loc13_.reverse();
+               aItems.reverse();
+               itemSizes.reverse();
             }
-            _loc9_ += param6;
-            _loc11_ = 0;
-            while(_loc11_ < _loc14_)
+            positionOrigin += aOffset;
+            for(itemIndex = 0; itemIndex < itemCount; itemIndex++)
             {
-               if(param2)
+               if(aVertical)
                {
-                  param1[_loc11_].y = _loc9_;
+                  aItems[itemIndex].y = positionOrigin;
                }
                else
                {
-                  param1[_loc11_].x = _loc9_;
+                  aItems[itemIndex].x = positionOrigin;
                }
-               _loc9_ += _loc13_[_loc11_] + param4;
-               _loc11_++;
+               positionOrigin += itemSizes[itemIndex] + aSpacing;
             }
          }
-         return _loc8_;
+         return totalDistance;
       }
       
-      public static function StringTrim(param1:String) : String
+      public static function StringTrim(astrText:String) : String
       {
-         var _loc5_:String = null;
-         var _loc2_:Number = 0;
-         var _loc3_:Number = 0;
-         var _loc4_:Number = param1.length;
-         while(param1.charAt(_loc2_) == " " || param1.charAt(_loc2_) == "\n" || param1.charAt(_loc2_) == "\r" || param1.charAt(_loc2_) == "\t")
+         var strResult:String = null;
+         var startIndex:Number = 0;
+         var endIndex:Number = 0;
+         var strLength:Number = astrText.length;
+         while(astrText.charAt(startIndex) == " " || astrText.charAt(startIndex) == "\n" || astrText.charAt(startIndex) == "\r" || astrText.charAt(startIndex) == "\t")
          {
-            _loc2_++;
+            startIndex++;
          }
-         _loc5_ = param1.substring(_loc2_);
-         _loc3_ = _loc5_.length - 1;
-         while(_loc5_.charAt(_loc3_) == " " || _loc5_.charAt(_loc3_) == "\n" || _loc5_.charAt(_loc3_) == "\r" || _loc5_.charAt(_loc3_) == "\t")
+         strResult = astrText.substring(startIndex);
+         endIndex = strResult.length - 1;
+         while(strResult.charAt(endIndex) == " " || strResult.charAt(endIndex) == "\n" || strResult.charAt(endIndex) == "\r" || strResult.charAt(endIndex) == "\t")
          {
-            _loc3_--;
+            endIndex--;
          }
-         return _loc5_.substring(0,_loc3_ + 1);
+         return strResult.substring(0,endIndex + 1);
       }
       
-      public static function BSASSERT(param1:Boolean, param2:String) : void
+      public static function BSASSERT(abConditional:Boolean, asMessage:String) : void
       {
-         var _loc3_:String = null;
-         if(!param1)
+         var callStack:String = null;
+         if(!abConditional)
          {
-            _loc3_ = new Error().getStackTrace();
-            fscommand("BSASSERT",param2 + "\nCallstack:\n" + _loc3_);
+            callStack = new Error().getStackTrace();
+            fscommand("BSASSERT",asMessage + "\nCallstack:\n" + callStack);
          }
       }
       
-      public static function HasFFEvent(param1:Object, param2:String) : Boolean
+      public static function HasFFEvent(aDataObject:Object, asEventString:String) : Boolean
       {
          var obj:Object = null;
-         var aDataObject:Object = param1;
-         var asEventString:String = param2;
          var result:Boolean = false;
          try
          {
@@ -1559,13 +1548,10 @@ package Shared
          return result;
       }
       
-      public static function ReceiveFFEvent(param1:Object, param2:String, param3:Object) : Boolean
+      public static function ReceiveFFEvent(aDataObject:Object, asEventString:String, aOutObject:Object) : Boolean
       {
          var obj:Object = null;
          var i:String = null;
-         var aDataObject:Object = param1;
-         var asEventString:String = param2;
-         var aOutObject:Object = param3;
          var result:Boolean = false;
          try
          {
@@ -1593,67 +1579,61 @@ package Shared
          return result;
       }
       
-      public static function LocalizeFormattedString(param1:String, ... rest) : String
+      public static function LocalizeFormattedString(aFormatString:String, ... aParameters) : String
       {
-         var _loc3_:String = "";
-         var _loc4_:TextField = new TextField();
-         _loc4_.text = param1;
-         _loc3_ = _loc4_.text;
-         var _loc5_:uint = 0;
-         while(_loc5_ < rest.length)
+         var resultString:String = "";
+         var localizationTextField:TextField = new TextField();
+         localizationTextField.text = aFormatString;
+         resultString = localizationTextField.text;
+         for(var i:uint = 0; i < aParameters.length; i++)
          {
-            _loc4_.text = rest[_loc5_];
-            _loc3_ = _loc3_.replace("{" + (_loc5_ + 1) + "}",_loc4_.text);
-            _loc5_++;
+            localizationTextField.text = aParameters[i];
+            resultString = resultString.replace("{" + (i + 1) + "}",localizationTextField.text);
          }
-         return _loc3_;
+         return resultString;
       }
       
-      public static function BuildLegendaryStarsGlyphString(param1:Object) : String
+      public static function BuildLegendaryStarsGlyphString(aEntryObject:Object) : String
       {
-         var _loc5_:* = undefined;
-         var _loc6_:TextField = null;
-         var _loc2_:Boolean = false;
-         var _loc3_:Number = 0;
-         var _loc4_:String = "";
-         if(param1 != null && Boolean(param1.hasOwnProperty("isLegendary")))
+         var legendaryModIndex:* = undefined;
+         var textFieldTemp:TextField = null;
+         var isLegendary:Boolean = false;
+         var numLegendaryStars:Number = 0;
+         var starsText:String = "";
+         if(aEntryObject != null && Boolean(aEntryObject.hasOwnProperty("isLegendary")))
          {
-            _loc2_ = Boolean(param1.isLegendary);
-            if(_loc2_ && Boolean(param1.hasOwnProperty("numLegendaryStars")))
+            isLegendary = Boolean(aEntryObject.isLegendary);
+            if(isLegendary && Boolean(aEntryObject.hasOwnProperty("numLegendaryStars")))
             {
-               _loc3_ = Number(param1.numLegendaryStars);
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_)
+               numLegendaryStars = Number(aEntryObject.numLegendaryStars);
+               for(legendaryModIndex = 0; legendaryModIndex < numLegendaryStars; legendaryModIndex++)
                {
-                  _loc6_ = new TextField();
-                  _loc6_.text = "$LegendaryModGlyph";
-                  _loc4_ += _loc6_.text;
-                  _loc5_++;
+                  textFieldTemp = new TextField();
+                  textFieldTemp.text = "$LegendaryModGlyph";
+                  starsText += textFieldTemp.text;
                }
-               _loc4_ = " " + _loc4_;
+               starsText = " " + starsText;
             }
          }
-         return _loc4_;
+         return starsText;
       }
       
-      public static function TrimZeros(param1:String) : String
+      public static function TrimZeros(aValueText:String) : String
       {
-         var _loc3_:* = undefined;
-         var _loc2_:* = param1.indexOf(".");
-         if(_loc2_ > -1)
+         var currIndex:* = undefined;
+         var indexOfDecimal:* = aValueText.indexOf(".");
+         if(indexOfDecimal > -1)
          {
-            _loc3_ = param1.length - 1;
-            while(_loc3_ > _loc2_)
+            for(currIndex = aValueText.length - 1; currIndex > indexOfDecimal; currIndex--)
             {
-               if(param1.charAt(_loc3_) != "0")
+               if(aValueText.charAt(currIndex) != "0")
                {
                   break;
                }
-               _loc3_--;
             }
-            param1 = _loc3_ == _loc2_ ? param1.substring(0,_loc2_) : param1.substring(0,_loc3_ + 1);
+            aValueText = currIndex == indexOfDecimal ? aValueText.substring(0,indexOfDecimal) : aValueText.substring(0,currIndex + 1);
          }
-         return param1;
+         return aValueText;
       }
    }
 }

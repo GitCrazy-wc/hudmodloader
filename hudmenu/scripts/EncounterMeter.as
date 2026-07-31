@@ -4,14 +4,15 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.geom.Point;
-   import flash.text.TextField;
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
    public class EncounterMeter extends BSUIComponent
    {
       
-      private static const ICON_OFFSET:* = 115;
+      private static const ICON_OFFSET:* = 16;
+      
+      private static const TEXT_BUFFER:* = 32;
       
       public var MeterBar_mc:MeterBarWidget;
       
@@ -27,8 +28,6 @@ package
       
       public var HuntedTargetIcon_mc:MovieClip;
       
-      private var DisplayText_tf:TextField;
-      
       private var m_EncounterIconType:uint = 0;
       
       private var m_EncounterIconLevel:uint = 0;
@@ -39,17 +38,19 @@ package
       
       private var m_ActiveMeter:MeterBarWidget;
       
+      private var m_MaxNameWidth:uint = 0;
+      
       public function EncounterMeter()
       {
          super();
          Extensions.enabled = true;
-         TextFieldEx.setTextAutoSize(this.DisplayText_mc.DisplayText_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
          this.DoTIconsManager_mc.alignment = DoTIconsManager.ALIGNMENT_RIGHT;
          visible = false;
          this.m_ActiveMeter = this.MeterBar_mc;
+         this.m_MaxNameWidth = this.MeterFrame_mc.width - this.EncounterHolder_mc.width;
          if(this.DisplayText_mc)
          {
-            this.DisplayText_tf = this.DisplayText_mc.DisplayText_tf as TextField;
+            this.DisplayText_mc.DisplayText_tf.width = this.m_MaxNameWidth;
          }
          if(this.EncounterHolder_mc)
          {
@@ -57,11 +58,11 @@ package
          }
       }
       
-      public function SetMeterPercent(param1:Number) : *
+      public function SetMeterPercent(afPercent:Number) : *
       {
-         if(param1 >= 0)
+         if(afPercent >= 0)
          {
-            this.m_ActiveMeter.Percent = param1;
+            this.m_ActiveMeter.Percent = afPercent;
             visible = true;
          }
          else
@@ -71,9 +72,35 @@ package
          }
       }
       
-      public function SetMeterName(param1:String) : *
+      public function SetMeterName(asName:String) : *
       {
-         this.DisplayText_mc.DisplayText_tf.text = param1.toUpperCase();
+         var globalPos:Point = null;
+         var halfTextWidth:Number = NaN;
+         var nameUppercase:String = asName.toUpperCase();
+         if(Boolean(this.DisplayText_mc) && this.DisplayText_mc.DisplayText_tf.text != nameUppercase)
+         {
+            this.DisplayText_mc.gotoAndStop("OneLine");
+            this.DisplayText_mc.DisplayText_tf.width = this.m_MaxNameWidth;
+            this.DisplayText_mc.DisplayText_tf.text = nameUppercase;
+            TextFieldEx.setTextAutoSize(this.DisplayText_mc.DisplayText_tf,TextFieldEx.TEXTAUTOSZ_NONE);
+            if(this.DisplayText_mc.DisplayText_tf.textWidth > this.m_MaxNameWidth)
+            {
+               halfTextWidth = Math.ceil(this.DisplayText_mc.DisplayText_tf.textWidth / 2) + TEXT_BUFFER;
+               this.DisplayText_mc.gotoAndStop("MultiLine");
+               if(halfTextWidth < this.m_MaxNameWidth)
+               {
+                  this.DisplayText_mc.DisplayText_tf.width = halfTextWidth;
+               }
+               else
+               {
+                  this.DisplayText_mc.DisplayText_tf.width = this.m_MaxNameWidth;
+               }
+               TextFieldEx.setTextAutoSize(this.DisplayText_mc.DisplayText_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
+            }
+            this.DisplayText_mc.DisplayText_tf.text = nameUppercase;
+            globalPos = this.localToGlobal(new Point(this.MeterFrame_mc.x + this.MeterFrame_mc.width / 2,0));
+            this.DisplayText_mc.DisplayText_tf.x = this.DisplayText_mc.globalToLocal(globalPos).x - this.DisplayText_mc.DisplayText_tf.width / 2;
+         }
       }
       
       public function ResetDamageList() : void
@@ -87,20 +114,20 @@ package
          }
       }
       
-      public function SetDamageList(param1:Array) : void
+      public function SetDamageList(aDamageList:Array) : void
       {
          if(this.DoTIconsManager_mc)
          {
-            this.DoTIconsManager_mc.populateIcons(param1);
+            this.DoTIconsManager_mc.populateIcons(aDamageList);
          }
       }
       
-      public function SetEncounter(param1:uint, param2:uint) : void
+      public function SetEncounter(aType:uint, aLevel:uint) : void
       {
-         if(this.m_EncounterIconType != param1 || this.m_EncounterIconLevel != param2)
+         if(this.m_EncounterIconType != aType || this.m_EncounterIconLevel != aLevel)
          {
-            this.m_EncounterIconType = param1;
-            this.m_EncounterIconLevel = param2;
+            this.m_EncounterIconType = aType;
+            this.m_EncounterIconLevel = aLevel;
             if(this.EncounterHolder_mc)
             {
                if(this.m_EncounterIconLevel > 0 && this.m_EncounterIconType > EncounterHolder.ENCOUNTER_TYPE_NONE)
@@ -119,17 +146,18 @@ package
       
       private function onSetIconPosition() : *
       {
-         var _loc1_:Point = this.DisplayText_tf.localToGlobal(new Point(this.DisplayText_tf.getLineMetrics(0).x,0));
-         this.EncounterHolder_mc.x = this.globalToLocal(_loc1_).x + ICON_OFFSET - this.EncounterHolder_mc.width * 0.5;
+         var textWidthDiff:Number = (this.DisplayText_mc.DisplayText_tf.width - this.DisplayText_mc.DisplayText_tf.textWidth) / 2;
+         var globalPos:Point = this.DisplayText_mc.localToGlobal(new Point(this.DisplayText_mc.DisplayText_tf.x + textWidthDiff,0));
+         this.EncounterHolder_mc.x = this.globalToLocal(globalPos).x - ICON_OFFSET - this.EncounterHolder_mc.width * 0.5;
          removeEventListener(Event.ENTER_FRAME,this.onSetIconPosition);
       }
       
-      public function SetMeterHostile(param1:Boolean) : *
+      public function SetMeterHostile(abHostile:Boolean) : *
       {
-         if(param1 != this.m_Hostile)
+         if(abHostile != this.m_Hostile)
          {
-            this.m_Hostile = param1;
-            gotoAndStop(param1 ? "Hostile" : "Nonhostile");
+            this.m_Hostile = abHostile;
+            gotoAndStop(abHostile ? "Hostile" : "Nonhostile");
             this.m_ActiveMeter = this.m_Hostile ? this.MeterBar_mc : this.MeterBarNonhostile_mc;
          }
       }

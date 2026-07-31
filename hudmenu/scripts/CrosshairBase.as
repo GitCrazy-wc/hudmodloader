@@ -13,7 +13,7 @@ package
    import flash.filters.ColorMatrixFilter;
    import flash.utils.Timer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1417")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1424")]
    public class CrosshairBase extends BSUIComponent
    {
       
@@ -80,20 +80,20 @@ package
          this._activeClipName = new String();
          this._collapseDelayTimer.addEventListener(TimerEvent.TIMER,this.BeginCollapsingTicks);
          this.StartNextClip();
-         var _loc1_:AdjustColor = new AdjustColor();
-         _loc1_.brightness = -90;
-         _loc1_.contrast = 15;
-         _loc1_.saturation = 25;
-         _loc1_.hue = -50;
-         this._hostileColorMatrixFilter = new ColorMatrixFilter(_loc1_.CalculateFinalFlatArray());
+         var colorFilter:AdjustColor = new AdjustColor();
+         colorFilter.brightness = -90;
+         colorFilter.contrast = 15;
+         colorFilter.saturation = 25;
+         colorFilter.hue = -50;
+         this._hostileColorMatrixFilter = new ColorMatrixFilter(colorFilter.CalculateFinalFlatArray());
          BSUIDataManager.Subscribe("TargetData",this.onTargetDataUpdate);
       }
       
-      public function set targetIsHostile(param1:Boolean) : void
+      public function set targetIsHostile(aHostile:Boolean) : void
       {
-         if(this._targetIsHostile != param1)
+         if(this._targetIsHostile != aHostile)
          {
-            this._targetIsHostile = param1;
+            this._targetIsHostile = aHostile;
             if(this._targetIsHostile)
             {
                this.filters = [this._hostileColorMatrixFilter];
@@ -111,30 +111,30 @@ package
          return this._targetIsHostile;
       }
       
-      public function set requestedState(param1:String) : void
+      public function set requestedState(value:String) : void
       {
-         if(param1 != this._requestedState)
+         if(value != this._requestedState)
          {
-            this._requestedState = param1;
+            this._requestedState = value;
             SetIsDirty();
          }
       }
       
-      public function set requestedRadius(param1:Number) : void
+      public function set requestedRadius(value:Number) : void
       {
-         if(param1 != this._requestedRadius)
+         if(value != this._requestedRadius)
          {
-            this._requestedRadius = param1;
+            this._requestedRadius = value;
             SetIsDirty();
          }
       }
       
-      private function onTargetDataUpdate(param1:FromClientDataEvent) : void
+      private function onTargetDataUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.targetIsHostile = param1.data.isHostile;
+         this.targetIsHostile = arEvent.data.isHostile;
       }
       
-      private function onAnimationComplete(param1:Event) : *
+      private function onAnimationComplete(aEvent:Event) : *
       {
          this._currentState = this._currentAnimFinish;
          this.StartNextClip();
@@ -142,16 +142,16 @@ package
       
       private function StartNextClip() : *
       {
-         var _loc1_:MovieClip = null;
-         var _loc3_:* = false;
+         var nextClip:MovieClip = null;
+         var setupNextClip:* = false;
          this.CrosshairTicks_mc.visible = false;
          this.CrosshairClips_mc.visible = true;
          this._currentAnimStart = this._currentState;
          this._currentAnimFinish = this._requestedState;
          this._activeClipName = this._currentState + "_" + this._requestedState;
-         _loc1_ = this.CrosshairClips_mc[this._activeClipName] as MovieClip;
-         var _loc2_:Boolean = Boolean(this._activeClip) && this._activeClip != _loc1_;
-         if(_loc2_)
+         nextClip = this.CrosshairClips_mc[this._activeClipName] as MovieClip;
+         var clearCurrentClip:Boolean = Boolean(this._activeClip) && this._activeClip != nextClip;
+         if(clearCurrentClip)
          {
             this._activeClip.removeEventListener(ANIMATION_COMPLETE,this.onAnimationComplete);
             this._activeClip.visible = false;
@@ -162,10 +162,10 @@ package
          }
          else
          {
-            _loc3_ = this._activeClip != _loc1_;
-            if(_loc3_)
+            setupNextClip = this._activeClip != nextClip;
+            if(setupNextClip)
             {
-               this._activeClip = _loc1_;
+               this._activeClip = nextClip;
                this._activeClip.addEventListener(ANIMATION_COMPLETE,this.onAnimationComplete);
                this._activeClip.visible = true;
             }
@@ -173,15 +173,15 @@ package
          }
       }
       
-      private function RepositionCrosshairTicks(param1:Number, param2:Function = null) : void
+      private function RepositionCrosshairTicks(aRadius:Number, aOnCompleteCallback:Function = null) : void
       {
-         var _loc3_:EazeTween = eaze(this.CrosshairTicks_mc.Up).to(EAZE_TIME_SEC,{"y":-param1}).easing(Quadratic.easeIn);
-         eaze(this.CrosshairTicks_mc.Down).to(EAZE_TIME_SEC,{"y":param1}).easing(Quadratic.easeIn);
-         eaze(this.CrosshairTicks_mc.Left).to(EAZE_TIME_SEC,{"x":-param1}).easing(Quadratic.easeIn);
-         eaze(this.CrosshairTicks_mc.Right).to(EAZE_TIME_SEC,{"x":param1}).easing(Quadratic.easeIn);
-         if(param2 != null)
+         var crossahairEaze:EazeTween = eaze(this.CrosshairTicks_mc.Up).to(EAZE_TIME_SEC,{"y":-aRadius}).easing(Quadratic.easeIn);
+         eaze(this.CrosshairTicks_mc.Down).to(EAZE_TIME_SEC,{"y":aRadius}).easing(Quadratic.easeIn);
+         eaze(this.CrosshairTicks_mc.Left).to(EAZE_TIME_SEC,{"x":-aRadius}).easing(Quadratic.easeIn);
+         eaze(this.CrosshairTicks_mc.Right).to(EAZE_TIME_SEC,{"x":aRadius}).easing(Quadratic.easeIn);
+         if(aOnCompleteCallback != null)
          {
-            _loc3_.onComplete(param2);
+            crossahairEaze.onComplete(aOnCompleteCallback);
          }
       }
       

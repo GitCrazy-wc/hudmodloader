@@ -11,15 +11,15 @@ package Shared.AS3.Events
       
       private var _sender:MenuComponent;
       
-      public function MenuComponentLoadedEvent(param1:MenuComponent)
+      public function MenuComponentLoadedEvent(aSender:MenuComponent)
       {
          super(MENU_COMPONENT_LOADED,true,false);
-         this._sender = param1;
+         this._sender = aSender;
       }
       
-      public function RespondToEvent(param1:IMenu) : *
+      public function RespondToEvent(aParentMenu:IMenu) : *
       {
-         this._sender.SetParentMenu(param1);
+         this._sender.SetParentMenu(aParentMenu);
       }
       
       override public function clone() : Event

@@ -86,20 +86,20 @@ package Shared.AS3
          this.Marker_mc.buttonMode = true;
       }
       
-      public function set defaultScrollValueJump(param1:uint) : void
+      public function set defaultScrollValueJump(aVal:uint) : void
       {
-         this.m_DefaultScrollValueJump = param1;
+         this.m_DefaultScrollValueJump = aVal;
       }
       
-      public function set handleSizeViaContents(param1:Boolean) : void
+      public function set handleSizeViaContents(aValue:Boolean) : void
       {
-         this._bHandleSizeViaContents = param1;
+         this._bHandleSizeViaContents = aValue;
          SetIsDirty();
       }
       
-      public function set dispatchOnValueChange(param1:Boolean) : void
+      public function set dispatchOnValueChange(aVal:Boolean) : void
       {
-         this._bDispatchOnValueChange = param1;
+         this._bDispatchOnValueChange = aVal;
       }
       
       public function get dispatchOnValueChange() : Boolean
@@ -128,30 +128,30 @@ package Shared.AS3
          this._fFillLength = this._fMaxPosition - this._fMinPosition;
       }
       
-      public function set bVertical(param1:Boolean) : void
+      public function set bVertical(aVertical:Boolean) : void
       {
-         this._bVertical = param1;
+         this._bVertical = aVertical;
          this.updateConstraints();
       }
       
       private function updateHandleSize() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var valueDelta:Number = NaN;
+         var valueRangePercent:Number = NaN;
+         var valueRangePercentClamped:Number = NaN;
          if(this._bHandleSizeViaContents)
          {
-            _loc1_ = this._iMaxValue - this._iMinValue;
-            _loc2_ = HANDLE_SIZE_VALUE_DELTA_MAX / _loc1_;
-            _loc3_ = GlobalFunc.Clamp(_loc2_,HANDLE_SIZE_MIN_PERCENT,HANDLE_SIZE_MAX_PERCENT);
+            valueDelta = this._iMaxValue - this._iMinValue;
+            valueRangePercent = HANDLE_SIZE_VALUE_DELTA_MAX / valueDelta;
+            valueRangePercentClamped = GlobalFunc.Clamp(valueRangePercent,HANDLE_SIZE_MIN_PERCENT,HANDLE_SIZE_MAX_PERCENT);
             if(this._bVertical)
             {
                this.Marker_mc.width = this._MarkerBaseSizePos.width;
-               this.Marker_mc.height = this._fFillLength * _loc3_;
+               this.Marker_mc.height = this._fFillLength * valueRangePercentClamped;
             }
             else
             {
-               this.Marker_mc.width = this._fFillLength * _loc3_;
+               this.Marker_mc.width = this._fFillLength * valueRangePercentClamped;
                this.Marker_mc.height = this._MarkerBaseSizePos.height;
             }
             this._fHandleSize = this._bVertical ? this.Marker_mc.height : this.Marker_mc.width;
@@ -177,9 +177,9 @@ package Shared.AS3
          return this._iMinValue;
       }
       
-      public function set minValue(param1:uint) : *
+      public function set minValue(aVal:uint) : *
       {
-         this._iMinValue = Math.min(param1,this._iMaxValue);
+         this._iMinValue = Math.min(aVal,this._iMaxValue);
          if(this._iValue < this._iMinValue)
          {
             this.value = this._iMinValue;
@@ -192,14 +192,14 @@ package Shared.AS3
          return this._iValue;
       }
       
-      public function set value(param1:uint) : *
+      public function set value(aVal:uint) : *
       {
-         this.doSetValue(param1);
+         this.doSetValue(aVal);
       }
       
-      public function doSetValue(param1:uint, param2:Boolean = true) : void
+      public function doSetValue(aVal:uint, aDispatch:Boolean = true) : void
       {
-         this._iValue = Math.min(Math.max(param1,this._iMinValue),this._iMaxValue);
+         this._iValue = Math.min(Math.max(aVal,this._iMinValue),this._iMaxValue);
          if(this._bVertical)
          {
             this.Marker_mc.y = this.markerPosition;
@@ -208,22 +208,22 @@ package Shared.AS3
          {
             this.Marker_mc.x = this.markerPosition;
          }
-         if(param2 && this._bDispatchOnValueChange)
+         if(aDispatch && this._bDispatchOnValueChange)
          {
             dispatchEvent(new CustomEvent(VALUE_CHANGED,this.value,true,true));
          }
          SetIsDirty();
       }
       
-      public function valueJump(param1:int) : *
+      public function valueJump(aDelta:int) : *
       {
-         if(param1 < 0 && -param1 > this._iValue)
+         if(aDelta < 0 && -aDelta > this._iValue)
          {
             this.value = 1;
          }
          else
          {
-            this.value = Math.min(Math.max(this._iValue + param1,this._iMinValue),this._iMaxValue);
+            this.value = Math.min(Math.max(this._iValue + aDelta,this._iMinValue),this._iMaxValue);
          }
       }
       
@@ -232,9 +232,9 @@ package Shared.AS3
          return this._iMaxValue;
       }
       
-      public function set maxValue(param1:uint) : *
+      public function set maxValue(aVal:uint) : *
       {
-         this._iMaxValue = Math.max(param1,1);
+         this._iMaxValue = Math.max(aVal,1);
          if(this._iValue > this._iMaxValue)
          {
             this.value = this._iMaxValue;
@@ -244,8 +244,8 @@ package Shared.AS3
       
       public function get markerPosition() : Number
       {
-         var _loc1_:Number = this._iValue / this._iMaxValue;
-         return this._fMinPosition + _loc1_ * this.sliderLength;
+         var finterp:Number = this._iValue / this._iMaxValue;
+         return this._fMinPosition + finterp * this.sliderLength;
       }
       
       public function get controllerBumberJumpSize() : uint
@@ -253,9 +253,9 @@ package Shared.AS3
          return this._iControllerBumperJumpSize;
       }
       
-      public function set controllerBumberJumpSize(param1:uint) : *
+      public function set controllerBumberJumpSize(aVal:uint) : *
       {
-         this._iControllerBumperJumpSize = param1;
+         this._iControllerBumperJumpSize = aVal;
       }
       
       public function get controllerTriggerJumpSize() : uint
@@ -263,12 +263,12 @@ package Shared.AS3
          return this._iControllerTriggerJumpSize;
       }
       
-      public function set controllerTriggerJumpSize(param1:uint) : *
+      public function set controllerTriggerJumpSize(aVal:uint) : *
       {
-         this._iControllerTriggerJumpSize = param1;
+         this._iControllerTriggerJumpSize = aVal;
       }
       
-      private function onBeginDrag(param1:MouseEvent) : *
+      private function onBeginDrag(aEvent:MouseEvent) : *
       {
          this._bIsDragging = true;
          this._HandleDragStartPosOffset = this._bVertical ? mouseY - this.Marker_mc.y : mouseX - this.Marker_mc.x;
@@ -276,7 +276,7 @@ package Shared.AS3
          stage.addEventListener(Event.ENTER_FRAME,this.onValueDrag);
       }
       
-      private function onReleaseDrag(param1:MouseEvent) : *
+      private function onReleaseDrag(aEvent:MouseEvent) : *
       {
          if(this._bIsDragging)
          {
@@ -287,12 +287,12 @@ package Shared.AS3
          }
       }
       
-      private function onValueDrag(param1:Event) : *
+      private function onValueDrag(e:Event) : *
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
+         var markerPos:Number = NaN;
+         var markerMin:Number = NaN;
+         var markerMax:Number = NaN;
+         var lerpValue:Number = NaN;
          if(this._bIsDragging)
          {
             if(this._bVertical)
@@ -303,98 +303,98 @@ package Shared.AS3
             {
                this.Marker_mc.x = GlobalFunc.Clamp(mouseX - this._HandleDragStartPosOffset,this._SliderMarkerBoundBox.x,this._SliderMarkerBoundBox.x + this.sliderLength);
             }
-            _loc2_ = this._bVertical ? this.Marker_mc.y : this.Marker_mc.x;
-            _loc3_ = this._bVertical ? this._SliderMarkerBoundBox.y : this._SliderMarkerBoundBox.x;
-            _loc4_ = this._bVertical ? this._SliderMarkerBoundBox.y + this.sliderLength : this._SliderMarkerBoundBox.x + this.sliderLength;
-            _loc5_ = (_loc2_ - _loc3_) / (_loc4_ - _loc3_);
-            this.value = this._iMinValue + Math.round(_loc5_ * (this._iMaxValue - this._iMinValue));
+            markerPos = this._bVertical ? this.Marker_mc.y : this.Marker_mc.x;
+            markerMin = this._bVertical ? this._SliderMarkerBoundBox.y : this._SliderMarkerBoundBox.x;
+            markerMax = this._bVertical ? this._SliderMarkerBoundBox.y + this.sliderLength : this._SliderMarkerBoundBox.x + this.sliderLength;
+            lerpValue = (markerPos - markerMin) / (markerMax - markerMin);
+            this.value = this._iMinValue + Math.round(lerpValue * (this._iMaxValue - this._iMinValue));
          }
       }
       
-      private function onKeyDownHandler(param1:KeyboardEvent) : *
+      private function onKeyDownHandler(event:KeyboardEvent) : *
       {
-         if(param1.keyCode == Keyboard.LEFT)
+         if(event.keyCode == Keyboard.LEFT)
          {
             this.valueJump(-1);
-            param1.stopPropagation();
+            event.stopPropagation();
          }
-         else if(param1.keyCode == Keyboard.RIGHT)
+         else if(event.keyCode == Keyboard.RIGHT)
          {
             this.valueJump(1);
-            param1.stopPropagation();
+            event.stopPropagation();
          }
-         else if(param1.keyCode == Keyboard.UP)
+         else if(event.keyCode == Keyboard.UP)
          {
             this.valueJump(this.m_DefaultScrollValueJump * -1);
-            param1.stopPropagation();
+            event.stopPropagation();
          }
-         else if(param1.keyCode == Keyboard.DOWN)
+         else if(event.keyCode == Keyboard.DOWN)
          {
             this.valueJump(this.m_DefaultScrollValueJump);
-            param1.stopPropagation();
+            event.stopPropagation();
          }
       }
       
-      private function onMouseWheelHandler(param1:MouseEvent) : *
+      private function onMouseWheelHandler(event:MouseEvent) : *
       {
-         if(param1.delta < 0)
+         if(event.delta < 0)
          {
             this.valueJump(-1);
          }
-         else if(param1.delta > 0)
+         else if(event.delta > 0)
          {
             this.valueJump(1);
          }
-         param1.stopPropagation();
+         event.stopPropagation();
       }
       
-      public function onArrowClickHandler(param1:MouseEvent) : *
+      public function onArrowClickHandler(event:MouseEvent) : *
       {
-         var _loc2_:MovieClip = param1.target as MovieClip;
-         if(param1.target == this.LeftArrow_mc)
+         var Movie:MovieClip = event.target as MovieClip;
+         if(event.target == this.LeftArrow_mc)
          {
             this.valueJump(-this._iControllerBumperJumpSize);
          }
-         else if(param1.target == this.RightArrow_mc)
+         else if(event.target == this.RightArrow_mc)
          {
             this.valueJump(this._iControllerBumperJumpSize);
          }
       }
       
-      public function onSliderBarMouseClickHandler(param1:MouseEvent) : *
+      public function onSliderBarMouseClickHandler(event:MouseEvent) : *
       {
-         var _loc2_:Number = this._bVertical ? mouseY : mouseX;
-         var _loc3_:uint = _loc2_ / this.sliderLength * (this._iMaxValue - this._iMinValue);
-         this.value = _loc3_;
+         var clickPos:Number = this._bVertical ? mouseY : mouseX;
+         var newValue:uint = clickPos / this.sliderLength * (this._iMaxValue - this._iMinValue);
+         this.value = newValue;
       }
       
-      public function ProcessUserEvent(param1:String, param2:Boolean) : Boolean
+      public function ProcessUserEvent(strEventName:String, abPressed:Boolean) : Boolean
       {
-         var _loc3_:* = false;
-         if(!param2)
+         var bhandled:* = false;
+         if(!abPressed)
          {
-            if(param1 == "LShoulder")
+            if(strEventName == "LShoulder")
             {
                this.valueJump(-this._iControllerBumperJumpSize);
-               _loc3_ = true;
+               bhandled = true;
             }
-            else if(param1 == "RShoulder")
+            else if(strEventName == "RShoulder")
             {
                this.valueJump(this._iControllerBumperJumpSize);
-               _loc3_ = true;
+               bhandled = true;
             }
-            else if(param1 == "LTrigger")
+            else if(strEventName == "LTrigger")
             {
                this.valueJump(-this._iControllerTriggerJumpSize);
-               _loc3_ = true;
+               bhandled = true;
             }
-            else if(param1 == "RTrigger")
+            else if(strEventName == "RTrigger")
             {
                this.valueJump(this._iControllerTriggerJumpSize);
-               _loc3_ = true;
+               bhandled = true;
             }
          }
-         return _loc3_;
+         return bhandled;
       }
       
       public function addParentScrollEvents() : void
@@ -441,16 +441,16 @@ package Shared.AS3
       {
          super.redrawUIComponent();
          this.updateHandleSize();
-         var _loc1_:Number = this.markerPosition;
+         var markerPos:Number = this.markerPosition;
          if(this._bVertical)
          {
-            this.Marker_mc.y = _loc1_;
-            this.Fill_mc.height = _loc1_ - this.Fill_mc.y;
+            this.Marker_mc.y = markerPos;
+            this.Fill_mc.height = markerPos - this.Fill_mc.y;
          }
          else
          {
-            this.Marker_mc.x = _loc1_;
-            this.Fill_mc.width = _loc1_ - this.Fill_mc.x;
+            this.Marker_mc.x = markerPos;
+            this.Fill_mc.width = markerPos - this.Fill_mc.x;
          }
       }
    }

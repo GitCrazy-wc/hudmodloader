@@ -68,15 +68,15 @@ package
          return this._dataSubscriptionKeyword;
       }
       
-      public function set dataSubscriptionKeyword_Inspectable(param1:String) : *
+      public function set dataSubscriptionKeyword_Inspectable(strNewData:String) : *
       {
-         this._dataSubscriptionKeyword = param1;
+         this._dataSubscriptionKeyword = strNewData;
       }
       
-      public function set itemRendererClassName_Inspectable(param1:String) : void
+      public function set itemRendererClassName_Inspectable(value:String) : void
       {
          SetIsDirty();
-         this._itemRendererClassName = param1;
+         this._itemRendererClassName = value;
       }
       
       public function get itemRendererClassName_Inspectable() : String
@@ -89,9 +89,9 @@ package
          return this.uiNumItems;
       }
       
-      public function set numItems_Inspectable(param1:Number) : *
+      public function set numItems_Inspectable(aNumItems:Number) : *
       {
-         this.uiNumItems = param1;
+         this.uiNumItems = aNumItems;
          SetIsDirty();
       }
       
@@ -100,9 +100,9 @@ package
          return this.fVerticalSpacing;
       }
       
-      public function set verticalSpacing_Inspectable(param1:Number) : *
+      public function set verticalSpacing_Inspectable(afSpacing:Number) : *
       {
-         this.fVerticalSpacing = param1;
+         this.fVerticalSpacing = afSpacing;
       }
       
       public function get backgroundHeight_Inspectable() : *
@@ -110,9 +110,9 @@ package
          return this._backgroundHeight;
       }
       
-      public function set backgroundHeight_Inspectable(param1:Number) : *
+      public function set backgroundHeight_Inspectable(abackgroundHeight:Number) : *
       {
-         this._backgroundHeight = param1;
+         this._backgroundHeight = abackgroundHeight;
       }
       
       public function get backgroundWidth_Inspectable() : *
@@ -120,9 +120,9 @@ package
          return this._backgroundWidth;
       }
       
-      public function set backgroundWidth_Inspectable(param1:Number) : *
+      public function set backgroundWidth_Inspectable(abackgroundWidth:Number) : *
       {
-         this._backgroundWidth = param1;
+         this._backgroundWidth = abackgroundWidth;
       }
       
       public function get backgroundAlpha_Inspectable() : *
@@ -130,9 +130,9 @@ package
          return this._backgroundAlpha;
       }
       
-      public function set backgroundAlpha_Inspectable(param1:Number) : *
+      public function set backgroundAlpha_Inspectable(abackgroundAlpha:Number) : *
       {
-         this._backgroundAlpha = param1;
+         this._backgroundAlpha = abackgroundAlpha;
       }
       
       public function get fixedBackgroundHeight_Inspectable() : *
@@ -140,9 +140,9 @@ package
          return this._fixedBackgroundHeight;
       }
       
-      public function set fixedBackgroundHeight_Inspectable(param1:Boolean) : *
+      public function set fixedBackgroundHeight_Inspectable(afixedBackgroundHeight:Boolean) : *
       {
-         this._fixedBackgroundHeight = param1;
+         this._fixedBackgroundHeight = afixedBackgroundHeight;
       }
       
       public function get useBackground() : Boolean
@@ -150,9 +150,9 @@ package
          return this._useBackground;
       }
       
-      public function set useBackground(param1:Boolean) : *
+      public function set useBackground(abUseBackground:Boolean) : *
       {
-         this._useBackground = param1;
+         this._useBackground = abUseBackground;
       }
       
       public function get reverseOrder() : Boolean
@@ -160,9 +160,9 @@ package
          return this.List_mc.reverseOrder;
       }
       
-      public function set reverseOrder(param1:Boolean) : *
+      public function set reverseOrder(abFlag:Boolean) : *
       {
-         this.List_mc.reverseOrder = param1;
+         this.List_mc.reverseOrder = abFlag;
       }
       
       public function get disableSelection_Inspectable() : Boolean
@@ -170,10 +170,10 @@ package
          return this.List_mc.disableSelection_Inspectable;
       }
       
-      public function set disableSelection_Inspectable(param1:Boolean) : *
+      public function set disableSelection_Inspectable(abDisabled:Boolean) : *
       {
-         this.List_mc.disableSelection_Inspectable = param1;
-         enabled = mouseChildren = mouseEnabled = !param1;
+         this.List_mc.disableSelection_Inspectable = abDisabled;
+         enabled = mouseChildren = mouseEnabled = !abDisabled;
       }
       
       public function get defaultAcceptButton() : BSButtonHintData
@@ -186,19 +186,19 @@ package
          return this._defaultBackButton;
       }
       
-      public function OnMenuListDataChanged(param1:FromClientDataEvent) : *
+      public function OnMenuListDataChanged(arEvent:FromClientDataEvent) : *
       {
-         var _loc3_:* = undefined;
-         var _loc2_:Array = this.m_ListData[this.dataSubscriptionKeyword_Inspectable].dataArray as Array;
-         if(_loc2_ == null)
+         var dataLength:* = undefined;
+         var newDataArray:Array = this.m_ListData[this.dataSubscriptionKeyword_Inspectable].dataArray as Array;
+         if(newDataArray == null)
          {
             return;
          }
-         this.List_mc.MenuListData = _loc2_;
+         this.List_mc.MenuListData = newDataArray;
          if(this.List_mc.MenuListData)
          {
-            _loc3_ = _loc2_.length;
-            if(_loc3_ > 0)
+            dataLength = newDataArray.length;
+            if(dataLength > 0)
             {
                SetIsDirty();
             }
@@ -255,9 +255,9 @@ package
       
       public function updateBackground() : *
       {
-         var _loc1_:BSScrollingListEntry = null;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var clip:BSScrollingListEntry = null;
+         var clipWidth:Number = NaN;
+         var clipHeight:Number = NaN;
          if(contains(this.Rectangle))
          {
             removeChild(this.Rectangle);
@@ -265,38 +265,38 @@ package
          }
          if(this.useBackground)
          {
-            _loc1_ = this.List_mc.GetClipByIndex(0);
-            if(_loc1_)
+            clip = this.List_mc.GetClipByIndex(0);
+            if(clip)
             {
-               _loc2_ = _loc1_.width;
-               _loc3_ = _loc1_.height;
-               if(_loc1_.Sizer_mc != null)
+               clipWidth = clip.width;
+               clipHeight = clip.height;
+               if(clip.Sizer_mc != null)
                {
-                  _loc2_ = _loc1_.Sizer_mc.width;
-                  _loc3_ = _loc1_.Sizer_mc.height;
+                  clipWidth = clip.Sizer_mc.width;
+                  clipHeight = clip.Sizer_mc.height;
                }
                this.Rectangle = new Sprite();
                addChild(this.Rectangle);
-               this.backgroundWidth_Inspectable = _loc2_;
-               this.backgroundHeight_Inspectable = _loc3_ * this.List_mc.numListItems_Inspectable;
+               this.backgroundWidth_Inspectable = clipWidth;
+               this.backgroundHeight_Inspectable = clipHeight * this.List_mc.numListItems_Inspectable;
                this.Rectangle.graphics.beginFill(1580061,this.backgroundAlpha_Inspectable);
                this.Rectangle.graphics.drawRect(0,0,this.backgroundWidth_Inspectable,this.backgroundHeight_Inspectable);
                this.Rectangle.graphics.endFill();
-               this.Rectangle.x = _loc1_.x;
+               this.Rectangle.x = clip.x;
                this.Rectangle.y = 0;
                swapChildren(this.Rectangle,this.List_mc);
             }
          }
       }
       
-      public function onFocusIn(param1:FocusEvent) : void
+      public function onFocusIn(e:FocusEvent) : void
       {
          stage.focus = this.List_mc;
       }
       
-      public function setSelectedIndex(param1:Number) : void
+      public function setSelectedIndex(index:Number) : void
       {
-         this.List_mc.selectedIndex = param1;
+         this.List_mc.selectedIndex = index;
          this.List_mc.UpdateSelectedEntry();
       }
       
@@ -305,16 +305,16 @@ package
          return this.List_mc.selectedIndex;
       }
       
-      public function ChangeDataProvider(param1:String) : void
+      public function ChangeDataProvider(newProviderName:String) : void
       {
-         this.dataSubscriptionKeyword_Inspectable = param1;
+         this.dataSubscriptionKeyword_Inspectable = newProviderName;
          this.connectDataProvider();
       }
       
       public function connectDataProvider() : *
       {
-         var _loc1_:UIDataFromClient = BSUIDataManager.GetDataFromClient(this.dataSubscriptionKeyword_Inspectable);
-         if(!_loc1_)
+         var dataFromClient:UIDataFromClient = BSUIDataManager.GetDataFromClient(this.dataSubscriptionKeyword_Inspectable);
+         if(!dataFromClient)
          {
             throw new Error("Couldn\'t get data provider for menu list");
          }
@@ -322,12 +322,12 @@ package
          {
             this.m_ListData = new Object();
          }
-         this.m_ListData[this.dataSubscriptionKeyword_Inspectable] = _loc1_.data;
+         this.m_ListData[this.dataSubscriptionKeyword_Inspectable] = dataFromClient.data;
          if(this.m_ListSubs[this.dataSubscriptionKeyword_Inspectable] == null)
          {
             this.m_ListSubs[this.dataSubscriptionKeyword_Inspectable] = BSUIDataManager.Subscribe(this.dataSubscriptionKeyword_Inspectable,this.OnMenuListDataChanged);
          }
-         this.OnMenuListDataChanged(new FromClientDataEvent(_loc1_));
+         this.OnMenuListDataChanged(new FromClientDataEvent(dataFromClient));
       }
       
       public function PopulateList() : *
@@ -340,15 +340,15 @@ package
          throw new Error("MenuList::error Could not initialized BSScrollingList item!");
       }
       
-      private function onKeyUp(param1:Event) : *
+      private function onKeyUp(event:Event) : *
       {
       }
       
-      private function onListPlayFocus(param1:Event) : *
+      private function onListPlayFocus(event:Event) : *
       {
       }
       
-      private function onListSelectionChange(param1:Event) : *
+      private function onListSelectionChange(event:Event) : *
       {
          if(this.List_mc.selectedEntry)
          {
@@ -356,11 +356,11 @@ package
          }
       }
       
-      private function onListsCreated(param1:Event) : *
+      private function onListsCreated(event:Event) : *
       {
       }
       
-      private function onMenuListAccept(param1:Event = null) : *
+      private function onMenuListAccept(event:Event = null) : *
       {
          if(this.List_mc.selectedEntry != null && this.List_mc.selectedEntry.disabled != true)
          {
@@ -368,7 +368,7 @@ package
          }
       }
       
-      private function onMenuListBack(param1:Event = null) : *
+      private function onMenuListBack(event:Event = null) : *
       {
          if(this._defaultBackButton && this._defaultBackButton.ButtonVisible && this._defaultBackButton.ButtonEnabled)
          {

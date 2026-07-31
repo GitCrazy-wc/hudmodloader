@@ -4,7 +4,7 @@ package
    import flash.display.MovieClip;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1833")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1840")]
    public class HUDPvPScoreboardPlayer extends MovieClip
    {
       
@@ -44,9 +44,9 @@ package
       {
          super();
          TextFieldEx.setTextAutoSize(this.pvpPlayerName_mc.pvpPlayerName_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
-         var _loc1_:ImageFixture = this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc as ImageFixture;
-         _loc1_.clipWidth = _loc1_.width * (1 / _loc1_.scaleX);
-         _loc1_.clipHeight = _loc1_.height * (1 / _loc1_.scaleY);
+         var avatarClip:ImageFixture = this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc as ImageFixture;
+         avatarClip.clipWidth = avatarClip.width * (1 / avatarClip.scaleX);
+         avatarClip.clipHeight = avatarClip.height * (1 / avatarClip.scaleY);
       }
       
       public function get data() : Object
@@ -54,134 +54,134 @@ package
          return this.m_Data;
       }
       
-      public function set data(param1:Object) : void
+      public function set data(aData:Object) : void
       {
-         this.m_Data = param1;
-         var _loc2_:String = "gold";
-         var _loc3_:String = "gold";
-         var _loc4_:String = "";
+         this.m_Data = aData;
+         var selfColorFrame:String = "gold";
+         var scoreColorFrame:String = "gold";
+         var markerLabel:String = "";
          this.capsGained_mc.alpha = 0;
          this.capsLost_mc.alpha = 0;
          this.capsRisk_mc.alpha = 0;
          this.capsReward_mc.alpha = 0;
          this.capsBonus_mc.alpha = 0;
          this.capsBonusAvailable_mc.alpha = 0;
-         var _loc5_:Number = 0;
-         var _loc6_:Number = 0;
+         var actingMemberIndex:Number = 0;
+         var deadMemberIndex:Number = 0;
          if(this.m_Data.actingMemberIndex)
          {
-            _loc5_ = Number(this.m_Data.actingMemberIndex);
+            actingMemberIndex = Number(this.m_Data.actingMemberIndex);
          }
          if(this.m_Data.deadMemberIndex)
          {
-            _loc6_ = Number(this.m_Data.deadMemberIndex);
+            deadMemberIndex = Number(this.m_Data.deadMemberIndex);
          }
-         switch(param1.type)
+         switch(aData.type)
          {
             case HUDPvPScoreboard.TYPE_MURDERED:
-               _loc4_ = "$$MURDEREDBY";
+               markerLabel = "$$MURDEREDBY";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc5_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[actingMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "red";
+               selfColorFrame = "red";
                this.capsBonusAvailable_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("murdered");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc5_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc5_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[actingMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[actingMemberIndex].playerName;
                break;
             case HUDPvPScoreboard.TYPE_TEAMDEATH:
             case HUDPvPScoreboard.TYPE_DEATH:
-               _loc4_ = "$$KILLEDBYHEADER";
+               markerLabel = "$$KILLEDBYHEADER";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc6_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[deadMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "red";
+               selfColorFrame = "red";
                this.capsLost_mc.alpha = 1;
                this.capsBonus_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("death");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc5_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc5_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[actingMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[actingMemberIndex].playerName;
                break;
             case HUDPvPScoreboard.TYPE_UNDERATTACK:
-               _loc4_ = "$$UNDERATTACK";
+               markerLabel = "$$UNDERATTACK";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc6_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[deadMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "gold";
+               selfColorFrame = "gold";
                this.capsReward_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("underattack");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc5_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc5_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[actingMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[actingMemberIndex].playerName;
                break;
             case HUDPvPScoreboard.TYPE_ATTACKINGPLAYER:
-               _loc4_ = "$$ATTACKINGPLAYER";
+               markerLabel = "$$ATTACKINGPLAYER";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc5_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[actingMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "gold";
+               selfColorFrame = "gold";
                this.capsReward_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("attackingplayer");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc6_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc6_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[deadMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[deadMemberIndex].playerName;
                break;
             case HUDPvPScoreboard.TYPE_TEAMKILL:
             case HUDPvPScoreboard.TYPE_KILL:
-               _loc4_ = "$$KILLEDHEADER";
+               markerLabel = "$$KILLEDHEADER";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc5_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[actingMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "green";
+               selfColorFrame = "green";
                this.capsGained_mc.alpha = 1;
                this.capsBonus_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("kill");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc6_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc6_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[deadMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[deadMemberIndex].playerName;
                break;
             case HUDPvPScoreboard.TYPE_REVENGE_SEEKER:
-               _loc4_ = "$$SEEKINGREVENGE";
+               markerLabel = "$$SEEKINGREVENGE";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc5_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[actingMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "gold";
+               selfColorFrame = "gold";
                this.capsReward_mc.alpha = 1;
                this.capsBonus_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("attackingplayer");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc6_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc6_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[deadMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[deadMemberIndex].playerName;
                break;
             case HUDPvPScoreboard.TYPE_REVENGE_TARGET:
-               _loc4_ = "$$REVENGETARGET";
+               markerLabel = "$$REVENGETARGET";
                if(!this.m_Data.localPlayerInolved)
                {
-                  _loc4_ = this.m_Data.team[_loc6_].playerName.toUpperCase() + " " + _loc4_;
+                  markerLabel = this.m_Data.team[deadMemberIndex].playerName.toUpperCase() + " " + markerLabel;
                }
-               _loc2_ = "gold";
+               selfColorFrame = "gold";
                this.capsReward_mc.alpha = 1;
                this.capsBonus_mc.alpha = 1;
                this.PvPVaultBoys_mc.gotoAndStop("underattack");
-               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.enemies[_loc5_].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
-               this.pvpPlayerName_mc.pvpPlayerName_tf.text = param1.enemies[_loc5_].playerName;
+               this.pvpPlayerIcon_mc.pvpIconTransform_mc.PlayerIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(aData.enemies[actingMemberIndex].avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
+               this.pvpPlayerName_mc.pvpPlayerName_tf.text = aData.enemies[actingMemberIndex].playerName;
          }
-         this.pvpStrokeColor_mc.gotoAndStop(_loc2_);
-         this.pvpPlayerScoreText_mc.gotoAndStop(_loc3_);
-         this.pvpEnemyScoreText_mc.gotoAndStop(_loc3_);
-         this.pvpVsText_mc.gotoAndStop(_loc3_);
+         this.pvpStrokeColor_mc.gotoAndStop(selfColorFrame);
+         this.pvpPlayerScoreText_mc.gotoAndStop(scoreColorFrame);
+         this.pvpEnemyScoreText_mc.gotoAndStop(scoreColorFrame);
+         this.pvpVsText_mc.gotoAndStop(scoreColorFrame);
          TextFieldEx.setTextAutoSize(this.pvpPlayerName_mc.pvpPlayerName_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
-         this.capsGained_mc.capsGained_tf.text = param1.capsGained;
-         this.capsLost_mc.capsLost_tf.text = param1.capsLost;
-         this.capsRisk_mc.capsRisk_tf.text = param1.capsRisk;
-         this.capsReward_mc.capsReward_tf.text = param1.capsReward;
-         if(param1.bountyTargetKilled)
+         this.capsGained_mc.capsGained_tf.text = aData.capsGained;
+         this.capsLost_mc.capsLost_tf.text = aData.capsLost;
+         this.capsRisk_mc.capsRisk_tf.text = aData.capsRisk;
+         this.capsReward_mc.capsReward_tf.text = aData.capsReward;
+         if(aData.bountyTargetKilled)
          {
             this.capsGained_mc.Label_tf.text = "$BOUNTY";
          }
-         else if(param1.revengeTargetKilled)
+         else if(aData.revengeTargetKilled)
          {
             this.capsGained_mc.Label_tf.text = "$REVENGE";
          }
@@ -189,16 +189,16 @@ package
          {
             this.capsGained_mc.Label_tf.text = "$REWARD";
          }
-         if(param1.capsBonus > 0)
+         if(aData.capsBonus > 0)
          {
-            this.capsBonus_mc.capsBonus_tf.text = "+" + param1.capsBonus;
+            this.capsBonus_mc.capsBonus_tf.text = "+" + aData.capsBonus;
          }
          else
          {
             this.capsBonus_mc.capsBonus_tf.text = "";
          }
-         this.pvpIdentifier_mc.pvpIdentifier_tf.text = _loc4_;
-         this.pvpPlayerLevelDisplay_mc.pvpLevelBox_mc.pvpLevelValue_tf.text = param1.enemyLevel;
+         this.pvpIdentifier_mc.pvpIdentifier_tf.text = markerLabel;
+         this.pvpPlayerLevelDisplay_mc.pvpLevelBox_mc.pvpLevelValue_tf.text = aData.enemyLevel;
       }
    }
 }

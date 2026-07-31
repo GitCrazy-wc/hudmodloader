@@ -8,6 +8,7 @@ package
    import Shared.AS3.Data.UIDataFromClient;
    import Shared.AS3.Events.CustomEvent;
    import Shared.AS3.VaultBoyImageLoader;
+   import Shared.EnumHelper;
    import Shared.GlobalFunc;
    import Shared.HUDModes;
    import flash.display.MovieClip;
@@ -20,7 +21,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol950")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol956")]
    public class HUDAnnounceEventWidget extends MovieClip
    {
       
@@ -68,25 +69,25 @@ package
       
       public static const EVENT_ACTIVE:String = "HUDAnnounceEvent::Active";
       
-      public static const FANFARE_TYPE_QUESTCOMPLETE:uint = 0;
+      public static const FANFARE_TYPE_QUESTCOMPLETE:uint = EnumHelper.GetEnum(0);
       
-      public static const FANFARE_TYPE_QUESTFAILED:uint = 1;
+      public static const FANFARE_TYPE_QUESTFAILED:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_ITEMREWARD:uint = 2;
+      public static const FANFARE_TYPE_ITEMREWARD:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_QUESTAVAILABLE:uint = 3;
+      public static const FANFARE_TYPE_QUESTAVAILABLE:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_QUESTACTIVE:uint = 4;
+      public static const FANFARE_TYPE_QUESTACTIVE:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_FEATUREDITEM:uint = 5;
+      public static const FANFARE_TYPE_FEATUREDITEM:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_LOCATIONDISCOVERED:uint = 6;
+      public static const FANFARE_TYPE_LOCATIONDISCOVERED:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_MESSAGETEXT:uint = 7;
+      public static const FANFARE_TYPE_MESSAGETEXT:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_QUICKPLAYANNOUNCE:uint = 8;
+      public static const FANFARE_TYPE_QUICKPLAYANNOUNCE:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_COUNT:uint = 9;
+      public static const FANFARE_TYPE_COUNT:uint = EnumHelper.GetEnum();
       
       private static const MAX_QUEST_REWARDS:uint = 6;
       
@@ -156,6 +157,8 @@ package
       
       private var m_QuestTracked:Boolean = false;
       
+      private var m_TrackButtonHidden:Boolean = false;
+      
       private const TRACK_BUTTON_PADDING:Rectangle = new Rectangle(-9,-7,18,14);
       
       public var DOHUDAnnounce_mc:MovieClip;
@@ -215,10 +218,10 @@ package
       
       private function updateIsAnimating() : void
       {
-         var _loc1_:Boolean = this.m_IsBusy && this.m_Active;
-         if(this.m_IsAnimating != _loc1_)
+         var isAnimating:Boolean = this.m_IsBusy && this.m_Active;
+         if(this.m_IsAnimating != isAnimating)
          {
-            this.m_IsAnimating = _loc1_;
+            this.m_IsAnimating = isAnimating;
             if(this.m_IsAnimating)
             {
                dispatchEvent(new Event(EVENT_ACTIVE,true));
@@ -230,24 +233,24 @@ package
          }
       }
       
-      public function set isBusy(param1:Boolean) : void
+      public function set isBusy(aBusy:Boolean) : void
       {
-         if(param1 != this.m_IsBusy)
+         if(aBusy != this.m_IsBusy)
          {
-            this.m_IsBusy = param1;
+            this.m_IsBusy = aBusy;
             this.updateIsAnimating();
          }
       }
       
-      public function set active(param1:Boolean) : void
+      public function set active(aActive:Boolean) : void
       {
-         var _loc2_:Array = null;
-         var _loc3_:uint = 0;
-         var _loc4_:Object = null;
-         var _loc5_:uint = 0;
-         if(param1 != this.m_Active)
+         var eventArray:Array = null;
+         var eventsLen:uint = 0;
+         var event:Object = null;
+         var i:uint = 0;
+         if(aActive != this.m_Active)
          {
-            this.m_Active = param1;
+            this.m_Active = aActive;
             this.updateIsAnimating();
             if(!this.m_Active)
             {
@@ -273,17 +276,15 @@ package
                this.onClearModel(null);
                if(this.m_CurEvent && this.m_CurEvent.markedAsDisplay && Boolean(this.m_CurEvent.isCompletionRewards) && this.m_CurEvent.fanfareEventType == FANFARE_TYPE_QUESTCOMPLETE)
                {
-                  _loc2_ = this.m_EventData.data.fanfareEvents;
-                  _loc3_ = _loc2_.length;
-                  _loc5_ = 0;
-                  while(_loc5_ < _loc3_)
+                  eventArray = this.m_EventData.data.fanfareEvents;
+                  eventsLen = eventArray.length;
+                  for(i = 0; i < eventsLen; i++)
                   {
-                     _loc4_ = _loc2_[_loc5_];
-                     if(_loc4_.questInstanceId == this.m_CurEvent.questInstanceId && _loc4_.fanfareEventType == FANFARE_TYPE_ITEMREWARD)
+                     event = eventArray[i];
+                     if(event.questInstanceId == this.m_CurEvent.questInstanceId && event.fanfareEventType == FANFARE_TYPE_ITEMREWARD)
                      {
-                        BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CLEAR_COMPLETION_REWARD_FLAG,{"fanfareEventID":_loc4_.fanfareEventID}));
+                        BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CLEAR_COMPLETION_REWARD_FLAG,{"fanfareEventID":event.fanfareEventID}));
                      }
-                     _loc5_++;
                   }
                }
                if(this.ShouldClearCurEvent())
@@ -301,111 +302,111 @@ package
          this.active = this.m_Enabled && this.m_IsValidHudMode;
       }
       
-      private function onDataUpdate(param1:FromClientDataEvent) : void
+      private function onDataUpdate(arEvent:FromClientDataEvent) : void
       {
          this.m_ProcessedEventIDList = new Array();
-         this.m_Enabled = param1.data.isFanfareEnabled;
+         this.m_Enabled = arEvent.data.isFanfareEnabled;
          this.updateEnabled();
          this.evaluateQueue();
       }
       
-      private function isValidFanfareQuest(param1:String) : Boolean
+      private function isValidFanfareQuest(aQuestID:String) : Boolean
       {
-         var _loc4_:Object = null;
-         var _loc5_:uint = 0;
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
-         var _loc2_:Object = BSUIDataManager.GetDataFromClient("QuestTrackerData").data;
-         var _loc3_:Object = BSUIDataManager.GetDataFromClient("QuestTrackerProvider").data;
-         if(_loc2_.active)
+         var curQuest:Object = null;
+         var qIndex:uint = 0;
+         var oIndex:uint = 0;
+         var i:uint = 0;
+         var questData:Object = BSUIDataManager.GetDataFromClient("QuestTrackerData").data;
+         var newQuestData:Object = BSUIDataManager.GetDataFromClient("QuestTrackerProvider").data;
+         if(questData.active)
          {
-            _loc5_ = 0;
-            while(_loc2_.quests != null && _loc5_ < _loc2_.quests.length)
+            qIndex = 0;
+            while(questData.quests != null && qIndex < questData.quests.length)
             {
-               _loc4_ = _loc2_.quests[_loc5_];
-               if(_loc4_.questBaseID == param1)
+               curQuest = questData.quests[qIndex];
+               if(curQuest.questBaseID == aQuestID)
                {
-                  _loc6_ = 0;
-                  while(_loc4_.objectives != null && _loc6_ < _loc4_.objectives.length)
+                  oIndex = 0;
+                  while(curQuest.objectives != null && oIndex < curQuest.objectives.length)
                   {
-                     if(_loc4_.objectives[_loc6_].isDisplayed)
+                     if(curQuest.objectives[oIndex].isDisplayed)
                      {
                         return true;
                      }
-                     _loc6_++;
+                     oIndex++;
                   }
                }
-               _loc5_++;
+               qIndex++;
             }
          }
-         else if(_loc3_.active)
+         else if(newQuestData.active)
          {
-            _loc7_ = 0;
-            while(_loc3_.quests != null && _loc7_ < _loc3_.quests.length)
+            i = 0;
+            while(newQuestData.quests != null && i < newQuestData.quests.length)
             {
-               _loc4_ = _loc3_.quests[_loc7_];
-               if(_loc4_.questId == param1)
+               curQuest = newQuestData.quests[i];
+               if(curQuest.questId == aQuestID)
                {
                   return true;
                }
-               _loc7_++;
+               i++;
             }
          }
          return false;
       }
       
-      private function evaluateQueue(param1:Boolean = false) : void
+      private function evaluateQueue(abContinuationAnim:Boolean = false) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:Boolean = false;
-         var _loc4_:Object = null;
-         var _loc5_:Boolean = false;
-         var _loc6_:Boolean = false;
+         var startedNewAnimation:Boolean = false;
+         var onlyShowCompletionRewards:Boolean = false;
+         var fanfareEvent:Object = null;
+         var isEventProcessed:Boolean = false;
+         var canStartNewAnimation:Boolean = false;
          if(this.m_Active && this.m_EventData.data.fanfareEvents != null)
          {
-            _loc2_ = false;
-            _loc3_ = Boolean(this.m_CurEvent) && Boolean(this.m_CurEvent.isCompletionRewards) && this.m_CurEvent.fanfareEventType == FANFARE_TYPE_QUESTCOMPLETE;
-            for each(_loc4_ in this.m_EventData.data.fanfareEvents)
+            startedNewAnimation = false;
+            onlyShowCompletionRewards = Boolean(this.m_CurEvent) && Boolean(this.m_CurEvent.isCompletionRewards) && this.m_CurEvent.fanfareEventType == FANFARE_TYPE_QUESTCOMPLETE;
+            for each(fanfareEvent in this.m_EventData.data.fanfareEvents)
             {
-               if(this.m_ProcessedEventIDList.indexOf(_loc4_.fanfareEventID) == -1)
+               if(this.m_ProcessedEventIDList.indexOf(fanfareEvent.fanfareEventID) == -1)
                {
-                  _loc5_ = false;
-                  _loc6_ = !_loc2_ && (!this.m_IsBusy || param1);
+                  isEventProcessed = false;
+                  canStartNewAnimation = !startedNewAnimation && (!this.m_IsBusy || abContinuationAnim);
                   if(this.m_LastHudMode == HUDModes.INSPECT_MODE)
                   {
-                     if(_loc4_.fanfareEventType != FANFARE_TYPE_FEATUREDITEM)
+                     if(fanfareEvent.fanfareEventType != FANFARE_TYPE_FEATUREDITEM)
                      {
                         continue;
                      }
                   }
-                  _loc6_ &&= !_loc3_ || _loc4_.isCompletionRewards && _loc4_.fanfareEventType == FANFARE_TYPE_ITEMREWARD && _loc4_.questInstanceId == this.m_CurEvent.questInstanceId;
-                  switch(_loc4_.fanfareEventType)
+                  canStartNewAnimation &&= !onlyShowCompletionRewards || fanfareEvent.isCompletionRewards && fanfareEvent.fanfareEventType == FANFARE_TYPE_ITEMREWARD && fanfareEvent.questInstanceId == this.m_CurEvent.questInstanceId;
+                  switch(fanfareEvent.fanfareEventType)
                   {
                      case FANFARE_TYPE_LOCATIONDISCOVERED:
                         if(!this.m_LocationBusy && !this.m_WaitingForFaderMenu)
                         {
-                           this.animateLocationDiscovered(_loc4_);
-                           _loc5_ = true;
+                           this.animateLocationDiscovered(fanfareEvent);
+                           isEventProcessed = true;
                         }
                         break;
                      case FANFARE_TYPE_QUESTAVAILABLE:
                      case FANFARE_TYPE_QUESTACTIVE:
-                        if(_loc6_ && (_loc4_.fanfareEventType == FANFARE_TYPE_QUESTAVAILABLE || this.isValidFanfareQuest(_loc4_.questId)))
+                        if(canStartNewAnimation && (fanfareEvent.fanfareEventType == FANFARE_TYPE_QUESTAVAILABLE || this.isValidFanfareQuest(fanfareEvent.questId)))
                         {
-                           _loc2_ = this.animateEvent(_loc4_);
-                           _loc5_ = _loc2_;
+                           startedNewAnimation = this.animateEvent(fanfareEvent);
+                           isEventProcessed = startedNewAnimation;
                         }
-                        else if(Boolean(this.m_CurEvent) && this.m_CurEvent.questInstanceId == _loc4_.questInstanceId)
+                        else if(Boolean(this.m_CurEvent) && this.m_CurEvent.questInstanceId == fanfareEvent.questInstanceId)
                         {
                            if(this.m_CurClip == this.AnnounceAvailableQuest_mc)
                            {
-                              this.AnnounceAvailableQuest_mc.Desc_mc.Desc_tf.text = _loc4_.shortDescription;
+                              this.AnnounceAvailableQuest_mc.Desc_mc.Desc_tf.text = fanfareEvent.shortDescription;
                            }
                            else if(this.m_CurClip == this.AnnounceActiveQuest_mc)
                            {
-                              this.AnnounceActiveQuest_mc.Desc_mc.Desc_tf.text = _loc4_.shortDescription;
+                              this.AnnounceActiveQuest_mc.Desc_mc.Desc_tf.text = fanfareEvent.shortDescription;
                            }
-                           _loc5_ = true;
+                           isEventProcessed = true;
                         }
                         break;
                      case FANFARE_TYPE_QUICKPLAYANNOUNCE:
@@ -414,38 +415,37 @@ package
                      case FANFARE_TYPE_ITEMREWARD:
                      case FANFARE_TYPE_FEATUREDITEM:
                      case FANFARE_TYPE_MESSAGETEXT:
-                        if(_loc6_)
+                        if(canStartNewAnimation)
                         {
-                           _loc2_ = this.animateEvent(_loc4_);
-                           _loc5_ = _loc2_;
+                           startedNewAnimation = this.animateEvent(fanfareEvent);
+                           isEventProcessed = startedNewAnimation;
                         }
                   }
-                  if(_loc5_)
+                  if(isEventProcessed)
                   {
-                     this.m_ProcessedEventIDList.push(_loc4_.fanfareEventID);
+                     this.m_ProcessedEventIDList.push(fanfareEvent.fanfareEventID);
                   }
                }
             }
-            if(param1)
+            if(abContinuationAnim)
             {
-               this.isBusy = _loc2_;
+               this.isBusy = startedNewAnimation;
             }
             else
             {
-               this.isBusy = this.m_IsBusy || _loc2_;
+               this.isBusy = this.m_IsBusy || startedNewAnimation;
             }
          }
       }
       
-      private function getEventTypeData(param1:uint) : Object
+      private function getEventTypeData(aType:uint) : Object
       {
-         return param1 < FANFARE_TYPE_COUNT ? this.m_EventData.data.fanfareTypes[param1] : null;
+         return aType < FANFARE_TYPE_COUNT ? this.m_EventData.data.fanfareTypes[aType] : null;
       }
       
-      private function animateLocationDiscovered(param1:Object) : void
+      private function animateLocationDiscovered(discoverEvent:Object) : void
       {
          var titleTF:TextField;
-         var discoverEvent:Object = param1;
          this.m_LocationBusy = true;
          BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_LOC_BUSY,{"isLocationBusy":true}));
          this.AnnounceLocationDiscovered_mc.Area_mc.Area_tf.text = discoverEvent.locationName;
@@ -474,73 +474,71 @@ package
          },this.m_LocationDiscoverAnimTime);
       }
       
-      private function IsSimpleType(param1:String) : Boolean
+      private function IsSimpleType(aType:String) : Boolean
       {
-         return param1 == "int" || param1 == "uint" || param1 == "Number" || param1 == "String" || param1 == "Boolean";
+         return aType == "int" || aType == "uint" || aType == "Number" || aType == "String" || aType == "Boolean";
       }
       
-      private function CloneKey(param1:String, param2:*, param3:*) : void
+      private function CloneKey(key:String, aClone:*, aOriginal:*) : void
       {
-         var _loc4_:String = getQualifiedClassName(param3[param1]);
-         if(_loc4_ == "Object")
+         var type:String = getQualifiedClassName(aOriginal[key]);
+         if(type == "Object")
          {
-            param2[param1] = this.CloneObjectData(param3[param1]);
+            aClone[key] = this.CloneObjectData(aOriginal[key]);
          }
-         else if(_loc4_ == "Array")
+         else if(type == "Array")
          {
-            param2[param1] = this.CloneArrayData(param3[param1]);
+            aClone[key] = this.CloneArrayData(aOriginal[key]);
          }
          else
          {
-            GlobalFunc.BSASSERT(this.IsSimpleType(_loc4_),"Can\'t clone non-basic types. Trying to clone a " + _loc4_);
-            param2[param1] = param3[param1];
+            GlobalFunc.BSASSERT(this.IsSimpleType(type),"Can\'t clone non-basic types. Trying to clone a " + type);
+            aClone[key] = aOriginal[key];
          }
       }
       
-      private function CloneArrayData(param1:Array) : Array
+      private function CloneArrayData(aArray:Array) : Array
       {
-         var _loc2_:Array = new Array();
-         var _loc3_:uint = 0;
-         while(_loc3_ < param1.length)
+         var clone:Array = new Array();
+         for(var i:uint = 0; i < aArray.length; i++)
          {
-            this.CloneKey(_loc3_.toString(),_loc2_,param1);
-            _loc3_++;
+            this.CloneKey(i.toString(),clone,aArray);
          }
-         return _loc2_;
+         return clone;
       }
       
-      private function CloneObjectData(param1:Object) : Object
+      private function CloneObjectData(aData:Object) : Object
       {
-         var _loc3_:* = undefined;
-         var _loc2_:Object = new Object();
-         for(_loc3_ in param1)
+         var key:* = undefined;
+         var cloneData:Object = new Object();
+         for(key in aData)
          {
-            this.CloneKey(_loc3_,_loc2_,param1);
+            this.CloneKey(key,cloneData,aData);
          }
-         return _loc2_;
+         return cloneData;
       }
       
-      private function ShouldCloneEvent(param1:Object) : Boolean
+      private function ShouldCloneEvent(aEvent:Object) : Boolean
       {
-         var _loc2_:Boolean = true;
-         if(this.m_CurEvent && param1 && this.m_CurEvent.fanfareEventID == param1.fanfareEventID && Boolean(this.m_CurEvent.isDLOPComplete))
+         var shouldClone:Boolean = true;
+         if(this.m_CurEvent && aEvent && this.m_CurEvent.fanfareEventID == aEvent.fanfareEventID && Boolean(this.m_CurEvent.isDLOPComplete))
          {
-            _loc2_ = false;
+            shouldClone = false;
          }
-         return _loc2_;
+         return shouldClone;
       }
       
       private function ShouldClearCurEvent() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var shouldClear:Boolean = true;
          if(Boolean(this.m_CurEvent) && Boolean(this.m_CurEvent.isDLOPComplete))
          {
-            _loc1_ = false;
+            shouldClear = false;
          }
-         return _loc1_;
+         return shouldClear;
       }
       
-      private function animateEvent(param1:Object) : Boolean
+      private function animateEvent(aEvent:Object) : Boolean
       {
          var eventTypeData:Object;
          var startedAnim:Boolean;
@@ -553,6 +551,7 @@ package
          var editorNewlinePattern:RegExp = null;
          var parsedDesc:String = null;
          var rewardIndex:int = 0;
+         var anyItemsAdded:Boolean = false;
          var tooManyRewards:Boolean = false;
          var reward:* = undefined;
          var nameText:String = null;
@@ -562,11 +561,9 @@ package
          var rewardText:String = null;
          var i:int = 0;
          var s:int = 0;
-         var starsIndex:int = 0;
          var availableQuestHintBar:BSButtonHintBar = null;
          var dlopMarkupRemovedText:String = null;
          var xpdMarkupRemovedText:String = null;
-         var aEvent:Object = param1;
          if(this.ShouldCloneEvent(aEvent))
          {
             this.m_CurEvent = this.CloneObjectData(aEvent);
@@ -619,6 +616,7 @@ package
                   eventClip.FanfareType_mc.FanfareType_tf.text = "$$ITEMREWARD";
                   eventClip.FanfareType_mc.FanfareType_tf.text = this.m_CurEvent.sharedPlayerPrefix + eventClip.FanfareType_mc.FanfareType_tf.text;
                   rewardIndex = 1;
+                  anyItemsAdded = false;
                   tooManyRewards = this.m_CurEvent.rewardsA.length > MAX_QUEST_REWARDS;
                   for each(reward in this.m_CurEvent.rewardsA)
                   {
@@ -634,9 +632,13 @@ package
                            nameText = "(" + reward.uRewardCount + ") " + nameText;
                         }
                      }
-                     eventClip["FanfareName_mc" + rewardIndex].FanfareName_tf.text = nameText;
-                     eventClip["FanfareName_mc" + rewardIndex].visible = true;
-                     rewardIndex++;
+                     if(nameText.length > 0)
+                     {
+                        eventClip["FanfareName_mc" + rewardIndex].FanfareName_tf.text = nameText;
+                        eventClip["FanfareName_mc" + rewardIndex].visible = true;
+                        rewardIndex++;
+                        anyItemsAdded = true;
+                     }
                      if(rewardIndex > MAX_QUEST_REWARDS)
                      {
                         break;
@@ -647,6 +649,7 @@ package
                      eventClip["FanfareName_mc" + rewardIndex].visible = false;
                      rewardIndex++;
                   }
+                  this.m_WaitingForBonusRewards = false;
                   if(this.m_CurEvent.mutatedRewards.length > 0)
                   {
                      eventClip.BonusFanfareType_mc.visible = true;
@@ -667,9 +670,14 @@ package
                               rewardText = "(" + bonusReward.uRewardCount + ") " + rewardText;
                            }
                         }
-                        eventClip["BonusFanfareName_mc" + bonusRewardIndex].FanfareName_tf.text = rewardText;
-                        eventClip["BonusFanfareName_mc" + bonusRewardIndex].visible = true;
-                        bonusRewardIndex++;
+                        if(rewardText.length > 0)
+                        {
+                           eventClip["BonusFanfareName_mc" + bonusRewardIndex].FanfareName_tf.text = rewardText;
+                           eventClip["BonusFanfareName_mc" + bonusRewardIndex].visible = true;
+                           bonusRewardIndex++;
+                           anyItemsAdded = true;
+                           this.m_WaitingForBonusRewards = true;
+                        }
                         if(bonusRewardIndex > MAX_QUEST_REWARDS)
                         {
                            break;
@@ -680,21 +688,23 @@ package
                         eventClip["BonusFanfareName_mc" + bonusRewardIndex].visible = false;
                         bonusRewardIndex++;
                      }
-                     this.m_WaitingForBonusRewards = true;
+                  }
+                  if(this.m_WaitingForBonusRewards)
+                  {
                      eventTypeData.showTimer += BONUS_REWARD_ANIM_TIME;
                   }
                   else
                   {
-                     this.m_WaitingForBonusRewards = false;
                      eventClip.BonusFanfareType_mc.visible = false;
-                     i = 1;
-                     while(i <= MAX_QUEST_REWARDS)
+                     for(i = 1; i <= MAX_QUEST_REWARDS; i++)
                      {
                         eventClip["BonusFanfareName_mc" + i].visible = false;
-                        i++;
                      }
                   }
-                  GlobalFunc.PlayMenuSound("UIQuestCompleteRewardItem");
+                  if(!anyItemsAdded)
+                  {
+                     eventClip = null;
+                  }
                }
                else if(!this.m_CurEvent.isCompletionRewards)
                {
@@ -707,16 +717,13 @@ package
                editorNewlinePattern = /\r\n/g;
                parsedDesc = this.m_CurEvent.shortDescription.replace(editorNewlinePattern," \n");
                eventClip.FanfareDescription_mc.FanfareDescription_tf.text = parsedDesc;
-               s = 1;
-               while(s <= MAX_STARS)
+               for(s = 1; s <= MAX_STARS; s++)
                {
                   eventClip.FanfareInternal_mc["LegendaryStar0" + s + "_mc"].visible = s <= this.m_CurEvent.numLegendaryStars;
-                  s++;
                }
                if(this.m_CurEvent.numLegendaryStars > 0)
                {
-                  starsIndex = int(name.indexOf("¬"));
-                  name = name.substr(0,starsIndex);
+                  name = GlobalFunc.StringTrim(name.split("¬").join(""));
                   GlobalFunc.PlayMenuSound("UIFanfareLegendaryCrafted0" + this.m_CurEvent.numLegendaryStars);
                }
                eventClip.NewAnim_mc.visible = this.m_CurEvent.featuredItemShowNew;
@@ -738,7 +745,7 @@ package
                   eventClip.Desc_mc.Desc_tf.text = description;
                   this.m_HoldTimer = null;
                   this.m_TrackButton.holdPercent = 0;
-                  this.m_TrackButton.ButtonVisible = true;
+                  this.m_TrackButton.ButtonVisible = !this.m_TrackButtonHidden;
                   this.m_QuestTracked = false;
                   availableQuestHintBar = eventClip.ButtonHintBar_mc as BSButtonHintBar;
                   availableQuestHintBar.paddingRect = this.TRACK_BUTTON_PADDING;
@@ -871,6 +878,10 @@ package
          if(eventClip != null && eventTypeData != null)
          {
             startedAnim = true;
+            if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_ITEMREWARD)
+            {
+               GlobalFunc.PlayMenuSound("UIQuestCompleteRewardItem");
+            }
             if(this.m_CurEvent.useDescAnim)
             {
                eventClip.gotoAndPlay("rollOnDesc");
@@ -911,11 +922,10 @@ package
          return startedAnim;
       }
       
-      private function DisplaySimpleRewards(param1:Object) : void
+      private function DisplaySimpleRewards(aEvent:Object) : void
       {
          var xpDelay:Number;
          var xpReward:Number = NaN;
-         var aEvent:Object = param1;
          this.ShowCurrencyReward(aEvent.currencyID,aEvent.currencyRewarded);
          xpDelay = 700;
          xpReward = Number(aEvent.xpRewarded);
@@ -928,46 +938,46 @@ package
       
       private function endFanfare() : void
       {
-         var _loc1_:Object = null;
-         var _loc2_:Number = NaN;
-         var _loc3_:String = null;
-         var _loc4_:* = undefined;
-         var _loc5_:* = undefined;
-         var _loc6_:Object = null;
+         var eventTypeData:Object = null;
+         var fadeTime:Number = NaN;
+         var standardRollOffAnimName:String = null;
+         var itemID:* = undefined;
+         var pairedRewardsFanfare:* = undefined;
+         var fanfareEvent:Object = null;
          if(this.m_CurClip != null)
          {
-            _loc1_ = this.getEventTypeData(this.m_CurEvent.fanfareEventType);
-            GlobalFunc.BSASSERT(_loc1_ != null,"Event type data is null.");
-            _loc2_ = Number(_loc1_.gapTimer);
-            _loc3_ = "RollOff";
+            eventTypeData = this.getEventTypeData(this.m_CurEvent.fanfareEventType);
+            GlobalFunc.BSASSERT(eventTypeData != null,"Event type data is null.");
+            fadeTime = Number(eventTypeData.gapTimer);
+            standardRollOffAnimName = "RollOff";
             if(this.m_CurEvent.isCompletionRewards)
             {
                if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_QUESTCOMPLETE)
                {
-                  _loc5_ = null;
-                  for each(_loc6_ in this.m_EventData.data.fanfareEvents)
+                  pairedRewardsFanfare = null;
+                  for each(fanfareEvent in this.m_EventData.data.fanfareEvents)
                   {
-                     if(_loc6_.isCompletionRewards && _loc6_.fanfareEventType == FANFARE_TYPE_ITEMREWARD && _loc6_.questInstanceId == this.m_CurEvent.questInstanceId)
+                     if(fanfareEvent.isCompletionRewards && fanfareEvent.fanfareEventType == FANFARE_TYPE_ITEMREWARD && fanfareEvent.questInstanceId == this.m_CurEvent.questInstanceId)
                      {
-                        _loc5_ = _loc6_;
+                        pairedRewardsFanfare = fanfareEvent;
                         break;
                      }
                   }
-                  if(_loc5_ != null && _loc5_.rewardsA.length > 0)
+                  if(pairedRewardsFanfare != null && pairedRewardsFanfare.rewardsA.length > 0)
                   {
                      this.m_CurClip.gotoAndPlay("rollOffForRewards");
-                     _loc2_ = COMPLETION_TO_REWARDS_FADE_TIME_MS;
+                     fadeTime = COMPLETION_TO_REWARDS_FADE_TIME_MS;
                   }
                   else
                   {
-                     this.m_CurClip.gotoAndPlay(_loc3_);
+                     this.m_CurClip.gotoAndPlay(standardRollOffAnimName);
                      this.m_CurEvent.isCompletionRewards = false;
-                     this.DisplaySimpleRewards(_loc5_);
+                     this.DisplaySimpleRewards(pairedRewardsFanfare);
                   }
                }
                else if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_ITEMREWARD)
                {
-                  this.m_CurClip.gotoAndPlay(_loc3_);
+                  this.m_CurClip.gotoAndPlay(standardRollOffAnimName);
                   this.QuestCompleteContainer_mc.gotoAndPlay("rollOffAfterRewards");
                }
                else
@@ -987,16 +997,16 @@ package
             }
             else
             {
-               this.m_CurClip.gotoAndPlay(this.m_CurEvent.useDescAnim ? "rollOffDesc" : _loc3_);
+               this.m_CurClip.gotoAndPlay(this.m_CurEvent.useDescAnim ? "rollOffDesc" : standardRollOffAnimName);
             }
-            _loc4_ = 0;
+            itemID = 0;
             if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_FEATUREDITEM)
             {
-               _loc4_ = this.m_CurEvent.itemHandle;
+               itemID = this.m_CurEvent.itemHandle;
             }
             BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CONSUME,{"fanfareEventID":this.m_CurEvent.fanfareEventID}));
-            BSUIDataManager.dispatchEvent(new CustomEvent("FanfareEvent::FadeOut",{"fadedItemHandleID":_loc4_}));
-            this.m_CurTimeout = setTimeout(this.onAnimEnd,_loc2_);
+            BSUIDataManager.dispatchEvent(new CustomEvent("FanfareEvent::FadeOut",{"fadedItemHandleID":itemID}));
+            this.m_CurTimeout = setTimeout(this.onAnimEnd,fadeTime);
          }
          else
          {
@@ -1005,13 +1015,13 @@ package
          this.m_AcceptButtonHint.holdPercent = 0;
       }
       
-      public function onFarefanFullyDisplayed(param1:Event) : void
+      public function onFarefanFullyDisplayed(e:Event) : void
       {
          this.m_CurEvent.markedAsDisplay = true;
          BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CONSUME,{"fanfareEventID":this.m_CurEvent.fanfareEventID}));
       }
       
-      public function onShowModel(param1:Event) : void
+      public function onShowModel(e:Event) : void
       {
          BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_UPDATEMODEL,{
             "itemHandle":this.m_CurEvent.itemHandle,
@@ -1019,7 +1029,7 @@ package
          }));
       }
       
-      public function onClearModel(param1:Event) : void
+      public function onClearModel(e:Event) : void
       {
          if(this.m_CurEvent)
          {
@@ -1030,10 +1040,14 @@ package
          }
       }
       
-      private function GetOnPlayItemSoundFunc(param1:uint, param2:Boolean) : Function
+      public function SetTrackingButtonVisibility(aToggled:Boolean) : *
       {
-         var aItemIndex:uint = param1;
-         var aBonusReward:Boolean = param2;
+         this.m_TrackButtonHidden = !aToggled;
+         this.m_TrackButton.ButtonVisible = aToggled;
+      }
+      
+      private function GetOnPlayItemSoundFunc(aItemIndex:uint, aBonusReward:Boolean) : Function
+      {
          return function():void
          {
             if(aBonusReward)
@@ -1050,7 +1064,7 @@ package
          };
       }
       
-      private function onShowXPReward(param1:Event) : void
+      private function onShowXPReward(e:Event) : void
       {
          if(!this.m_WaitingForBonusRewards)
          {
@@ -1058,15 +1072,15 @@ package
          }
       }
       
-      private function ShowXPReward(param1:Number) : void
+      private function ShowXPReward(aXP:Number) : void
       {
-         if(param1)
+         if(aXP)
          {
-            BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_XPREWARD,{"xpRewarded":param1}));
+            BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_XPREWARD,{"xpRewarded":aXP}));
          }
       }
       
-      private function onShowCurrencyReward(param1:Event) : void
+      private function onShowCurrencyReward(e:Event) : void
       {
          if(!this.m_WaitingForBonusRewards)
          {
@@ -1074,29 +1088,29 @@ package
          }
       }
       
-      private function ShowCurrencyReward(param1:uint, param2:uint) : void
+      private function ShowCurrencyReward(aCurrencyID:uint, aCurrencyRewarded:uint) : void
       {
-         if(param2)
+         if(aCurrencyRewarded)
          {
             BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CURRENCYREWARD,{
-               "currencyID":param1,
-               "currencyRewarded":param2
+               "currencyID":aCurrencyID,
+               "currencyRewarded":aCurrencyRewarded
             }));
          }
       }
       
-      private function onBonusRewardsShown(param1:Event) : void
+      private function onBonusRewardsShown(e:Event) : void
       {
          this.m_WaitingForBonusRewards = false;
       }
       
-      public function onAnimEnd(param1:Boolean = true) : void
+      public function onAnimEnd(aEvaluateQueue:Boolean = true) : void
       {
          this.m_CurTimeout = -1;
          this.m_ViewAndExitButtonHint.ButtonVisible = false;
          this.m_DOCompleteVisible = false;
          this.m_TrackButton.ButtonVisible = false;
-         if(param1)
+         if(aEvaluateQueue)
          {
             this.evaluateQueue(true);
          }
@@ -1106,21 +1120,21 @@ package
          }
       }
       
-      private function onQuestAcceptUpdate(param1:FromClientDataEvent) : void
+      private function onQuestAcceptUpdate(arEvent:FromClientDataEvent) : void
       {
-         if(param1.data.totalButtonHoldTime > 0)
+         if(arEvent.data.totalButtonHoldTime > 0)
          {
-            this.m_AcceptButtonHint.holdPercent = Math.max(0,Math.min(1,param1.data.timeButtonHeld / param1.data.totalButtonHoldTime));
+            this.m_AcceptButtonHint.holdPercent = Math.max(0,Math.min(1,arEvent.data.timeButtonHeld / arEvent.data.totalButtonHoldTime));
          }
-         if(this.m_CurEvent != null && param1.data.fanfareEventID == this.m_CurEvent.fanfareEventID)
+         if(this.m_CurEvent != null && arEvent.data.fanfareEventID == this.m_CurEvent.fanfareEventID)
          {
             this.endFanfare();
          }
       }
       
-      private function onHUDModeUpdate(param1:FromClientDataEvent) : void
+      private function onHUDModeUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_LastHudMode = param1.data.hudMode;
+         this.m_LastHudMode = arEvent.data.hudMode;
          this.m_IsValidHudMode = this.m_ValidHudModes.indexOf(this.m_LastHudMode) != -1;
          if(this.m_DOCompleteVisible)
          {
@@ -1130,9 +1144,9 @@ package
          this.evaluateQueue();
       }
       
-      private function onFFEvent(param1:FromClientDataEvent) : void
+      private function onFFEvent(arEvent:FromClientDataEvent) : void
       {
-         if(GlobalFunc.HasFFEvent(param1.data,EVENT_CLEAR_DO) && this.m_EventData.data.fanfareEvents != null)
+         if(GlobalFunc.HasFFEvent(arEvent.data,EVENT_CLEAR_DO) && this.m_EventData.data.fanfareEvents != null)
          {
             this.clearDOFanfareEvents();
          }
@@ -1140,7 +1154,7 @@ package
       
       private function clearDOFanfareEvents() : void
       {
-         var _loc1_:Object = null;
+         var fanfareEvent:Object = null;
          if(Boolean(this.m_CurEvent) && (this.m_CurEvent.isDLOPComplete || this.m_CurEvent.fanfareEventID == this.m_DOCompleteID))
          {
             this.OpsComplete_mc.gotoAndStop("off");
@@ -1148,16 +1162,16 @@ package
             this.m_CurEvent.markedAsDisplay = true;
             BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CONSUME,{"fanfareEventID":this.m_CurEvent.fanfareEventID}));
          }
-         for each(_loc1_ in this.m_EventData.data.fanfareEvents)
+         for each(fanfareEvent in this.m_EventData.data.fanfareEvents)
          {
-            if(_loc1_.messageText.indexOf("[#DLOP_ANNOUNCE]") != -1 || _loc1_.messageText.indexOf("[#DLOP_COMPLETE]") != -1 || _loc1_.messageText.indexOf("[#DLOP_SUPPLY]") != -1)
+            if(fanfareEvent.messageText.indexOf("[#DLOP_ANNOUNCE]") != -1 || fanfareEvent.messageText.indexOf("[#DLOP_COMPLETE]") != -1 || fanfareEvent.messageText.indexOf("[#DLOP_SUPPLY]") != -1)
             {
-               BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CONSUME,{"fanfareEventID":_loc1_.fanfareEventID}));
+               BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CONSUME,{"fanfareEventID":fanfareEvent.fanfareEventID}));
             }
          }
       }
       
-      private function onQuestDataUpdate(param1:FromClientDataEvent) : void
+      private function onQuestDataUpdate(arEvent:FromClientDataEvent) : void
       {
          if(!this.m_IsBusy)
          {
@@ -1165,23 +1179,23 @@ package
          }
       }
       
-      public function onShowDOButtonHint(param1:Event) : void
+      public function onShowDOButtonHint(e:Event) : void
       {
          BSUIDataManager.dispatchEvent(new Event(EVENT_DO_COMPLETE));
          this.m_ViewAndExitButtonHint.ButtonVisible = true;
       }
       
-      public function ProcessUserEvent(param1:String, param2:Boolean) : Boolean
+      public function ProcessUserEvent(strEventName:String, abPressed:Boolean) : Boolean
       {
-         var _loc3_:Boolean = false;
-         if(!_loc3_)
+         var bhandled:Boolean = false;
+         if(!bhandled)
          {
-            switch(param1)
+            switch(strEventName)
             {
                case "Map":
-                  if(!param2 && this.m_ViewAndExitButtonHint.ButtonVisible)
+                  if(!abPressed && this.m_ViewAndExitButtonHint.ButtonVisible)
                   {
-                     _loc3_ = true;
+                     bhandled = true;
                      this.onOpsViewAndExit();
                   }
                   break;
@@ -1189,8 +1203,8 @@ package
                case "Emotes":
                   if(Boolean(this.m_CurEvent) && this.m_TrackButton.ButtonVisible)
                   {
-                     _loc3_ = true;
-                     if(param2)
+                     bhandled = true;
+                     if(abPressed)
                      {
                         this.m_HoldTimer = new BSButtonHintHoldTimer(500);
                         addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
@@ -1204,10 +1218,10 @@ package
                   }
             }
          }
-         return _loc3_;
+         return bhandled;
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(aEvent:Event) : void
       {
          if(this.m_HoldTimer)
          {
@@ -1240,31 +1254,29 @@ package
          BSUIDataManager.dispatchEvent(new Event(EVENT_SHOWDAILYOPSMODAL));
       }
       
-      private function onMenuStackChange(param1:FromClientDataEvent) : void
+      private function onMenuStackChange(arEvent:FromClientDataEvent) : void
       {
-         var _loc5_:String = null;
-         var _loc2_:Array = param1.data.menuStackA;
-         var _loc3_:Boolean = false;
-         var _loc4_:* = 0;
-         while(_loc4_ < _loc2_.length)
+         var menuName:String = null;
+         var menuStack:Array = arEvent.data.menuStackA;
+         var faderMenuOpen:Boolean = false;
+         for(var i:* = 0; i < menuStack.length; i++)
          {
-            _loc5_ = _loc2_[_loc4_].menuName;
-            if(_loc5_ == "FaderMenu")
+            menuName = menuStack[i].menuName;
+            if(menuName == "FaderMenu")
             {
-               _loc3_ = true;
+               faderMenuOpen = true;
                break;
             }
-            _loc4_++;
          }
-         if(_loc3_ != this.m_WaitingForFaderMenu)
+         if(faderMenuOpen != this.m_WaitingForFaderMenu)
          {
-            this.m_WaitingForFaderMenu = _loc3_;
+            this.m_WaitingForFaderMenu = faderMenuOpen;
             BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_FADERMENU,{"isOpen":this.m_WaitingForFaderMenu}));
          }
          this.evaluateQueue();
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
          this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.DEFAULT_SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.INSPECT_MODE,HUDModes.WORKSHOP_MODE,HUDModes.WORKSHOP_NO_CROSSHAIR_MODE,HUDModes.CAMP_PLACEMENT,HUDModes.FURNITURE_ENTER_EXIT,HUDModes.FISHING_MODE);
          BSUIDataManager.Subscribe("FireForgetEvent",this.onFFEvent);
@@ -1274,12 +1286,10 @@ package
          addEventListener("HUDAnnounce::ShowModel",this.onShowModel);
          addEventListener("HUDAnnounce::ClearModel",this.onClearModel);
          addEventListener("HUDAnnounce::ShowDOButtonHint",this.onShowDOButtonHint);
-         var _loc2_:uint = 0;
-         while(_loc2_ < MAX_QUEST_REWARDS)
+         for(var rewardIndex:uint = 0; rewardIndex < MAX_QUEST_REWARDS; rewardIndex++)
          {
-            addEventListener("HUDAnnounce::PlayQuestRewardSound" + (_loc2_ + 1),this.GetOnPlayItemSoundFunc(_loc2_,false));
-            addEventListener("HUDAnnounce::PlayQuestBonusRewardSound" + (_loc2_ + 1),this.GetOnPlayItemSoundFunc(_loc2_,true));
-            _loc2_++;
+            addEventListener("HUDAnnounce::PlayQuestRewardSound" + (rewardIndex + 1),this.GetOnPlayItemSoundFunc(rewardIndex,false));
+            addEventListener("HUDAnnounce::PlayQuestBonusRewardSound" + (rewardIndex + 1),this.GetOnPlayItemSoundFunc(rewardIndex,true));
          }
          addEventListener("HUDAnnounce::ShowXPReward",this.onShowXPReward);
          addEventListener("HUDAnnounce::ShowCurrencyReward",this.onShowCurrencyReward);
@@ -1289,14 +1299,15 @@ package
          BSUIDataManager.Subscribe("QuestEventData",this.onQuestDataUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestDataUpdate);
          BSUIDataManager.Subscribe("MenuStackData",this.onMenuStackChange);
-         var _loc3_:Vector.<BSButtonHintData> = new Vector.<BSButtonHintData>();
-         _loc3_.push(this.m_AcceptButtonHint);
+         var buttonHintDataV:Vector.<BSButtonHintData> = new Vector.<BSButtonHintData>();
+         buttonHintDataV.push(this.m_AcceptButtonHint);
          this.m_AcceptButtonHint.canHold = true;
-         this.AnnounceActiveQuest_mc.ButtonHintBar_mc.SetButtonHintData(_loc3_);
-         var _loc4_:Vector.<BSButtonHintData> = new Vector.<BSButtonHintData>();
-         _loc4_.push(this.m_TrackButton);
+         this.AnnounceActiveQuest_mc.ButtonHintBar_mc.SetButtonHintData(buttonHintDataV);
+         var availableQuestButtonData:Vector.<BSButtonHintData> = new Vector.<BSButtonHintData>();
+         availableQuestButtonData.push(this.m_TrackButton);
          this.m_TrackButton.canHold = true;
-         this.AnnounceAvailableQuest_mc.ButtonHintBar_mc.SetButtonHintData(_loc4_);
+         this.m_TrackButton.ButtonVisible = !this.m_TrackButtonHidden;
+         this.AnnounceAvailableQuest_mc.ButtonHintBar_mc.SetButtonHintData(availableQuestButtonData);
          Extensions.enabled = true;
          TextFieldEx.setTextAutoSize(this.UniqueItemContainer_mc.FanfareInternal_mc.Name_mc.Name_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
          TextFieldEx.setTextAutoSize(this.AnnounceActiveQuest_mc.Name_mc.Name_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);

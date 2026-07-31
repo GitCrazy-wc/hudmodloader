@@ -31,10 +31,10 @@ package
          TextFieldEx.setTextAutoSize(this.TitleText_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
       }
       
-      public function ShowTitleText(param1:String, param2:String) : *
+      public function ShowTitleText(aPrefix:String, aSuffix:String) : *
       {
-         this.m_PrefixOffset = param1.length;
-         this.TitleText_tf.text = param1 + this.m_ParsedText + param2;
+         this.m_PrefixOffset = aPrefix.length;
+         this.TitleText_tf.text = aPrefix + this.m_ParsedText + aSuffix;
          if(this.TitleText_tf.length > 0 && this.m_ObjectiveIconsV.length > 0)
          {
             addEventListener(Event.EXIT_FRAME,this.onExitFrame);
@@ -45,69 +45,69 @@ package
          }
       }
       
-      private function parseTitleText(param1:String) : *
+      private function parseTitleText(aText:String) : *
       {
-         var _loc6_:String = null;
-         var _loc7_:HUDObjectiveIcon = null;
-         var _loc2_:RegExp = /{#[^{#}]+}/g;
-         var _loc3_:* = GlobalFunc.LocalizeFormattedString(param1);
-         var _loc4_:int = 0;
-         var _loc5_:Object = _loc2_.exec(_loc3_);
-         while(Boolean(_loc5_) && _loc5_.index != -1)
+         var iconTagString:String = null;
+         var newIcon:HUDObjectiveIcon = null;
+         var tagRegEx:RegExp = /{#[^{#}]+}/g;
+         var localizedText:* = GlobalFunc.LocalizeFormattedString(aText);
+         var iconsCount:int = 0;
+         var resultObj:Object = tagRegEx.exec(localizedText);
+         while(Boolean(resultObj) && resultObj.index != -1)
          {
-            _loc6_ = _loc5_[0].replace("{#","").replace("}","").toUpperCase();
-            _loc4_++;
-            if(_loc4_ > this.m_ObjectiveIconsV.length)
+            iconTagString = resultObj[0].replace("{#","").replace("}","").toUpperCase();
+            iconsCount++;
+            if(iconsCount > this.m_ObjectiveIconsV.length)
             {
-               _loc7_ = new HUDObjectiveIcon();
-               _loc7_.setData(_loc6_,_loc5_.index);
-               _loc7_.setColor(this.TitleText_tf.textColor);
-               this.m_ObjectiveIconsV.push(_loc7_);
-               addChild(_loc7_);
+               newIcon = new HUDObjectiveIcon();
+               newIcon.setData(iconTagString,resultObj.index);
+               newIcon.setColor(this.TitleText_tf.textColor);
+               this.m_ObjectiveIconsV.push(newIcon);
+               addChild(newIcon);
             }
             else
             {
-               this.m_ObjectiveIconsV[_loc4_ - 1].setData(_loc6_,_loc5_.index);
-               this.m_ObjectiveIconsV[_loc4_ - 1].setColor(this.TitleText_tf.textColor);
+               this.m_ObjectiveIconsV[iconsCount - 1].setData(iconTagString,resultObj.index);
+               this.m_ObjectiveIconsV[iconsCount - 1].setColor(this.TitleText_tf.textColor);
             }
-            _loc3_ = _loc3_.replace(_loc5_[0],ICON_SPACE);
-            _loc5_ = _loc2_.exec(_loc3_);
+            localizedText = localizedText.replace(resultObj[0],ICON_SPACE);
+            resultObj = tagRegEx.exec(localizedText);
          }
-         if(_loc4_ > 0 && _loc3_.charAt(_loc3_.length - 1) == " ")
+         if(iconsCount > 0 && localizedText.charAt(localizedText.length - 1) == " ")
          {
-            _loc3_ += "​";
+            localizedText += "​";
          }
-         while(_loc4_ < this.m_ObjectiveIconsV.length)
+         while(iconsCount < this.m_ObjectiveIconsV.length)
          {
             removeChild(this.m_ObjectiveIconsV.pop());
          }
-         this.m_ParsedText = _loc3_;
+         this.m_ParsedText = localizedText;
       }
       
-      public function setTitleData(param1:String, param2:Boolean = true) : void
+      public function setTitleData(aText:String, abShowImmediately:Boolean = true) : void
       {
-         this.parseTitleText(param1);
-         if(param2)
+         this.parseTitleText(aText);
+         if(abShowImmediately)
          {
             this.ShowTitleText("","");
          }
       }
       
-      private function onExitFrame(param1:Event) : void
+      private function onExitFrame(aEvent:Event) : void
       {
-         var _loc2_:HUDObjectiveIcon = null;
-         var _loc3_:Rectangle = null;
-         var _loc4_:Number = NaN;
+         var icon:HUDObjectiveIcon = null;
+         var charBounds:Rectangle = null;
+         var iconScaling:Number = NaN;
          if(visible && this.TitleText_tf.length > 0 && this.m_ObjectiveIconsV.length > 0)
          {
-            for each(_loc2_ in this.m_ObjectiveIconsV)
+            for each(icon in this.m_ObjectiveIconsV)
             {
-               _loc3_ = this.TitleText_tf.getCharBoundaries(_loc2_.charIndex + this.m_PrefixOffset);
-               _loc2_.x = _loc3_.x + this.TitleText_tf.x;
-               _loc2_.y = _loc3_.y;
-               _loc4_ = this.TitleText_tf.textHeight / this.TitleText_tf.numLines / DEFAULT_ICON_HEIGHT;
-               _loc2_.scaleX = _loc4_;
-               _loc2_.scaleY = _loc4_;
+               charBounds = this.TitleText_tf.getCharBoundaries(icon.charIndex + this.m_PrefixOffset);
+               icon.x = charBounds.x + this.TitleText_tf.x;
+               icon.y = charBounds.y;
+               iconScaling = this.TitleText_tf.textHeight / this.TitleText_tf.numLines / DEFAULT_ICON_HEIGHT;
+               icon.scaleX = iconScaling;
+               icon.scaleY = iconScaling;
             }
          }
          removeEventListener(Event.EXIT_FRAME,this.onExitFrame);

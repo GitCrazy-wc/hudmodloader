@@ -3,8 +3,8 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol243")]
-   public dynamic class HUDMessageTeamPvpScoreBoard_Internal_734 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol247")]
+   public dynamic class HUDMessageTeamPvpScoreBoard_Internal_735 extends MovieClip
    {
       
       public var Header_tf:TextField;
@@ -29,7 +29,7 @@ package HUDMenu_fla
       
       public var Team1Score_tf:TextField;
       
-      public function HUDMessageTeamPvpScoreBoard_Internal_734()
+      public function HUDMessageTeamPvpScoreBoard_Internal_735()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

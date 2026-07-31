@@ -9,7 +9,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol666")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol672")]
    public class HUDQuestTrackerEntry extends MovieClip
    {
       
@@ -96,11 +96,11 @@ package
          }
       }
       
-      public function set timerCritical(param1:Boolean) : void
+      public function set timerCritical(aCritical:Boolean) : void
       {
-         if(param1 != this.m_TimerCritical)
+         if(aCritical != this.m_TimerCritical)
          {
-            this.m_TimerCritical = param1;
+            this.m_TimerCritical = aCritical;
             if(this.m_TimerCritical)
             {
                this.Timer_mc.gotoAndPlay("warning");
@@ -112,36 +112,34 @@ package
          }
       }
       
-      public function set tracker(param1:HUDQuestTracker) : void
+      public function set tracker(aTracker:HUDQuestTracker) : void
       {
-         this.m_Tracker = param1;
+         this.m_Tracker = aTracker;
       }
       
-      public function onQuestDataChange(param1:Array) : void
+      public function onQuestDataChange(aQuest:Array) : void
       {
-         var _loc2_:uint = 0;
-         while(_loc2_ < param1.length)
+         for(var i:uint = 0; i < aQuest.length; i++)
          {
-            if(param1[_loc2_].questID == this.m_QuestID)
+            if(aQuest[i].questID == this.m_QuestID)
             {
-               this.timer = param1[_loc2_].timer;
+               this.timer = aQuest[i].timer;
                return;
             }
-            _loc2_++;
          }
       }
       
-      private function onProviderUpdate(param1:FromClientDataEvent) : *
+      private function onProviderUpdate(arEvent:FromClientDataEvent) : *
       {
-         var _loc2_:Array = param1.data.quests;
-         this.onQuestDataChange(_loc2_);
+         var quests:Array = arEvent.data.quests;
+         this.onQuestDataChange(quests);
       }
       
-      public function set useProvider(param1:Boolean) : void
+      public function set useProvider(aUse:Boolean) : void
       {
-         if(param1 != this.m_UseProvider)
+         if(aUse != this.m_UseProvider)
          {
-            this.m_UseProvider = param1;
+            this.m_UseProvider = aUse;
             if(this.m_ProviderCallback != null)
             {
                BSUIDataManager.Unsubscribe("QuestTrackerData",this.m_ProviderCallback);
@@ -153,11 +151,11 @@ package
          }
       }
       
-      public function set useTimer(param1:Boolean) : void
+      public function set useTimer(aUse:Boolean) : void
       {
-         if(param1 != this.m_UseTimer)
+         if(aUse != this.m_UseTimer)
          {
-            this.m_UseTimer = param1;
+            this.m_UseTimer = aUse;
             this.needArrangeObjectives = true;
             this.Timer_mc.Text_mc.visible = this.m_UseTimer;
             if(this.m_Tracker)
@@ -177,9 +175,9 @@ package
          return this.m_Timer;
       }
       
-      public function set timer(param1:Number) : void
+      public function set timer(aTimer:Number) : void
       {
-         this.m_Timer = param1;
+         this.m_Timer = aTimer;
          if(this.m_Timer >= 0)
          {
             this.useTimer = true;
@@ -199,9 +197,9 @@ package
          return this.m_UseCountdownTimer;
       }
       
-      public function set useCountdownTimer(param1:Boolean) : void
+      public function set useCountdownTimer(aBool:Boolean) : void
       {
-         this.m_UseCountdownTimer = param1;
+         this.m_UseCountdownTimer = aBool;
       }
       
       public function get isTimerPaused() : Boolean
@@ -209,30 +207,28 @@ package
          return this.m_IsTimerPaused;
       }
       
-      public function set isTimerPaused(param1:Boolean) : void
+      public function set isTimerPaused(aBool:Boolean) : void
       {
-         this.m_IsTimerPaused = param1;
+         this.m_IsTimerPaused = aBool;
       }
       
       public function get fullHeight() : Number
       {
-         var _loc1_:Number = this.Sizer_mc.height;
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.m_Objectives.length)
+         var heightTotal:Number = this.Sizer_mc.height;
+         for(var i:uint = 0; i < this.m_Objectives.length; i++)
          {
-            _loc1_ += this.m_Objectives[_loc2_].Sizer_mc.height;
-            if(this.m_Objectives[_loc2_].Meter_mc.visible)
+            heightTotal += this.m_Objectives[i].Sizer_mc.height;
+            if(this.m_Objectives[i].Meter_mc.visible)
             {
-               _loc1_ += this.m_Objectives[_loc2_].Meter_mc.Internal_mc.Sizer_mc.height;
+               heightTotal += this.m_Objectives[i].Meter_mc.Internal_mc.Sizer_mc.height;
             }
-            _loc2_++;
          }
-         return _loc1_;
+         return heightTotal;
       }
       
-      public function set needArrangeObjectives(param1:Boolean) : void
+      public function set needArrangeObjectives(aArrange:Boolean) : void
       {
-         this.m_NeedArrangeObjectives = param1;
+         this.m_NeedArrangeObjectives = aArrange;
       }
       
       public function get needArrangeObjectives() : Boolean
@@ -240,9 +236,9 @@ package
          return this.m_NeedArrangeObjectives;
       }
       
-      public function set sortIndex(param1:int) : void
+      public function set sortIndex(aIndex:int) : void
       {
-         this.m_SortIndex = param1;
+         this.m_SortIndex = aIndex;
       }
       
       public function get sortIndex() : int
@@ -250,9 +246,9 @@ package
          return this.m_SortIndex;
       }
       
-      public function set tempDisplay(param1:Boolean) : void
+      public function set tempDisplay(aDislpay:Boolean) : void
       {
-         this.m_TempDisplay = param1;
+         this.m_TempDisplay = aDislpay;
       }
       
       public function get tempDisplay() : Boolean
@@ -260,9 +256,9 @@ package
          return this.m_TempDisplay;
       }
       
-      public function set toRemove(param1:Boolean) : void
+      public function set toRemove(aRemove:Boolean) : void
       {
-         this.m_ToRemove = param1;
+         this.m_ToRemove = aRemove;
       }
       
       public function get toRemove() : Boolean
@@ -270,9 +266,9 @@ package
          return this.m_ToRemove;
       }
       
-      public function set isShareable(param1:Boolean) : void
+      public function set isShareable(aShareable:Boolean) : void
       {
-         this.m_IsShareable = param1;
+         this.m_IsShareable = aShareable;
       }
       
       public function get isShareable() : Boolean
@@ -280,9 +276,9 @@ package
          return this.m_IsShareable;
       }
       
-      public function set questDisplayType(param1:uint) : void
+      public function set questDisplayType(aType:uint) : void
       {
-         this.m_QuestDisplayType = param1;
+         this.m_QuestDisplayType = aType;
          this.updateQuestIconState();
       }
       
@@ -291,9 +287,9 @@ package
          return this.m_QuestDisplayType;
       }
       
-      public function set isDisplayedToTeam(param1:Boolean) : void
+      public function set isDisplayedToTeam(aDisplayed:Boolean) : void
       {
-         this.m_IsDisplayedToTeam = param1;
+         this.m_IsDisplayedToTeam = aDisplayed;
          this.updateQuestIconState();
       }
       
@@ -335,9 +331,9 @@ package
          }
       }
       
-      public function set isEvent(param1:Boolean) : void
+      public function set isEvent(aEvent:Boolean) : void
       {
-         this.m_IsEvent = param1;
+         this.m_IsEvent = aEvent;
       }
       
       public function get isEvent() : Boolean
@@ -345,9 +341,9 @@ package
          return this.m_IsEvent;
       }
       
-      public function set focusQuest(param1:Boolean) : void
+      public function set focusQuest(aFocus:Boolean) : void
       {
-         this.m_focusQuest = param1;
+         this.m_focusQuest = aFocus;
       }
       
       public function get focusQuest() : Boolean
@@ -360,12 +356,12 @@ package
          return this.m_State;
       }
       
-      public function stateUpdate(param1:Boolean = false) : void
+      public function stateUpdate(aAnimate:Boolean = false) : void
       {
-         var _loc2_:Boolean = this.m_State == HUDQuestTracker.QUEST_STATE_COMPLETE || this.m_State == HUDQuestTracker.QUEST_STATE_FAILED;
-         if(_loc2_)
+         var completed:Boolean = this.m_State == HUDQuestTracker.QUEST_STATE_COMPLETE || this.m_State == HUDQuestTracker.QUEST_STATE_FAILED;
+         if(completed)
          {
-            if(param1)
+            if(aAnimate)
             {
                gotoAndPlay("Completed");
             }
@@ -381,9 +377,9 @@ package
          this.m_Displayed = true;
       }
       
-      public function set state(param1:Number) : void
+      public function set state(aState:Number) : void
       {
-         this.m_State = param1;
+         this.m_State = aState;
       }
       
       public function get objectives() : Vector.<HUDQuestTrackerObjective>
@@ -391,9 +387,9 @@ package
          return this.m_Objectives;
       }
       
-      public function set questID(param1:uint) : void
+      public function set questID(aQuestID:uint) : void
       {
-         this.m_QuestID = param1;
+         this.m_QuestID = aQuestID;
       }
       
       public function get questID() : uint
@@ -401,9 +397,9 @@ package
          return this.m_QuestID;
       }
       
-      public function set title(param1:String) : void
+      public function set title(aTitle:String) : void
       {
-         this.m_Title = param1;
+         this.m_Title = aTitle;
          this.UpdateTitleText();
       }
       
@@ -429,9 +425,9 @@ package
          return this.m_IsNew;
       }
       
-      public function set isNew(param1:Boolean) : void
+      public function set isNew(aBool:Boolean) : void
       {
-         this.m_IsNew = param1;
+         this.m_IsNew = aBool;
       }
       
       private function clearTween() : void
@@ -449,98 +445,93 @@ package
          gotoAndPlay("FadeIn");
       }
       
-      public function fadeOut(param1:Boolean = false) : void
+      public function fadeOut(aFast:Boolean = false) : void
       {
-         gotoAndPlay(param1 ? "FadeOutFast" : "FadeOut");
+         gotoAndPlay(aFast ? "FadeOutFast" : "FadeOut");
       }
       
-      public function addObjective(param1:HUDQuestTrackerObjective) : void
+      public function addObjective(newObjective:HUDQuestTrackerObjective) : void
       {
-         addChild(param1);
-         param1.questID = this.m_QuestID;
-         this.m_Objectives.push(param1);
+         addChild(newObjective);
+         newObjective.questID = this.m_QuestID;
+         this.m_Objectives.push(newObjective);
       }
       
-      public function deleteObjective(param1:HUDQuestTrackerObjective) : void
+      public function deleteObjective(aObjective:HUDQuestTrackerObjective) : void
       {
-         this.objectives.splice(this.objectives.indexOf(param1),1);
-         param1.useProvider = false;
-         this.removeChild(param1);
+         this.objectives.splice(this.objectives.indexOf(aObjective),1);
+         aObjective.useProvider = false;
+         this.removeChild(aObjective);
       }
       
-      public function getObjectiveIndexById(param1:uint) : uint
+      public function getObjectiveIndexById(aId:uint) : uint
       {
-         var _loc3_:uint = 0;
-         var _loc2_:uint = uint.MAX_VALUE;
-         while(_loc3_ < this.objectives.length)
+         var i:uint = 0;
+         for(var index:uint = uint.MAX_VALUE; i < this.objectives.length; )
          {
-            if(this.objectives[_loc3_].objectiveID == param1)
+            if(this.objectives[i].objectiveID == aId)
             {
-               _loc2_ = _loc3_;
+               index = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return index;
       }
       
-      public function setYPos(param1:Number, param2:Boolean = false) : void
+      public function setYPos(aPos:Number, aAnimate:Boolean = false) : void
       {
          this.clearTween();
-         if(param2 && this.m_Displayed)
+         if(aAnimate && this.m_Displayed)
          {
-            this.m_posTween = new Tween(this,"y",Regular.easeInOut,this.y,param1,HUDQuestTracker.EVENT_DURATION_REARRANGE / 1000,true);
+            this.m_posTween = new Tween(this,"y",Regular.easeInOut,this.y,aPos,HUDQuestTracker.EVENT_DURATION_REARRANGE / 1000,true);
          }
          else
          {
-            this.y = param1;
+            this.y = aPos;
          }
       }
       
-      public function arrangeObjectives(param1:Boolean = false) : void
+      public function arrangeObjectives(aAnimate:Boolean = false) : void
       {
-         var aAnimate:Boolean = param1;
-         this.m_Objectives.sort(function(param1:HUDQuestTrackerObjective, param2:HUDQuestTrackerObjective):*
+         this.m_Objectives.sort(function(a:HUDQuestTrackerObjective, b:HUDQuestTrackerObjective):*
          {
-            return Number(param1.objectiveID) - Number(param2.objectiveID);
+            return Number(a.objectiveID) - Number(b.objectiveID);
          });
          this.arrangeObjectivesNoSort(aAnimate);
       }
       
-      public function newArrangeObjectives(param1:Boolean = false) : void
+      public function newArrangeObjectives(aAnimate:Boolean = false) : void
       {
-         var aAnimate:Boolean = param1;
-         this.m_Objectives.sort(function(param1:HUDQuestTrackerObjective, param2:HUDQuestTrackerObjective):*
+         this.m_Objectives.sort(function(a:HUDQuestTrackerObjective, b:HUDQuestTrackerObjective):*
          {
-            var _loc3_:int = 0;
-            if(param1.displayIndex < param2.displayIndex)
+            var returnVal:int = 0;
+            if(a.displayIndex < b.displayIndex)
             {
-               _loc3_ = -1;
+               returnVal = -1;
             }
-            else if(param2.displayIndex < param1.displayIndex)
+            else if(b.displayIndex < a.displayIndex)
             {
-               _loc3_ = 1;
+               returnVal = 1;
             }
-            return _loc3_;
+            return returnVal;
          });
          this.arrangeObjectivesNoSort(aAnimate);
       }
       
-      public function arrangeObjectivesNoSort(param1:Boolean = false) : void
+      public function arrangeObjectivesNoSort(aAnimate:Boolean = false) : void
       {
-         var _loc3_:HUDQuestTrackerObjective = null;
-         var _loc2_:Number = this.Sizer_mc.height;
-         var _loc4_:int = 0;
-         while(_loc4_ < this.m_Objectives.length)
+         var curClip:HUDQuestTrackerObjective = null;
+         var posY:Number = this.Sizer_mc.height;
+         for(var i:int = 0; i < this.m_Objectives.length; i++)
          {
-            _loc3_ = this.m_Objectives[_loc4_];
-            _loc3_.setYPos(_loc2_,param1);
-            _loc2_ += _loc3_.Sizer_mc.height;
-            if(_loc3_.Meter_mc.visible)
+            curClip = this.m_Objectives[i];
+            curClip.setYPos(posY,aAnimate);
+            posY += curClip.Sizer_mc.height;
+            if(curClip.Meter_mc.visible)
             {
-               _loc2_ += _loc3_.Meter_mc.Internal_mc.Sizer_mc.height;
+               posY += curClip.Meter_mc.Internal_mc.Sizer_mc.height;
             }
-            _loc4_++;
          }
       }
       

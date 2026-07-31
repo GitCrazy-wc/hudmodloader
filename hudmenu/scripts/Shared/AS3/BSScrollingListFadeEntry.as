@@ -10,15 +10,15 @@ package Shared.AS3
          super();
       }
       
-      override public function SetEntryText(param1:Object, param2:String) : *
+      override public function SetEntryText(aEntryObject:Object, astrTextOption:String) : *
       {
-         super.SetEntryText(param1,param2);
-         var _loc3_:* = stage.focus == this.parent;
-         if(!_loc3_ && this.parent != null)
+         super.SetEntryText(aEntryObject,astrTextOption);
+         var focus:* = stage.focus == this.parent;
+         if(!focus && this.parent != null)
          {
-            _loc3_ = stage.focus == this.parent.parent;
+            focus = stage.focus == this.parent.parent;
          }
-         if(!_loc3_ && this.selected)
+         if(!focus && this.selected)
          {
             border.alpha = this.fUnselectedBorderAlpha;
          }

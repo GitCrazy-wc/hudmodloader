@@ -10,15 +10,15 @@ package Shared.AS3.Events
       
       internal var _target:MovieClip;
       
-      public function PlatformRequestEvent(param1:MovieClip)
+      public function PlatformRequestEvent(aTarget:MovieClip)
       {
          super(PLATFORM_REQUEST);
-         this._target = param1;
+         this._target = aTarget;
       }
       
-      public function RespondToRequest(param1:uint, param2:Boolean, param3:uint, param4:uint) : *
+      public function RespondToRequest(auiPlatform:uint, abPS3Switch:Boolean, auiController:uint, auiKeyboard:uint) : *
       {
-         this._target.SetPlatform(param1,param2,param3,param4);
+         this._target.SetPlatform(auiPlatform,abPS3Switch,auiController,auiKeyboard);
       }
       
       override public function clone() : Event

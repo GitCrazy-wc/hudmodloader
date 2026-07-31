@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1579")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1586")]
    public class CritMeterStarHolder extends BSUIComponent
    {
       
@@ -21,43 +21,41 @@ package
          this._starClips = new Vector.<MovieClip>();
       }
       
-      public function SetCritStars(param1:uint, param2:uint) : *
+      public function SetCritStars(aCurrCount:uint, aMaxCount:uint) : *
       {
-         if(this._numStarsFilled != param1)
+         if(this._numStarsFilled != aCurrCount)
          {
-            this._numStarsFilled = param1;
+            this._numStarsFilled = aCurrCount;
             SetIsDirty();
          }
-         if(this._numStarsShown != param2)
+         if(this._numStarsShown != aMaxCount)
          {
-            this._numStarsShown = param2;
+            this._numStarsShown = aMaxCount;
             SetIsDirty();
          }
       }
       
       override public function redrawUIComponent() : void
       {
-         var _loc2_:CritMeterStar = null;
-         var _loc3_:* = undefined;
+         var newStar:CritMeterStar = null;
+         var oldStar:* = undefined;
          super.redrawUIComponent();
          while(this._starClips.length < this._numStarsShown)
          {
-            _loc2_ = new CritMeterStar();
-            addChild(_loc2_);
-            _loc2_.x = this._starClips.length * this._starSpacingX;
-            _loc2_.visible = true;
-            this._starClips.push(_loc2_);
+            newStar = new CritMeterStar();
+            addChild(newStar);
+            newStar.x = this._starClips.length * this._starSpacingX;
+            newStar.visible = true;
+            this._starClips.push(newStar);
          }
          while(this._starClips.length > this._numStarsShown)
          {
-            _loc3_ = this._starClips.pop();
-            removeChild(_loc3_);
+            oldStar = this._starClips.pop();
+            removeChild(oldStar);
          }
-         var _loc1_:uint = 0;
-         while(_loc1_ < this._starClips.length)
+         for(var i:uint = 0; i < this._starClips.length; i++)
          {
-            this._starClips[_loc1_].gotoAndStop(this._numStarsFilled > _loc1_ ? "full" : "empty");
-            _loc1_++;
+            this._starClips[i].gotoAndStop(this._numStarsFilled > i ? "full" : "empty");
          }
       }
    }

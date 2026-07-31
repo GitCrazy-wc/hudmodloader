@@ -11,7 +11,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol757")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol763")]
    public class HUDCurrencyUpdatesWidget extends MovieClip
    {
       
@@ -58,76 +58,76 @@ package
          this.CurrencyIcon_mc.clipHeight = this.CurrencyIcon_mc.height * (1 / this.CurrencyIcon_mc.scaleY);
       }
       
-      private function onDataUpdate(param1:FromClientDataEvent) : void
+      private function onDataUpdate(arEvent:FromClientDataEvent) : void
       {
          this.evaluateQueue();
       }
       
       private function evaluateQueue() : void
       {
-         var _loc1_:Array = null;
-         var _loc2_:Object = null;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:MergedTransaction = null;
+         var transactionArray:Array = null;
+         var transaction:Object = null;
+         var currencyType:uint = 0;
+         var currencyID:uint = 0;
+         var mergedTransaction:MergedTransaction = null;
          if(!this.m_IsBusy)
          {
-            _loc1_ = this.m_Transactions.data.currencyTransactions;
-            if(_loc1_.length > 0)
+            transactionArray = this.m_Transactions.data.currencyTransactions;
+            if(transactionArray.length > 0)
             {
-               _loc2_ = _loc1_[0];
-               _loc3_ = uint(_loc2_.currencyType);
-               _loc4_ = uint(_loc2_.currencyID);
-               if(_loc2_.type == TYPE_KILL)
+               transaction = transactionArray[0];
+               currencyType = uint(transaction.currencyType);
+               currencyID = uint(transaction.currencyID);
+               if(transaction.type == TYPE_KILL)
                {
-                  this.animateTransaction(_loc2_);
-                  GlobalFunc.BSASSERT(_loc2_.transactionID >= 0,"Invalid caps transaction ID, " + _loc2_.transactionID);
+                  this.animateTransaction(transaction);
+                  GlobalFunc.BSASSERT(transaction.transactionID >= 0,"Invalid caps transaction ID, " + transaction.transactionID);
                   BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_PULL,{
-                     "currencyID":_loc2_.currencyID,
-                     "transactionID":_loc2_.transactionID
+                     "currencyID":transaction.currencyID,
+                     "transactionID":transaction.transactionID
                   }));
                }
                else
                {
-                  _loc5_ = new MergedTransaction();
-                  _loc5_.currencyType = _loc3_;
-                  for each(_loc2_ in _loc1_)
+                  mergedTransaction = new MergedTransaction();
+                  mergedTransaction.currencyType = currencyType;
+                  for each(transaction in transactionArray)
                   {
-                     GlobalFunc.BSASSERT(_loc2_.transactionID >= 0,"Invalid currency transaction ID, " + _loc2_.transactionID);
-                     if(_loc2_.type == TYPE_KILL)
+                     GlobalFunc.BSASSERT(transaction.transactionID >= 0,"Invalid currency transaction ID, " + transaction.transactionID);
+                     if(transaction.type == TYPE_KILL)
                      {
                         break;
                      }
-                     if(_loc4_ != _loc2_.currencyID)
+                     if(currencyID != transaction.currencyID)
                      {
                         break;
                      }
-                     _loc5_.Merge(_loc2_);
+                     mergedTransaction.Merge(transaction);
                      BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_PULL,{
-                        "currencyID":_loc2_.currencyID,
-                        "transactionID":_loc2_.transactionID
+                        "currencyID":transaction.currencyID,
+                        "transactionID":transaction.transactionID
                      }));
                   }
-                  this.animateTransaction(_loc5_);
+                  this.animateTransaction(mergedTransaction);
                }
             }
          }
       }
       
-      private function animateTransaction(param1:Object) : void
+      private function animateTransaction(aTransaction:Object) : void
       {
          this.m_IsBusy = true;
-         this.m_CurTransaction = param1;
+         this.m_CurTransaction = aTransaction;
          if(this.m_CurrencyIconInstance != null)
          {
             this.CurrencyIcon_mc.removeChild(this.m_CurrencyIconInstance);
             this.m_CurrencyIconInstance = null;
          }
-         this.m_CurrencyIconInstance = SecureTradeShared.setCurrencyIcon(this.CurrencyIcon_mc,param1.currencyType,true);
-         if(!param1.isMaxStart || !param1.isMaxEnd)
+         this.m_CurrencyIconInstance = SecureTradeShared.setCurrencyIcon(this.CurrencyIcon_mc,aTransaction.currencyType,true);
+         if(!aTransaction.isMaxStart || !aTransaction.isMaxEnd)
          {
-            this.CurrencyChange_mc.CurrencyChange_tf.text = Math.abs(param1.currencyChange);
-            if(param1.currencyChange > 0)
+            this.CurrencyChange_mc.CurrencyChange_tf.text = Math.abs(aTransaction.currencyChange);
+            if(aTransaction.currencyChange > 0)
             {
                this.CurrencyChange_mc.Sign_tf.text = "+";
             }
@@ -135,7 +135,7 @@ package
             {
                this.CurrencyChange_mc.Sign_tf.text = "-";
             }
-            this.CurrencyBase_mc.CurrencyBase_tf.text = param1.startingAmount;
+            this.CurrencyBase_mc.CurrencyBase_tf.text = aTransaction.startingAmount;
             this.CurrencyChange_mc.visible = true;
          }
          else
@@ -145,69 +145,63 @@ package
          }
          gotoAndPlay(FRAME_BEGIN);
          GlobalFunc.PlayMenuSound("UICapsAppear");
-         var _loc2_:uint = 0;
-         if(param1.type == TYPE_KILL)
+         var i:uint = 0;
+         if(aTransaction.type == TYPE_KILL)
          {
-            this.Breakdown_mc.Header_mc.Header_tf.text = param1.headerText;
-            _loc2_ = 0;
-            while(_loc2_ < BREAKDOWN_LINES)
+            this.Breakdown_mc.Header_mc.Header_tf.text = aTransaction.headerText;
+            for(i = 0; i < BREAKDOWN_LINES; i++)
             {
-               if(param1.details[_loc2_] != null)
+               if(aTransaction.details[i] != null)
                {
-                  this.Breakdown_mc["Detail" + _loc2_ + "_mc"].Label_tf.text = param1.details[_loc2_].label;
-                  this.Breakdown_mc["Detail" + _loc2_ + "_mc"].Value_tf.text = param1.details[_loc2_].value;
+                  this.Breakdown_mc["Detail" + i + "_mc"].Label_tf.text = aTransaction.details[i].label;
+                  this.Breakdown_mc["Detail" + i + "_mc"].Value_tf.text = aTransaction.details[i].value;
                }
                else
                {
-                  this.Breakdown_mc["Detail" + _loc2_ + "_mc"].Label_tf.text = "";
-                  this.Breakdown_mc["Detail" + _loc2_ + "_mc"].Value_tf.text = "";
+                  this.Breakdown_mc["Detail" + i + "_mc"].Label_tf.text = "";
+                  this.Breakdown_mc["Detail" + i + "_mc"].Value_tf.text = "";
                }
-               _loc2_++;
             }
             this.Breakdown_mc.gotoAndPlay(FRAME_BEGIN);
          }
          else
          {
-            _loc2_ = 0;
-            while(_loc2_ < BREAKDOWN_LINES)
+            for(i = 0; i < BREAKDOWN_LINES; i++)
             {
-               this.Breakdown_mc["Detail" + _loc2_ + "_mc"].Label_tf.text = "";
-               this.Breakdown_mc["Detail" + _loc2_ + "_mc"].Value_tf.text = "";
-               _loc2_++;
+               this.Breakdown_mc["Detail" + i + "_mc"].Label_tf.text = "";
+               this.Breakdown_mc["Detail" + i + "_mc"].Value_tf.text = "";
             }
          }
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
-         var _loc2_:FrameLabel = null;
+         var checkFrame:FrameLabel = null;
          this.m_Transactions = BSUIDataManager.GetDataFromClient("CurrencyData");
-         var _loc3_:uint = 0;
-         while(_loc3_ < currentLabels.length)
+         for(var i:uint = 0; i < currentLabels.length; i++)
          {
-            _loc2_ = currentLabels[_loc3_];
-            if(_loc2_.name == FRAME_ROLL)
+            checkFrame = currentLabels[i];
+            if(checkFrame.name == FRAME_ROLL)
             {
-               this.m_RollAnimStart = _loc2_.frame;
+               this.m_RollAnimStart = checkFrame.frame;
             }
-            else if(_loc2_.name == FRAME_FADEOUT)
+            else if(checkFrame.name == FRAME_FADEOUT)
             {
-               this.m_RollAnimEnd = _loc2_.frame;
+               this.m_RollAnimEnd = checkFrame.frame;
             }
-            _loc3_++;
          }
          BSUIDataManager.Subscribe("CurrencyData",this.onDataUpdate);
       }
       
-      private function rollAnimationUpdate(param1:Event) : *
+      private function rollAnimationUpdate(e:Event) : *
       {
-         var _loc2_:Number = NaN;
+         var newValue:Number = NaN;
          if(this.m_CurTransaction != null)
          {
             if(!this.m_CurTransaction.isMaxEnd)
             {
-               _loc2_ = Math.floor(this.m_CurTransaction.startingAmount + this.m_CurTransaction.currencyChange * ((currentFrame - this.m_RollAnimStart) / (this.m_RollAnimEnd - this.m_RollAnimStart)));
-               this.CurrencyBase_mc.CurrencyBase_tf.text = String(_loc2_);
+               newValue = Math.floor(this.m_CurTransaction.startingAmount + this.m_CurTransaction.currencyChange * ((currentFrame - this.m_RollAnimStart) / (this.m_RollAnimEnd - this.m_RollAnimStart)));
+               this.CurrencyBase_mc.CurrencyBase_tf.text = String(newValue);
             }
             else
             {
@@ -297,16 +291,16 @@ class MergedTransaction
       super();
    }
    
-   public function Transaction(param1:Object) : *
+   public function Transaction(aTransactionData:Object) : *
    {
-      this.Merge(param1);
+      this.Merge(aTransactionData);
    }
    
-   public function Merge(param1:Object) : *
+   public function Merge(aTransactionData:Object) : *
    {
-      this.isMaxStart = Boolean(this.isMaxStart) || Boolean(param1.isMaxStart);
-      this.isMaxEnd = Boolean(this.isMaxEnd) || Boolean(param1.isMaxEnd);
-      this.currencyChange += param1.currencyChange;
-      this.startingAmount = Math.min(this.startingAmount,param1.startingAmount);
+      this.isMaxStart = Boolean(this.isMaxStart) || Boolean(aTransactionData.isMaxStart);
+      this.isMaxEnd = Boolean(this.isMaxEnd) || Boolean(aTransactionData.isMaxEnd);
+      this.currencyChange += aTransactionData.currencyChange;
+      this.startingAmount = Math.min(this.startingAmount,aTransactionData.startingAmount);
    }
 }

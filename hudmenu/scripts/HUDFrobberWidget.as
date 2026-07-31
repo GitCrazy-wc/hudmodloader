@@ -82,37 +82,37 @@ package
          }
       }
       
-      private function onTestMouseDown(param1:MouseEvent) : void
+      private function onTestMouseDown(aEvent:MouseEvent) : void
       {
          this.ProcessUserEvent("Activate",true);
       }
       
-      private function onTestMouseUp(param1:MouseEvent) : void
+      private function onTestMouseUp(aEvent:MouseEvent) : void
       {
          this.ProcessUserEvent("Activate",false);
       }
       
-      private function onTestKeyDown(param1:KeyboardEvent) : void
+      private function onTestKeyDown(aEvent:KeyboardEvent) : void
       {
-         if(param1.keyCode == Keyboard.F6)
+         if(aEvent.keyCode == Keyboard.F6)
          {
             this.ProcessUserEvent("Activate",true);
          }
       }
       
-      private function onTestKeyUp(param1:KeyboardEvent) : void
+      private function onTestKeyUp(aEvent:KeyboardEvent) : void
       {
-         if(param1.keyCode == Keyboard.F6)
+         if(aEvent.keyCode == Keyboard.F6)
          {
             this.ProcessUserEvent("Activate",false);
          }
       }
       
-      public function set isHolding(param1:Boolean) : void
+      public function set isHolding(aHolding:Boolean) : void
       {
-         if(param1 != this.m_IsHolding)
+         if(aHolding != this.m_IsHolding)
          {
-            if(param1)
+            if(aHolding)
             {
                addEventListener(Event.ENTER_FRAME,this.updateHeldButtons);
             }
@@ -122,7 +122,7 @@ package
             }
             this.updateHeldButtons();
          }
-         this.m_IsHolding = param1;
+         this.m_IsHolding = aHolding;
       }
       
       public function get isHolding() : Boolean
@@ -130,11 +130,11 @@ package
          return this.m_IsHolding;
       }
       
-      public function set show(param1:Boolean) : void
+      public function set show(aShow:Boolean) : void
       {
-         if(param1 != this.m_Show)
+         if(aShow != this.m_Show)
          {
-            if(param1)
+            if(aShow)
             {
                gotoAndPlay("rollOn");
             }
@@ -143,7 +143,7 @@ package
                gotoAndPlay("rollOff");
             }
          }
-         this.m_Show = param1;
+         this.m_Show = aShow;
       }
       
       public function get show() : Boolean
@@ -151,11 +151,11 @@ package
          return this.m_Show;
       }
       
-      public function set showInventory(param1:Boolean) : void
+      public function set showInventory(aShow:Boolean) : void
       {
-         if(param1 != this.m_ShowInventory)
+         if(aShow != this.m_ShowInventory)
          {
-            if(param1)
+            if(aShow)
             {
                this.m_HeaderTextFormat.align = TextFormatAlign.LEFT;
                this.Internal_mc.gotoAndStop("Inventory");
@@ -167,7 +167,7 @@ package
             }
             this.Header_mc.Header_tf.setTextFormat(this.m_HeaderTextFormat);
          }
-         this.m_ShowInventory = param1;
+         this.m_ShowInventory = aShow;
       }
       
       public function get showInventory() : Boolean
@@ -175,9 +175,9 @@ package
          return this.m_ShowInventory;
       }
       
-      public function set isSyncing(param1:Boolean) : void
+      public function set isSyncing(aSyncing:Boolean) : void
       {
-         this.m_IsSyncing = param1;
+         this.m_IsSyncing = aSyncing;
       }
       
       public function get isSyncing() : Boolean
@@ -185,160 +185,152 @@ package
          return this.m_IsSyncing;
       }
       
-      private function getDataForButtonHint(param1:Object) : BSButtonHintData
+      private function getDataForButtonHint(aButtonInfo:Object) : BSButtonHintData
       {
-         var _loc2_:BSButtonHintData = new BSButtonHintData(param1.text,param1.buttonHint.szTextPC,param1.buttonHint.szTextPS4,param1.buttonHint.szTextXB1,1,null);
-         _loc2_.canHold = param1.pressAndHold;
-         _loc2_.ButtonEnabled = param1.enabled;
-         _loc2_.IsWarning = param1.isWarning;
-         return _loc2_;
+         var newData:BSButtonHintData = new BSButtonHintData(aButtonInfo.text,aButtonInfo.buttonHint.szTextPC,aButtonInfo.buttonHint.szTextPS4,aButtonInfo.buttonHint.szTextXB1,1,null);
+         newData.canHold = aButtonInfo.pressAndHold;
+         newData.ButtonEnabled = aButtonInfo.enabled;
+         newData.IsWarning = aButtonInfo.isWarning;
+         return newData;
       }
       
-      private function buildButtonInfo(param1:Array) : void
+      private function buildButtonInfo(aButtonList:Array) : void
       {
-         var _loc2_:HUDFrobberButtonData = null;
-         var _loc3_:BSButtonHintData = null;
+         var curButtonData:HUDFrobberButtonData = null;
+         var curButtonHint:BSButtonHintData = null;
          this.m_ButtonHintData = new Vector.<BSButtonHintData>();
          this.m_ButtonData = new Array();
-         var _loc4_:uint = 0;
-         while(_loc4_ < param1.length)
+         for(var i:uint = 0; i < aButtonList.length; i++)
          {
-            _loc3_ = this.getDataForButtonHint(param1[_loc4_]);
-            this.m_ButtonHintData.push(_loc3_);
-            if(param1[_loc4_].type > BUTTON_TYPE_INVALID)
+            curButtonHint = this.getDataForButtonHint(aButtonList[i]);
+            this.m_ButtonHintData.push(curButtonHint);
+            if(aButtonList[i].type > BUTTON_TYPE_INVALID)
             {
-               _loc2_ = this.m_ButtonData[param1[_loc4_].type];
-               if(_loc2_ == null)
+               curButtonData = this.m_ButtonData[aButtonList[i].type];
+               if(curButtonData == null)
                {
-                  _loc2_ = new HUDFrobberButtonData();
-                  this.m_ButtonData[param1[_loc4_].type] = _loc2_;
+                  curButtonData = new HUDFrobberButtonData();
+                  this.m_ButtonData[aButtonList[i].type] = curButtonData;
                }
-               _loc2_.setInfo(param1[_loc4_].pressAndHold,param1[_loc4_],_loc3_);
+               curButtonData.setInfo(aButtonList[i].pressAndHold,aButtonList[i],curButtonHint);
             }
-            _loc4_++;
          }
          this.ButtonHintBar_mc.SetButtonHintData(this.m_ButtonHintData);
       }
       
-      private function onDataUpdate(param1:FromClientDataEvent) : void
+      private function onDataUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc2_:TextLineMetrics = null;
-         this.buildButtonInfo(param1.data.buttons);
-         this.show = param1.data.show;
+         var headerMetrics:TextLineMetrics = null;
+         this.buildButtonInfo(arEvent.data.buttons);
+         this.show = arEvent.data.show;
          this.showInventory = false;
-         this.isSyncing = param1.data.syncing;
-         this.Header_mc.Header_tf.text = param1.data.headerText.toUpperCase();
+         this.isSyncing = arEvent.data.syncing;
+         this.Header_mc.Header_tf.text = arEvent.data.headerText.toUpperCase();
          if(this.Header_mc.TaggedForSearch_mc)
          {
-            this.Header_mc.TaggedForSearch_mc.visible = param1.data.taggedForSearch;
+            this.Header_mc.TaggedForSearch_mc.visible = arEvent.data.taggedForSearch;
             if(this.Header_mc.TaggedForSearch_mc.visible)
             {
-               _loc2_ = this.Header_mc.Header_tf.getLineMetrics(0);
-               this.Header_mc.TaggedForSearch_mc.x = this.Header_mc.Header_tf.x + _loc2_.x - this.Header_mc.TaggedForSearch_mc.width - ICON_SPACING;
+               headerMetrics = this.Header_mc.Header_tf.getLineMetrics(0);
+               this.Header_mc.TaggedForSearch_mc.x = this.Header_mc.Header_tf.x + headerMetrics.x - this.Header_mc.TaggedForSearch_mc.width - ICON_SPACING;
             }
          }
          this.decideHeaderTextColor();
       }
       
-      private function getButtonTypeFromEvent(param1:String) : int
+      private function getButtonTypeFromEvent(aEvent:String) : int
       {
-         var _loc2_:Array = new Array("QCAButton","QCXButton","QCYButton","QCBButton");
-         return _loc2_.indexOf(param1);
+         var buttonTypeStrings:Array = new Array("QCAButton","QCXButton","QCYButton","QCBButton");
+         return buttonTypeStrings.indexOf(aEvent);
       }
       
-      private function updateHeldButtons(param1:Event = null) : void
+      private function updateHeldButtons(aEvent:Event = null) : void
       {
-         var _loc2_:HUDFrobberButtonData = null;
-         var _loc3_:uint = 0;
-         while(_loc3_ < BUTTON_TYPE_COUNT)
+         var curButton:HUDFrobberButtonData = null;
+         for(var i:uint = 0; i < BUTTON_TYPE_COUNT; i++)
          {
-            _loc2_ = this.m_ButtonData[_loc3_];
-            if(_loc2_ != null && _loc2_.ButtonEnabled)
+            curButton = this.m_ButtonData[i];
+            if(curButton != null && curButton.ButtonEnabled)
             {
-               _loc2_.updateHoldPercent();
+               curButton.updateHoldPercent();
             }
-            _loc3_++;
          }
       }
       
-      private function updateButtonHold(param1:int, param2:Boolean) : void
+      private function updateButtonHold(aButtonType:int, aIsHolding:Boolean) : void
       {
-         var _loc4_:HUDFrobberButtonData = null;
-         var _loc3_:Boolean = false;
-         var _loc5_:uint = 0;
-         while(_loc5_ < BUTTON_TYPE_COUNT)
+         var curButton:HUDFrobberButtonData = null;
+         var buttonBeingHeld:Boolean = false;
+         for(var i:uint = 0; i < BUTTON_TYPE_COUNT; i++)
          {
-            _loc4_ = this.m_ButtonData[_loc5_];
-            if(_loc4_ != null)
+            curButton = this.m_ButtonData[i];
+            if(curButton != null)
             {
-               if(_loc4_.canHold)
+               if(curButton.canHold)
                {
-                  if(param1 == _loc5_)
+                  if(aButtonType == i)
                   {
-                     _loc4_.isHolding = param2;
+                     curButton.isHolding = aIsHolding;
                   }
-                  if(_loc4_.isHolding)
+                  if(curButton.isHolding)
                   {
-                     _loc3_ = true;
+                     buttonBeingHeld = true;
                   }
                }
             }
-            _loc5_++;
          }
-         this.isHolding = _loc3_;
+         this.isHolding = buttonBeingHeld;
       }
       
-      public function ProcessUserEvent(param1:String, param2:Boolean) : Boolean
+      public function ProcessUserEvent(strEventName:String, abPressed:Boolean) : Boolean
       {
-         var _loc5_:HUDFrobberButtonData = null;
-         var _loc6_:uint = 0;
-         var _loc3_:* = false;
-         var _loc4_:int = this.getButtonTypeFromEvent(param1);
-         if(_loc4_ >= 0)
+         var curButton:HUDFrobberButtonData = null;
+         var i:uint = 0;
+         var bhandled:* = false;
+         var buttonType:int = this.getButtonTypeFromEvent(strEventName);
+         if(buttonType >= 0)
          {
-            _loc3_ = this.m_ButtonData[_loc4_] != null;
-            if(param2)
+            bhandled = this.m_ButtonData[buttonType] != null;
+            if(abPressed)
             {
-               this.updateButtonHold(_loc4_,true);
+               this.updateButtonHold(buttonType,true);
             }
             else
             {
-               _loc6_ = 0;
-               while(_loc6_ < BUTTON_TYPE_COUNT)
+               for(i = 0; i < BUTTON_TYPE_COUNT; i++)
                {
-                  _loc5_ = this.m_ButtonData[_loc6_];
-                  if(_loc4_ == _loc6_ && _loc5_ != null)
+                  curButton = this.m_ButtonData[i];
+                  if(buttonType == i && curButton != null)
                   {
-                     if(_loc5_.canHold && _loc5_.holdTimeMet)
+                     if(curButton.canHold && curButton.holdTimeMet)
                      {
                         BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_BUTTON,{
-                           "eButtonType":_loc4_,
+                           "eButtonType":buttonType,
                            "bPressAndHold":true
                         }));
                      }
-                     else if(_loc5_.canTap)
+                     else if(curButton.canTap)
                      {
                         BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_BUTTON,{
-                           "eButtonType":_loc4_,
+                           "eButtonType":buttonType,
                            "bPressAndHold":false
                         }));
                      }
                   }
-                  _loc6_++;
                }
-               this.updateButtonHold(_loc4_,false);
+               this.updateButtonHold(buttonType,false);
             }
          }
-         return _loc3_;
+         return bhandled;
       }
       
       private function decideHeaderTextColor() : void
       {
-         var _loc1_:* = undefined;
+         var bhData:* = undefined;
          this.Header_mc.Header_tf.textColor = GlobalFunc.COLOR_TEXT_HEADER;
-         for each(_loc1_ in this.m_ButtonHintData)
+         for each(bhData in this.m_ButtonHintData)
          {
-            if(_loc1_.IsWarning)
+            if(bhData.IsWarning)
             {
                this.Header_mc.Header_tf.textColor = GlobalFunc.COLOR_WARNING_ACCENT;
                break;

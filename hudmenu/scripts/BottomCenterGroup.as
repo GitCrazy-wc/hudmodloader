@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1655")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1662")]
    public class BottomCenterGroup extends MovieClip
    {
       
@@ -29,7 +29,7 @@ package
          this.__setProp_PerkVaultBoy_mc_BottomCenterGroup_PerkVaultBoy_mc_0();
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
          if(this.SubtitleText_mc != null && this.EncounterHealthMeterContainer_mc != null)
          {
@@ -37,27 +37,25 @@ package
          }
       }
       
-      private function adjustSubtitlePosition(param1:Event = null) : void
+      private function adjustSubtitlePosition(e:Event = null) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:Array = null;
-         var _loc4_:int = 0;
+         var yOffset:Number = NaN;
+         var meterList:Array = null;
+         var i:int = 0;
          if(this.SubtitleText_mc != null && this.EncounterHealthMeterContainer_mc != null)
          {
-            _loc2_ = 0;
-            _loc3_ = [this.EncounterHealthMeterContainer_mc.EncounterHealthMeter1_mc,this.EncounterHealthMeterContainer_mc.EncounterHealthMeter2_mc,this.EncounterHealthMeterContainer_mc.EncounterHealthMeter3_mc];
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length)
+            yOffset = 0;
+            meterList = [this.EncounterHealthMeterContainer_mc.EncounterHealthMeter1_mc,this.EncounterHealthMeterContainer_mc.EncounterHealthMeter2_mc,this.EncounterHealthMeterContainer_mc.EncounterHealthMeter3_mc];
+            for(i = 0; i < meterList.length; i++)
             {
-               if(_loc3_[_loc4_] != null && Boolean(_loc3_[_loc4_].visible))
+               if(meterList[i] != null && Boolean(meterList[i].visible))
                {
-                  _loc2_ = 100;
+                  yOffset = 100;
                   break;
                }
-               _loc4_++;
             }
-            this.SubtitleText_mc.SpeakerName_tf.y = this.DEFAULT_SPEAKER_NAME_Y - _loc2_;
-            this.SubtitleText_mc.SubtitleText_tf.y = this.DEFAULT_SUBTITLE_TEXT_Y - _loc2_;
+            this.SubtitleText_mc.SpeakerName_tf.y = this.DEFAULT_SPEAKER_NAME_Y - yOffset;
+            this.SubtitleText_mc.SubtitleText_tf.y = this.DEFAULT_SUBTITLE_TEXT_Y - yOffset;
          }
       }
       

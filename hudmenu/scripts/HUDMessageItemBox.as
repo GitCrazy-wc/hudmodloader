@@ -1,9 +1,10 @@
 package
 {
    import Shared.GlobalFunc;
+   import flash.events.Event;
    import flash.text.TextFieldAutoSize;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol313")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol317")]
    public class HUDMessageItemBox extends HUDMessageItemBase
    {
       
@@ -38,13 +39,13 @@ package
       
       internal function frame16() : *
       {
-         OnFadeInComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeInComplete",true));
          stop();
       }
       
       internal function frame178() : *
       {
-         OnFadeOutComplete();
+         dispatchEvent(new Event("HUDFadingListItem::FadeOutComplete",true));
          stop();
       }
    }

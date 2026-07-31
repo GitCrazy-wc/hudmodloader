@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1565")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1572")]
    public dynamic class Weight_icon_212 extends MovieClip
    {
       

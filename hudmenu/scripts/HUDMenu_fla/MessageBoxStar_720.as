@@ -2,11 +2,11 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol185")]
-   public dynamic class XPMeterBar_740 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol311")]
+   public dynamic class MessageBoxStar_720 extends MovieClip
    {
       
-      public function XPMeterBar_740()
+      public function MessageBoxStar_720()
       {
          super();
          addFrameScript(0,this.frame1);

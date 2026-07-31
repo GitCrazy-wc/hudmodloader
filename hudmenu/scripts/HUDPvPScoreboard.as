@@ -7,7 +7,7 @@ package
    import Shared.HUDModes;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1835")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1842")]
    public class HUDPvPScoreboard extends MovieClip
    {
       
@@ -50,15 +50,15 @@ package
          BSUIDataManager.Subscribe("HUDModeData",this.onHUDModeUpdate);
       }
       
-      private function onDataUpdate(param1:FromClientDataEvent) : void
+      private function onDataUpdate(arEvent:FromClientDataEvent) : void
       {
-         if(param1.data.resetDisplay)
+         if(arEvent.data.resetDisplay)
          {
             gotoAndStop("off");
          }
-         else if(param1.data.type > TYPE_NONE)
+         else if(arEvent.data.type > TYPE_NONE)
          {
-            switch(param1.data.type)
+            switch(arEvent.data.type)
             {
                case TYPE_UNDERATTACK:
                   BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{"soundID":"UIMenuPromptPlayerAttackedBy"}));
@@ -66,19 +66,19 @@ package
                case TYPE_ATTACKINGPLAYER:
                   BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{"soundID":"UIMenuPromptPlayerAttacked"}));
             }
-            var _loc2_:* = param1.data.type;
+            var _loc2_:* = arEvent.data.type;
             switch(0)
             {
             }
             this.pvpScoreBoardsContainer_mc.gotoAndStop("pvpPlayerScoreBoard");
-            this.pvpPlayerScoreBoard_mc.data = param1.data;
+            this.pvpPlayerScoreBoard_mc.data = arEvent.data;
             gotoAndPlay("rollOn");
          }
       }
       
-      private function onHUDModeUpdate(param1:FromClientDataEvent) : void
+      private function onHUDModeUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.visible = this.m_ValidHudModes.indexOf(param1.data.hudMode) != -1;
+         this.visible = this.m_ValidHudModes.indexOf(arEvent.data.hudMode) != -1;
       }
       
       internal function frame1() : *

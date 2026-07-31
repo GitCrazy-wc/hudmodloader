@@ -10,7 +10,7 @@ package
    import flash.text.TextLineMetrics;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol229")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol233")]
    public class HUDReputationUpdateMeter extends MovieClip
    {
       
@@ -64,47 +64,48 @@ package
          this.m_MeterFrames = this.Meter_mc.totalFrames;
       }
       
-      public function set data(param1:Object) : void
+      public function set data(aData:Object) : void
       {
-         var _loc3_:Object = null;
-         var _loc4_:Object = null;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         this.m_Data = param1;
-         this.Header_mc.Header_tf.text = GlobalFunc.LocalizeFormattedString(param1.factionName + "Reputation").toUpperCase();
-         var _loc2_:TextLineMetrics = this.Header_mc.Header_tf.getLineMetrics(0);
-         this.FactionIcon_mc.x = this.Header_mc.x + (this.Header_mc.Header_tf.width - _loc2_.width) / 2 - this.FactionIcon_mc.width / 2 - HEADER_ICON_SPACING;
-         this.FactionIcon_mc.gotoAndStop(param1.factionCode);
-         if(param1.tierStart != param1.tierEnd)
+         var leftStatus:Object = null;
+         var rightStatus:Object = null;
+         var fullDuration:Number = NaN;
+         var meterDuration:Number = NaN;
+         this.m_Data = aData;
+         this.Header_mc.Header_tf.text = GlobalFunc.LocalizeFormattedString(aData.factionName + "Reputation").toUpperCase();
+         var headerMetrics:TextLineMetrics = this.Header_mc.Header_tf.getLineMetrics(0);
+         this.FactionIcon_mc.x = this.Header_mc.x + (this.Header_mc.Header_tf.width - headerMetrics.width) / 2 - this.FactionIcon_mc.width / 2 - HEADER_ICON_SPACING;
+         this.FactionIcon_mc.gotoAndStop(aData.factionCode);
+         if(aData.tierStart != aData.tierEnd)
          {
-            _loc3_ = _loc4_ = {
-               "code":param1.factionCode.toLowerCase(),
-               "tier":param1.tierEnd
+            rightStatus = {
+               "code":aData.factionCode.toLowerCase(),
+               "tier":aData.tierEnd
             };
+            leftStatus = rightStatus;
          }
          else
          {
-            _loc3_ = {
-               "code":param1.factionCode.toUpperCase(),
-               "tier":param1.tierStart
+            leftStatus = {
+               "code":aData.factionCode.toUpperCase(),
+               "tier":aData.tierStart
             };
-            _loc4_ = {
-               "code":param1.factionCode.toUpperCase(),
-               "tier":param1.tierStart + 1
+            rightStatus = {
+               "code":aData.factionCode.toUpperCase(),
+               "tier":aData.tierStart + 1
             };
          }
-         Factions.updateFaceIcon(this.LeftStatusIcon_mc,_loc3_);
-         Factions.updateFaceIcon(this.RightStatusIcon_mc,_loc4_);
-         this.CurrentStanding_mc.CurrentStanding_tf.text = GlobalFunc.LocalizeFormattedString("$ReputationCurrentStanding","$ReputationStatus" + _loc3_.tier);
-         if(param1.tierStart == param1.tierEnd)
+         Factions.updateFaceIcon(this.LeftStatusIcon_mc,leftStatus);
+         Factions.updateFaceIcon(this.RightStatusIcon_mc,rightStatus);
+         this.CurrentStanding_mc.CurrentStanding_tf.text = GlobalFunc.LocalizeFormattedString("$ReputationCurrentStanding","$ReputationStatus" + leftStatus.tier);
+         if(aData.tierStart == aData.tierEnd)
          {
-            _loc5_ = Math.abs(param1.percentEnd - param1.percentStart) * 100 * TIME_PER_VALUE;
-            _loc6_ = Math.min(MAX_TIME_CAP,_loc5_);
-            this.tweenMeter(param1.percentStart,param1.percentEnd,_loc6_);
+            fullDuration = Math.abs(aData.percentEnd - aData.percentStart) * 100 * TIME_PER_VALUE;
+            meterDuration = Math.min(MAX_TIME_CAP,fullDuration);
+            this.tweenMeter(aData.percentStart,aData.percentEnd,meterDuration);
          }
          else
          {
-            this.tweenMeter(param1.percentStart,param1.percentEnd,0);
+            this.tweenMeter(aData.percentStart,aData.percentEnd,0);
          }
       }
       
@@ -113,10 +114,10 @@ package
          return this.m_Data;
       }
       
-      public function set meterPercent(param1:Number) : void
+      public function set meterPercent(aPercent:Number) : void
       {
-         this.m_MeterPercent = param1;
-         this.Meter_mc.gotoAndStop(GlobalFunc.Clamp(Math.ceil(param1 * this.m_MeterFrames),1,this.m_MeterFrames));
+         this.m_MeterPercent = aPercent;
+         this.Meter_mc.gotoAndStop(GlobalFunc.Clamp(Math.ceil(aPercent * this.m_MeterFrames),1,this.m_MeterFrames));
       }
       
       public function get meterPercent() : Number
@@ -124,9 +125,9 @@ package
          return this.m_MeterPercent;
       }
       
-      private function tweenMeter(param1:Number, param2:Number, param3:Number) : void
+      private function tweenMeter(aStartPercent:Number, aTargPercent:Number, aDuration:Number) : void
       {
-         if(param1 <= param2)
+         if(aStartPercent <= aTargPercent)
          {
             this.Internal_mc.UpwardIndicator_mc.gotoAndPlay("RepUp");
             this.Internal_mc.MeterContainer_mc.gotoAndStop("RepUp");
@@ -144,15 +145,15 @@ package
             this.m_MeterTween.stop();
             this.m_MeterTween = null;
          }
-         if(param1 != param2 || param3 > 0)
+         if(aStartPercent != aTargPercent || aDuration > 0)
          {
-            this.meterPercent = param2;
-            this.m_MeterTween = new Tween(this,"meterPercent",None.easeIn,param1,param2,param3 / 1000,true);
+            this.meterPercent = aTargPercent;
+            this.m_MeterTween = new Tween(this,"meterPercent",None.easeIn,aStartPercent,aTargPercent,aDuration / 1000,true);
             this.m_MeterTween.addEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
          }
          else
          {
-            this.meterPercent = param1;
+            this.meterPercent = aStartPercent;
             this.onTweenFinish();
          }
       }
@@ -172,7 +173,7 @@ package
          dispatchEvent(new Event(DISPLAY_COMPLETE,true));
       }
       
-      private function onTweenFinish(param1:TweenEvent = null) : void
+      private function onTweenFinish(aEvent:TweenEvent = null) : void
       {
          setTimeout(this.onHoldFinish,HOLD_TIME);
       }

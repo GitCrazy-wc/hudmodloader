@@ -9,9 +9,11 @@ package
    import flash.events.Event;
    import flash.utils.getTimer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol736")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol742")]
    public dynamic class Messages extends BSUIComponent
    {
+      
+      public static const EVENT_MESSAGE_VISIBILITY_UPDATE:String = "HUD::MessageVisibilityUpdate";
       
       private static var MAX_SHOWN:uint = 4;
       
@@ -37,6 +39,10 @@ package
       
       private var m_TotalHeight:Number = 0;
       
+      private var m_PressAndHoldActive:Boolean = false;
+      
+      private var m_CurrentPressAndHoldMessage:HUDMessageItemRecentActivity = null;
+      
       private var _maxClipHeight:Number = 155;
       
       private var MessagePayload:UIDataFromClient = null;
@@ -51,17 +57,15 @@ package
       {
          var processEvent:Function;
          super();
-         processEvent = function(param1:Object, param2:Function):*
+         processEvent = function(data:Object, cb:Function):*
          {
-            var _loc6_:* = undefined;
-            var _loc3_:* = param1.events;
-            var _loc4_:* = _loc3_.length;
-            var _loc5_:* = 0;
-            while(_loc5_ < _loc4_)
+            var event:* = undefined;
+            var events:* = data.events;
+            var numEvents:* = events.length;
+            for(var eventIndex:* = 0; eventIndex < numEvents; eventIndex++)
             {
-               _loc6_ = _loc3_[_loc5_];
-               param2(_loc6_);
-               _loc5_++;
+               event = events[eventIndex];
+               cb(event);
             }
          };
          this.MessageArray = new Vector.<HUDMessageItemData>();
@@ -70,68 +74,63 @@ package
          this.bAnimating = false;
          this.alpha = 1;
          this.MessagePayload = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
-         BSUIDataManager.Subscribe("MessageEvents",function(param1:FromClientDataEvent):*
+         BSUIDataManager.Subscribe("MessageEvents",function(arEvent:FromClientDataEvent):*
          {
-            var arEvent:FromClientDataEvent = param1;
             var messages:* = MessagePayload.data.messages;
-            processEvent(arEvent.data,function(param1:Object):*
+            processEvent(arEvent.data,function(messageEvent:Object):*
             {
-               var _loc3_:* = undefined;
-               var _loc4_:* = undefined;
-               var _loc5_:Boolean = false;
-               var _loc6_:* = undefined;
-               var _loc7_:* = undefined;
-               var _loc2_:* = param1.eventIndex;
-               switch(param1.eventType)
+               var msg:* = undefined;
+               var isThrottled:* = undefined;
+               var alreadyShow:Boolean = false;
+               var index:* = undefined;
+               var throttleIndex:* = undefined;
+               var msgIndex:* = messageEvent.eventIndex;
+               switch(messageEvent.eventType)
                {
                   case "new":
-                     _loc3_ = MessagePayload.data.messages[_loc2_];
-                     _loc4_ = false;
-                     if(_loc3_.canBeThrottled)
+                     msg = MessagePayload.data.messages[msgIndex];
+                     isThrottled = false;
+                     if(msg.canBeThrottled)
                      {
-                        _loc7_ = 0;
-                        while(_loc7_ < ThrottledMessages.length)
+                        for(throttleIndex = 0; throttleIndex < ThrottledMessages.length; throttleIndex++)
                         {
-                           if(ThrottledMessages[_loc7_].msg == _loc3_.messageText && ThrottledMessages[_loc7_].title == _loc3_.titleText && ThrottledMessages[_loc7_].header == _loc3_.headerText)
+                           if(ThrottledMessages[throttleIndex].msg == msg.messageText && ThrottledMessages[throttleIndex].title == msg.titleText && ThrottledMessages[throttleIndex].header == msg.headerText)
                            {
-                              _loc4_ = true;
+                              isThrottled = true;
                               break;
                            }
-                           _loc7_++;
                         }
-                        if(!_loc4_)
+                        if(!isThrottled)
                         {
                            ThrottledMessages.push({
-                              "msg":_loc3_.messageText,
-                              "title":_loc3_.titleText,
-                              "header":_loc3_.headerText,
+                              "msg":msg.messageText,
+                              "title":msg.titleText,
+                              "header":msg.headerText,
                               "throttledTime":THROTTLE_DURATION
                            });
                         }
                      }
-                     _loc5_ = false;
-                     _loc6_ = 0;
-                     while(_loc6_ < MessageArray.length)
+                     alreadyShow = false;
+                     for(index = 0; index < MessageArray.length; index++)
                      {
-                        if(MessageArray[_loc6_].messageID == _loc3_.messageId && MessageArray[_loc6_].type == _loc3_.type && MessageArray[_loc6_].data == _loc3_)
+                        if(MessageArray[index].messageID == msg.messageId && MessageArray[index].type == msg.type && MessageArray[index].data == msg)
                         {
-                           _loc5_ = true;
+                           alreadyShow = true;
                            break;
                         }
-                        _loc6_++;
                      }
-                     if(!_loc4_ && !_loc5_)
+                     if(!isThrottled && !alreadyShow)
                      {
-                        MessageArray.push(new HUDMessageItemData(_loc3_.messageId,_loc3_.type,_loc3_,_loc3_.sound));
+                        MessageArray.push(new HUDMessageItemData(msg.messageId,msg.type,msg,msg.sound));
                      }
                      else
                      {
-                        DiscardMessage(_loc3_.messageId);
+                        DiscardMessage(msg.messageId);
                      }
                      break;
                   case "remove":
-                     _loc3_ = MessagePayload.data.messages[_loc2_];
-                     DiscardMessage(_loc3_.messageId);
+                     msg = MessagePayload.data.messages[msgIndex];
+                     DiscardMessage(msg.messageId);
                      break;
                   case "clear":
                      RemoveMessages(false);
@@ -147,16 +146,16 @@ package
          return this._maxClipHeight;
       }
       
-      public function set maxClipHeight_Inspectable(param1:Number) : void
+      public function set maxClipHeight_Inspectable(aMaxClipHeight:Number) : void
       {
-         this._maxClipHeight = param1;
+         this._maxClipHeight = aMaxClipHeight;
       }
       
-      public function set showBottomRight(param1:Boolean) : void
+      public function set showBottomRight(aVal:Boolean) : void
       {
-         if(this.m_ShowBottomRight != param1)
+         if(this.m_ShowBottomRight != aVal)
          {
-            this.m_ShowBottomRight = param1;
+            this.m_ShowBottomRight = aVal;
             this.RedrawElements();
          }
       }
@@ -166,35 +165,49 @@ package
          return this.bPauseUpdates;
       }
       
-      private function set pauseUpdates(param1:Boolean) : void
+      private function set pauseUpdates(aBool:Boolean) : void
       {
-         var _loc2_:uint = 0;
-         if(this.bPauseUpdates != param1)
+         var i:uint = 0;
+         if(this.bPauseUpdates != aBool)
          {
-            this.bPauseUpdates = param1;
-            while(_loc2_ < this.ShownMessageArray.length)
+            for(this.bPauseUpdates = aBool; i < this.ShownMessageArray.length; )
             {
                if(this.bPauseUpdates)
                {
-                  this.ShownMessageArray[_loc2_].OnPause();
+                  this.ShownMessageArray[i].OnPause();
                }
                else
                {
-                  this.ShownMessageArray[_loc2_].OnResume();
+                  this.ShownMessageArray[i].OnResume();
                }
-               _loc2_++;
+               i++;
             }
          }
       }
       
-      public function set TutorialShowing(param1:Boolean) : *
+      public function get pressAndHoldActive() : Boolean
       {
-         if(this.pauseUpdates && !param1)
+         return this.m_PressAndHoldActive;
+      }
+      
+      public function get currentPressAndHoldMessage() : HUDMessageItemRecentActivity
+      {
+         return this.m_CurrentPressAndHoldMessage;
+      }
+      
+      public function ClearPressAndHoldMessage() : void
+      {
+         this.m_CurrentPressAndHoldMessage = null;
+      }
+      
+      public function set TutorialShowing(aShowing:Boolean) : *
+      {
+         if(this.pauseUpdates && !aShowing)
          {
             this.lastTime = getTimer();
          }
-         this.pauseUpdates = param1;
-         this.visible = !param1;
+         this.pauseUpdates = aShowing;
+         this.visible = !aShowing;
       }
       
       public function get ShownCount() : int
@@ -204,60 +217,83 @@ package
       
       private function RedrawElements() : void
       {
-         var _loc1_:Number = 0;
-         var _loc2_:* = this.ShownCount - 1;
-         while(_loc2_ >= 0)
+         var newY:Number = 0;
+         for(var i:* = this.ShownCount - 1; i >= 0; i--)
          {
-            if(this.ShownMessageArray[_loc2_].data.type != "")
+            if(this.ShownMessageArray[i].data.type != "")
             {
-               this.ShownMessageArray[_loc2_].redrawDisplayObject();
+               this.ShownMessageArray[i].redrawDisplayObject();
             }
             else
             {
-               this.ShownMessageArray[_loc2_].y = _loc1_;
+               this.ShownMessageArray[i].y = newY;
                if(this.m_ShowBottomRight)
                {
-                  _loc1_ -= this.ShownMessageArray[_loc2_].height - this.MessageSpacing;
+                  newY -= this.ShownMessageArray[i].height - this.MessageSpacing;
                }
                else
                {
-                  _loc1_ += this.ShownMessageArray[_loc2_].height + this.MessageSpacing;
+                  newY += this.ShownMessageArray[i].height + this.MessageSpacing;
                }
             }
-            _loc2_--;
          }
       }
       
-      public function UpdatePositions() : *
+      private function HasHoldButton(newMessage:HUDFadingListItem) : Boolean
       {
-         var _loc2_:HUDFadingListItem = null;
-         var _loc3_:* = undefined;
-         var _loc4_:HUDMessageItemBase = null;
-         var _loc5_:HUDMessageItemBase = null;
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:Boolean = false;
-         var _loc11_:* = undefined;
-         var _loc12_:Number = NaN;
-         var _loc13_:Boolean = false;
-         var _loc1_:int = this.ShownCount;
-         if(_loc1_ == 1)
+         return newMessage.data.type == HUDMessageItemData.TYPE_INFESTATION;
+      }
+      
+      private function StartMessage(newMessage:HUDFadingListItem) : void
+      {
+         newMessage.FadeIn();
+         dispatchEvent(new CustomEvent(EVENT_MESSAGE_VISIBILITY_UPDATE,{
+            "messageType":newMessage.data.type,
+            "fadedIn":true
+         },true));
+         this.m_TotalHeight += newMessage.height + this.MessageSpacing;
+         BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{"soundID":newMessage.data.sound}));
+         if(this.HasHoldButton(newMessage))
          {
-            _loc2_ = this.ShownMessageArray[0];
-            if(!_loc2_.fadeInStarted)
+            this.m_PressAndHoldActive = true;
+            BSUIDataManager.dispatchEvent(new CustomEvent(HUDMenu.EVENT_QUICK_HOLD_TOGGLE,{"flyoutHasHold":true}));
+            if(this.m_CurrentPressAndHoldMessage == null)
             {
-               if(_loc2_.CanFadeIn())
+               this.m_CurrentPressAndHoldMessage = newMessage as HUDMessageItemRecentActivity;
+            }
+         }
+      }
+      
+      public function UpdatePositions() : void
+      {
+         var onlyMessage:HUDFadingListItem = null;
+         var msgIdx:int = 0;
+         var remainingDistanceToAnimate:int = 0;
+         var newMessage:HUDMessageItemBase = null;
+         var newMessageStartingPoint:uint = 0;
+         var prevMessage:HUDMessageItemBase = null;
+         var prevMessageStartingPoint:uint = 0;
+         var prevMessageTargetY:int = 0;
+         var canFadeIn:Boolean = false;
+         var amountToDip:* = undefined;
+         var removableIndex:Number = NaN;
+         var fadableIndex:int = 0;
+         var numClips:int = this.ShownCount;
+         if(numClips == 1)
+         {
+            onlyMessage = this.ShownMessageArray[0];
+            if(!onlyMessage.fadeInStarted)
+            {
+               if(onlyMessage.CanFadeIn())
                {
                   this.bAnimating = true;
-                  _loc2_.FadeIn();
+                  this.StartMessage(onlyMessage);
                }
                this.fadingOutMessage = false;
             }
-            else if(this.MessageArray.length == 0 && !this.fadingOutMessage && _loc2_.CanFadeOut())
+            else if(this.MessageArray.length == 0 && !this.fadingOutMessage && onlyMessage.CanFadeOut())
             {
-               _loc2_.FadeOut();
+               this.FadeOutMessage(this.ShownMessageArray[0]);
                this.bAnimating = false;
                this.fadingOutMessage = true;
             }
@@ -267,159 +303,192 @@ package
                this.fadingOutMessage = false;
             }
          }
-         else if(_loc1_ > 1)
+         else if(numClips > 1)
          {
-            _loc3_ = _loc1_ - 1;
-            _loc4_ = this.ShownMessageArray[_loc3_];
-            _loc5_ = this.ShownMessageArray[_loc3_ - 1];
-            _loc6_ = this.m_ShowBottomRight ? uint(_loc4_.y) : uint(_loc4_.height);
-            _loc7_ = this.m_ShowBottomRight ? uint(_loc5_.height) : uint(_loc5_.y);
-            _loc8_ = this.m_ShowBottomRight ? _loc6_ - this.MessageSpacing - _loc7_ : _loc6_ + this.MessageSpacing;
-            _loc9_ = this.m_ShowBottomRight ? int(_loc5_.y - _loc8_) : _loc8_ - _loc7_;
-            this.bAnimating = _loc9_ > 0 || _loc4_.bIsDirty;
-            if(!_loc4_.bIsDirty)
+            for(msgIdx = 0; msgIdx < this.ShownMessageArray.length; msgIdx++)
             {
-               _loc10_ = _loc4_.CanFadeIn() && _loc1_ <= MAX_SHOWN && this.m_TotalHeight <= this._maxClipHeight;
-               if(_loc10_)
+               remainingDistanceToAnimate = 0;
+               newMessage = this.ShownMessageArray[msgIdx];
+               newMessageStartingPoint = this.m_ShowBottomRight ? uint(newMessage.y) : uint(newMessage.height);
+               if(msgIdx > 0)
                {
-                  _loc4_.FadeIn();
+                  prevMessage = this.ShownMessageArray[msgIdx - 1];
+                  prevMessageStartingPoint = this.m_ShowBottomRight ? uint(prevMessage.height) : uint(prevMessage.y);
+                  prevMessageTargetY = this.m_ShowBottomRight ? newMessageStartingPoint - this.MessageSpacing - prevMessageStartingPoint : newMessageStartingPoint + this.MessageSpacing;
+                  remainingDistanceToAnimate = this.m_ShowBottomRight ? int(prevMessage.y - prevMessageTargetY) : prevMessageTargetY - prevMessageStartingPoint;
                }
-               if(this.bAnimating && _loc4_.fadeInStarted)
+               this.bAnimating = remainingDistanceToAnimate > 0 || newMessage.bIsDirty;
+               if(!newMessage.bIsDirty)
                {
-                  _loc11_ = 1;
-                  _loc12_ = 0;
-                  while(_loc12_ < _loc3_)
+                  canFadeIn = !newMessage.fadeInStarted && newMessage.CanFadeIn() && this.m_TotalHeight + this.MessageSpacing + newMessage.height <= this._maxClipHeight;
+                  if(canFadeIn)
                   {
-                     if(this.m_ShowBottomRight)
+                     this.StartMessage(newMessage);
+                  }
+                  if(this.bAnimating && newMessage.fadeInStarted)
+                  {
+                     amountToDip = 1;
+                     for(removableIndex = 0; removableIndex < msgIdx; removableIndex++)
                      {
-                        this.ShownMessageArray[_loc12_].y -= _loc11_;
+                        if(this.ShownMessageArray[removableIndex].fadeInStarted)
+                        {
+                           if(this.m_ShowBottomRight)
+                           {
+                              this.ShownMessageArray[removableIndex].y -= amountToDip;
+                           }
+                           else
+                           {
+                              this.ShownMessageArray[removableIndex].y += amountToDip;
+                           }
+                        }
                      }
-                     else
+                  }
+                  else if(!this.fadingOutMessage)
+                  {
+                     if(!this.bqueuedMessage || numClips == MAX_SHOWN || !canFadeIn && newMessage.CanFadeIn())
                      {
-                        this.ShownMessageArray[_loc12_].y += _loc11_;
+                        for(fadableIndex = 0; fadableIndex < this.ShownMessageArray.length; fadableIndex++)
+                        {
+                           if(this.ShownMessageArray[fadableIndex].CanFadeOut())
+                           {
+                              this.FadeOutMessage(this.ShownMessageArray[fadableIndex]);
+                              break;
+                           }
+                        }
                      }
-                     _loc12_++;
                   }
                }
-               else if(!this.fadingOutMessage)
+               if(!newMessage.fadeInStarted)
                {
-                  _loc13_ = !_loc10_ && _loc4_.CanFadeIn();
-                  if(!this.bqueuedMessage || _loc1_ == MAX_SHOWN || _loc13_ && this.ShownMessageArray[0].CanFadeOut())
-                  {
-                     this.fadingOutMessage = true;
-                     this.ShownMessageArray[0].FadeOut();
-                  }
+                  return;
                }
             }
          }
       }
       
-      public function RemoveMessages(param1:Boolean) : *
+      private function FadeOutMessage(aMessage:HUDMessageItemBase) : void
       {
-         var _loc3_:Vector.<HUDMessageItemBase> = null;
-         var _loc2_:int = int(this.ShownMessageArray.length - 1);
-         while(_loc2_ >= 0)
+         var fadeOutLength:* = HUDMessageItemData.GetMessageFadeOutLength(aMessage.data.type);
+         if(fadeOutLength != HUDMessageItemData.INVALID_FADE_TIME)
          {
-            if(!param1 || this.ShownMessageArray[_loc2_].currentFrame >= this.ShownMessageArray[_loc2_].endAnimFrame || this.ShownMessageArray[_loc2_].fullyFadedOut)
+            aMessage.FadeOutCustomLength(fadeOutLength);
+         }
+         else
+         {
+            aMessage.FadeOut();
+         }
+         this.fadingOutMessage = true;
+      }
+      
+      public function RemoveMessages(abConditional:Boolean) : *
+      {
+         var removedMessageArray:Vector.<HUDMessageItemBase> = null;
+         var i:int = int(this.ShownMessageArray.length - 1);
+         while(i >= 0 && this.ShownMessageArray.length > 0)
+         {
+            if(!abConditional || this.ShownMessageArray[i].currentFrame >= this.ShownMessageArray[i].endAnimFrame || this.ShownMessageArray[i].fullyFadedOut)
             {
-               _loc3_ = this.ShownMessageArray.splice(_loc2_,1);
-               this.m_TotalHeight -= _loc3_[0].Internal_mc.height + this.MessageSpacing;
-               this.removeChild(_loc3_[0]);
+               removedMessageArray = this.ShownMessageArray.splice(i,1);
+               this.m_TotalHeight -= removedMessageArray[0].height + this.MessageSpacing;
+               this.removeChild(removedMessageArray[0]);
                this.fadingOutMessage = false;
-               this.DiscardMessage(_loc3_[0].data.messageID);
+               BSUIDataManager.dispatchEvent(new CustomEvent(HUDMenu.EVENT_QUICK_HOLD_TOGGLE,{"flyoutHasHold":false}));
+               this.m_CurrentPressAndHoldMessage = null;
+               this.m_PressAndHoldActive = false;
+               dispatchEvent(new CustomEvent(EVENT_MESSAGE_VISIBILITY_UPDATE,{
+                  "messageType":removedMessageArray[0].data.type,
+                  "fadedIn":false
+               },true));
+               this.DiscardMessage(removedMessageArray[0].data.messageID);
             }
-            _loc2_--;
+            i--;
+         }
+         if(this.ShownMessageArray.length == 0)
+         {
+            this.m_TotalHeight = 0;
          }
       }
       
-      private function DiscardMessage(param1:Number) : *
+      private function DiscardMessage(messageId:Number) : *
       {
-         BSUIDataManager.dispatchEvent(new CustomEvent("HUDMessages::DiscardMessage",{"id":param1}));
+         BSUIDataManager.dispatchEvent(new CustomEvent("HUDMessages::DiscardMessage",{"id":messageId}));
       }
       
-      public function get CanAddMessage() : Boolean
+      public function Update(e:Event) : *
       {
-         return !this.bAnimating && !this.fadingOutMessage && this.ShownCount < MAX_SHOWN;
-      }
-      
-      public function Update(param1:Event) : *
-      {
-         var _loc2_:* = undefined;
-         var _loc3_:* = undefined;
-         var _loc4_:* = undefined;
-         var _loc5_:* = false;
-         var _loc6_:* = false;
-         var _loc7_:* = undefined;
-         var _loc8_:HUDMessageItemData = null;
-         var _loc9_:HUDMessageItemBase = null;
+         var frameTime:* = undefined;
+         var deltaTime:* = undefined;
+         var numThrottled:* = undefined;
+         var showingAtStart:* = false;
+         var showingAtEnd:* = false;
+         var throttleIndex:* = undefined;
+         var itemData:HUDMessageItemData = null;
+         var messageItem:HUDMessageItemBase = null;
          if(!this.pauseUpdates)
          {
-            _loc2_ = getTimer();
-            _loc3_ = _loc2_ - this.lastTime;
-            _loc4_ = this.ThrottledMessages.length;
-            if(_loc4_ > 0)
+            frameTime = getTimer();
+            deltaTime = frameTime - this.lastTime;
+            numThrottled = this.ThrottledMessages.length;
+            if(numThrottled > 0)
             {
-               _loc7_ = 0;
-               while(_loc7_ < _loc4_)
+               for(throttleIndex = 0; throttleIndex < numThrottled; throttleIndex++)
                {
-                  this.ThrottledMessages[_loc7_].throttledTime -= _loc3_;
-                  _loc7_++;
+                  this.ThrottledMessages[throttleIndex].throttledTime -= deltaTime;
                }
-               while(_loc4_ > 0 && this.ThrottledMessages[0].throttledTime <= 0)
+               while(numThrottled > 0 && this.ThrottledMessages[0].throttledTime <= 0)
                {
                   this.ThrottledMessages.shift();
-                  _loc4_--;
+                  numThrottled--;
                }
             }
             this.bqueuedMessage = this.MessageArray.length > 0;
-            _loc5_ = this.ShownCount > 0;
+            showingAtStart = this.ShownCount > 0;
             this.RemoveMessages(true);
-            if(this.bqueuedMessage && this.CanAddMessage)
+            if(this.bqueuedMessage && !this.bAnimating && !this.fadingOutMessage && this.ShownCount < MAX_SHOWN)
             {
-               _loc8_ = this.MessageArray.shift();
-               switch(_loc8_.type)
+               itemData = this.MessageArray.shift();
+               switch(itemData.type)
                {
                   case HUDMessageItemData.TYPE_EVENT:
-                     _loc9_ = new HUDMessageItemBox();
+                     messageItem = new HUDMessageItemBox();
                      break;
                   case HUDMessageItemData.TYPE_KILL_SINGLE:
-                     _loc9_ = new HUDMessageItemKill();
+                     messageItem = new HUDMessageItemKill();
                      break;
                   case HUDMessageItemData.TYPE_KILL_TEAM:
-                     _loc9_ = new HUDMessageItemTeamKill();
+                     messageItem = new HUDMessageItemTeamKill();
                      break;
                   case HUDMessageItemData.TYPE_UNDER_ATTACK:
-                     _loc9_ = new HUDMessageItemUnderAttack();
+                     messageItem = new HUDMessageItemUnderAttack();
                      break;
                   case HUDMessageItemData.TYPE_COMEBACK:
-                     _loc9_ = new HUDMessageItemRevenge();
+                     messageItem = new HUDMessageItemRevenge();
                      break;
                   case HUDMessageItemData.TYPE_KILL_GROUP:
-                     _loc9_ = new HUDMessageItemGroupKill();
+                     messageItem = new HUDMessageItemGroupKill();
                      break;
                   case HUDMessageItemData.TYPE_MUTATED_EVENT:
                   case HUDMessageItemData.TYPE_DAILY_OPS:
-                     _loc9_ = new HUDMessageItemRecentActivity();
+                  case HUDMessageItemData.TYPE_INFESTATION:
+                     messageItem = new HUDMessageItemRecentActivity(uiPlatform);
                      break;
                   case HUDMessageItemData.TYPE_CASINO:
-                     _loc9_ = new HUDMessageItemCasino();
+                     messageItem = new HUDMessageItemCasino();
                      break;
                   default:
-                     _loc9_ = new HUDMessageItem();
+                     messageItem = new HUDMessageItem();
                }
-               _loc9_.data = _loc8_;
-               this.addChild(_loc9_);
-               this.ShownMessageArray.push(_loc9_ as HUDMessageItemBase);
-               this.m_TotalHeight += _loc9_.Internal_mc.height + this.MessageSpacing;
-               BSUIDataManager.dispatchEvent(new CustomEvent(GlobalFunc.PLAY_MENU_SOUND,{"soundID":_loc9_.data.sound}));
+               messageItem.data = itemData;
+               this.addChild(messageItem);
+               this.ShownMessageArray.push(messageItem as HUDMessageItemBase);
             }
             this.UpdatePositions();
-            _loc6_ = this.ShownCount > 0;
-            if(_loc5_ || _loc6_)
+            showingAtEnd = this.ShownCount > 0;
+            if(showingAtStart || showingAtEnd)
             {
                SetIsDirty();
             }
-            this.lastTime = _loc2_;
+            this.lastTime = frameTime;
          }
       }
    }

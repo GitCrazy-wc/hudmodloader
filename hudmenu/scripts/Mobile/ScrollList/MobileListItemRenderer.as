@@ -40,10 +40,10 @@ package Mobile.ScrollList
          addEventListener(MouseEvent.MOUSE_DOWN,this.itemPressHandler,false,0,true);
       }
       
-      public function setData(param1:Object) : *
+      public function setData(data:Object) : *
       {
-         this._data = param1;
-         if(param1 != null)
+         this._data = data;
+         if(data != null)
          {
             this.setVisual();
          }
@@ -53,7 +53,7 @@ package Mobile.ScrollList
       {
       }
       
-      protected function itemPressHandler(param1:MouseEvent) : void
+      protected function itemPressHandler(e:MouseEvent) : void
       {
          if(this.isClickable)
          {
@@ -63,7 +63,7 @@ package Mobile.ScrollList
          }
       }
       
-      protected function itemReleaseHandler(param1:MouseEvent) : void
+      protected function itemReleaseHandler(e:MouseEvent) : void
       {
          if(this.isClickable)
          {
@@ -73,7 +73,7 @@ package Mobile.ScrollList
          }
       }
       
-      protected function onEnterFrame(param1:Event) : void
+      protected function onEnterFrame(e:Event) : void
       {
          if(mouseY < 0 || mouseY > this.height || mouseX < 0 || mouseX > this.width)
          {
@@ -95,7 +95,7 @@ package Mobile.ScrollList
       {
       }
       
-      protected function destroy(param1:Event) : void
+      protected function destroy(e:Event) : void
       {
          removeEventListener(Event.REMOVED_FROM_STAGE,this.destroy);
          removeEventListener(MouseEvent.MOUSE_DOWN,this.itemPressHandler);

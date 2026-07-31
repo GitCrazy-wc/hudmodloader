@@ -25,9 +25,9 @@ package Shared.AS3
          return this._active;
       }
       
-      public function set Active(param1:*) : void
+      public function set Active(aActive:*) : void
       {
-         this._active = param1;
+         this._active = aActive;
          this.connectButtonBar();
       }
       
@@ -36,9 +36,9 @@ package Shared.AS3
          return this._ButtonHintBar;
       }
       
-      public function set buttonHintBar(param1:BSButtonHintBar) : *
+      public function set buttonHintBar(aObj:BSButtonHintBar) : *
       {
-         this._ButtonHintBar = param1;
+         this._ButtonHintBar = aObj;
       }
       
       public function get buttonData() : Vector.<BSButtonHintData>
@@ -46,12 +46,12 @@ package Shared.AS3
          return this._ButtonData;
       }
       
-      public function set buttonData(param1:Vector.<BSButtonHintData>) : void
+      public function set buttonData(value:Vector.<BSButtonHintData>) : void
       {
-         this._ButtonData = param1;
+         this._ButtonData = value;
       }
       
-      private function onEnterFrame(param1:Event) : *
+      private function onEnterFrame(e:Event) : *
       {
          stage.dispatchEvent(new MenuComponentLoadedEvent(this));
          removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
@@ -63,9 +63,9 @@ package Shared.AS3
          addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
       }
       
-      public function SetParentMenu(param1:IMenu) : *
+      public function SetParentMenu(arParentMenu:IMenu) : *
       {
-         this.buttonHintBar = param1.buttonHintBar;
+         this.buttonHintBar = arParentMenu.buttonHintBar;
          this.connectButtonBar();
       }
       
@@ -74,22 +74,22 @@ package Shared.AS3
          return this._targetButtonHintBar;
       }
       
-      public function set buttonHintBarTarget_Inspectable(param1:Object) : void
+      public function set buttonHintBarTarget_Inspectable(newBar:Object) : void
       {
-         var _loc2_:* = Object;
-         if(param1 is String)
+         var newbarObject:* = Object;
+         if(newBar is String)
          {
-            if(param1.toString() == "" || parent == null)
+            if(newBar.toString() == "" || parent == null)
             {
                return;
             }
-            _loc2_ = parent.getChildByName(param1.toString()) as Object;
-            if(_loc2_ == null)
+            newbarObject = parent.getChildByName(newBar.toString()) as Object;
+            if(newbarObject == null)
             {
                if(parent.parent)
                {
-                  _loc2_ = parent.parent.getChildByName(param1.toString());
-                  if(_loc2_ == null)
+                  newbarObject = parent.parent.getChildByName(newBar.toString());
+                  if(newbarObject == null)
                   {
                      return;
                   }
@@ -98,44 +98,40 @@ package Shared.AS3
          }
          else
          {
-            _loc2_ = param1;
+            newbarObject = newBar;
          }
-         this._targetButtonHintBar = _loc2_;
+         this._targetButtonHintBar = newbarObject;
          this.buttonHintBar = this._targetButtonHintBar as BSButtonHintBar;
       }
       
-      public function AddButtonHintData(param1:BSButtonHintData) : void
+      public function AddButtonHintData(aButtonData:BSButtonHintData) : void
       {
-         if(!this.HasButtonHintData(param1))
+         if(!this.HasButtonHintData(aButtonData))
          {
-            this.buttonData.splice(0,0,param1);
+            this.buttonData.splice(0,0,aButtonData);
          }
       }
       
-      public function RemoveButtonHintData(param1:BSButtonHintData) : *
+      public function RemoveButtonHintData(aButtonData:BSButtonHintData) : *
       {
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.buttonData.length)
+         for(var i:uint = 0; i < this.buttonData.length; i++)
          {
-            if(this.buttonData[_loc2_] == param1)
+            if(this.buttonData[i] == aButtonData)
             {
-               this.buttonData.splice(_loc2_,1);
+               this.buttonData.splice(i,1);
                break;
             }
-            _loc2_++;
          }
       }
       
-      public function HasButtonHintData(param1:BSButtonHintData) : Boolean
+      public function HasButtonHintData(aButtonData:BSButtonHintData) : Boolean
       {
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.buttonData.length)
+         for(var i:uint = 0; i < this.buttonData.length; i++)
          {
-            if(this.buttonData[_loc2_] == param1)
+            if(this.buttonData[i] == aButtonData)
             {
                return true;
             }
-            _loc2_++;
          }
          return false;
       }
@@ -148,7 +144,7 @@ package Shared.AS3
          }
       }
       
-      public function ProcessUserEvent(param1:String, param2:Boolean) : Boolean
+      public function ProcessUserEvent(strEventName:String, abPressed:Boolean) : Boolean
       {
          return false;
       }

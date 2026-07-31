@@ -1,8 +1,8 @@
 package aze.motion
 {
-   public function eaze(param1:Object) : EazeTween
+   public function eaze(target:Object) : EazeTween
    {
-      return new EazeTween(param1);
+      return new EazeTween(target);
    }
 }
 

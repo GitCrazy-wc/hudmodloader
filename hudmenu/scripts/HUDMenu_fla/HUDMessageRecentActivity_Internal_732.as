@@ -1,21 +1,24 @@
 package HUDMenu_fla
 {
+   import Shared.AS3.BSButtonHintBar;
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol312")]
-   public dynamic class HUDMessageItemBox_Internal_717 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol258")]
+   public dynamic class HUDMessageRecentActivity_Internal_732 extends MovieClip
    {
       
       public var BodyText_tf:TextField;
       
+      public var ButtonHintBar_mc:BSButtonHintBar;
+      
       public var HeaderText_tf:TextField;
+      
+      public var Icon_mc:RecentActivityMessageIcon;
       
       public var TitleText_tf:TextField;
       
-      public var messageBoxStarContainer:MovieClip;
-      
-      public function HUDMessageItemBox_Internal_717()
+      public function HUDMessageRecentActivity_Internal_732()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

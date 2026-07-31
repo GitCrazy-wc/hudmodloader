@@ -6,7 +6,7 @@ package
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1055")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1062")]
    public class StealthMeter extends MovieClip
    {
       
@@ -43,7 +43,7 @@ package
          addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
          this.Internal_mc.gotoAndPlay("green");
          this.StealthTextInstance = this.Internal_mc.stealthTextStates.stealthTextAnimStates.StealthTextInstance;
@@ -51,11 +51,11 @@ package
          this.StealthTextInstance.autoSize = TextFieldAutoSize.CENTER;
       }
       
-      private function UpdateMode(param1:uint) : *
+      private function UpdateMode(aeNewMode:uint) : *
       {
-         var _loc2_:String = MODE_TO_FRAME_LABEL[param1];
-         this.Internal_mc.stealthTextStates.gotoAndPlay(_loc2_);
-         if(param1 == MODE_HIDDEN || param1 == MODE_DETECTED)
+         var stateName:String = MODE_TO_FRAME_LABEL[aeNewMode];
+         this.Internal_mc.stealthTextStates.gotoAndPlay(stateName);
+         if(aeNewMode == MODE_HIDDEN || aeNewMode == MODE_DETECTED)
          {
             if(this.isRed)
             {
@@ -70,32 +70,32 @@ package
          }
       }
       
-      public function SetStealthMeter(param1:String, param2:uint, param3:Number, param4:Boolean) : void
+      public function SetStealthMeter(astrSneakText:String, aeSneakMode:uint, aPercent:Number, abForce:Boolean) : void
       {
-         var _loc5_:* = param3 - this.LastPercent;
-         var _loc6_:Number = Math.floor(Math.abs(_loc5_) / 5) + 1;
-         _loc6_ = Math.min(_loc6_,4);
-         if(Math.abs(_loc5_) < 1 || param4)
+         var newPercent:* = aPercent - this.LastPercent;
+         var speed:Number = Math.floor(Math.abs(newPercent) / 5) + 1;
+         speed = Math.min(speed,4);
+         if(Math.abs(newPercent) < 1 || abForce)
          {
-            _loc5_ = param3;
+            newPercent = aPercent;
          }
          else
          {
-            _loc5_ = this.LastPercent + (_loc5_ > 0 ? _loc6_ : -_loc6_);
+            newPercent = this.LastPercent + (newPercent > 0 ? speed : -speed);
          }
-         if(this.LastMode != param2)
+         if(this.LastMode != aeSneakMode)
          {
-            this.LastMode = param2;
-            this.UpdateMode(param2);
+            this.LastMode = aeSneakMode;
+            this.UpdateMode(aeSneakMode);
          }
-         if(this.lastText != param1)
+         if(this.lastText != astrSneakText)
          {
-            this.lastText = param1;
-            GlobalFunc.SetText(this.StealthTextInstance,param1,true);
+            this.lastText = astrSneakText;
+            GlobalFunc.SetText(this.StealthTextInstance,astrSneakText,true);
          }
-         this.Internal_mc.BracketLeftInstance.x = -75 - _loc5_ - this.Internal_mc.BracketLeftInstance.width;
-         this.Internal_mc.BracketRightInstance.x = -75 + 150 + _loc5_;
-         this.LastPercent = _loc5_;
+         this.Internal_mc.BracketLeftInstance.x = -75 - newPercent - this.Internal_mc.BracketLeftInstance.width;
+         this.Internal_mc.BracketRightInstance.x = -75 + 150 + newPercent;
+         this.LastPercent = newPercent;
       }
       
       internal function frame5() : *

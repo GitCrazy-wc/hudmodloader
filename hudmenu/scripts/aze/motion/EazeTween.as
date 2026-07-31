@@ -91,51 +91,51 @@ package aze.motion
       
       private var _onCompleteArgs:Array;
       
-      public function EazeTween(param1:Object, param2:Boolean = true)
+      public function EazeTween(target:Object, autoStart:Boolean = true)
       {
          super();
-         if(!param1)
+         if(!target)
          {
             throw new ArgumentError("EazeTween: target can not be null");
          }
-         this.target = param1;
-         this.autoStart = param2;
+         this.target = target;
+         this.autoStart = autoStart;
          this._ease = defaultEasing;
       }
       
       public static function killAllTweens() : void
       {
-         var _loc1_:Object = null;
-         for(_loc1_ in running)
+         var target:Object = null;
+         for(target in running)
          {
-            killTweensOf(_loc1_);
+            killTweensOf(target);
          }
       }
       
-      public static function killTweensOf(param1:Object) : void
+      public static function killTweensOf(target:Object) : void
       {
-         var _loc3_:EazeTween = null;
-         if(!param1)
+         var rprev:EazeTween = null;
+         if(!target)
          {
             return;
          }
-         var _loc2_:EazeTween = running[param1];
-         while(_loc2_)
+         var tween:EazeTween = running[target];
+         while(tween)
          {
-            _loc2_.isDead = true;
-            _loc2_.dispose();
-            if(_loc2_.rnext)
+            tween.isDead = true;
+            tween.dispose();
+            if(tween.rnext)
             {
-               _loc3_ = _loc2_;
-               _loc2_ = _loc2_.rnext;
-               _loc3_.rnext = null;
+               rprev = tween;
+               tween = tween.rnext;
+               rprev.rnext = null;
             }
             else
             {
-               _loc2_ = null;
+               tween = null;
             }
          }
-         delete running[param1];
+         delete running[target];
       }
       
       public static function pauseAllTweens() : void
@@ -149,17 +149,17 @@ package aze.motion
       
       public static function resumeAllTweens() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:EazeTween = null;
+         var delta:Number = NaN;
+         var tween:EazeTween = null;
          if(!ticker.hasEventListener(Event.ENTER_FRAME))
          {
-            _loc1_ = getTimer() - pauseTime;
-            _loc2_ = head;
-            while(_loc2_)
+            delta = getTimer() - pauseTime;
+            tween = head;
+            while(tween)
             {
-               _loc2_.startTime += _loc1_;
-               _loc2_.endTime += _loc1_;
-               _loc2_ = _loc2_.next;
+               tween.startTime += delta;
+               tween.endTime += delta;
+               tween = tween.next;
             }
             ticker.addEventListener(Event.ENTER_FRAME,tick);
          }
@@ -167,12 +167,12 @@ package aze.motion
       
       private static function createTicker() : Shape
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.addEventListener(Event.ENTER_FRAME,tick);
-         return _loc1_;
+         var sp:Shape = new Shape();
+         sp.addEventListener(Event.ENTER_FRAME,tick);
+         return sp;
       }
       
-      private static function tick(param1:Event) : void
+      private static function tick(e:Event) : void
       {
          if(head)
          {
@@ -180,176 +180,174 @@ package aze.motion
          }
       }
       
-      private static function updateTweens(param1:int) : void
+      private static function updateTweens(time:int) : void
       {
-         var _loc6_:* = false;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc9_:Object = null;
-         var _loc10_:EazeProperty = null;
-         var _loc11_:EazeSpecial = null;
-         var _loc12_:EazeTween = null;
-         var _loc13_:EazeTween = null;
-         var _loc14_:CompleteData = null;
-         var _loc15_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:int = 0;
-         var _loc4_:EazeTween = head;
-         var _loc5_:int = 0;
-         while(_loc4_)
+         var isComplete:* = false;
+         var k:Number = NaN;
+         var ke:Number = NaN;
+         var target:Object = null;
+         var p:EazeProperty = null;
+         var s:EazeSpecial = null;
+         var dead:EazeTween = null;
+         var prev:EazeTween = null;
+         var cd:CompleteData = null;
+         var i:int = 0;
+         var complete:Array = [];
+         var ct:int = 0;
+         var t:EazeTween = head;
+         var cpt:int = 0;
+         while(t)
          {
-            _loc5_++;
-            if(_loc4_.isDead)
+            cpt++;
+            if(t.isDead)
             {
-               _loc6_ = true;
+               isComplete = true;
             }
             else
             {
-               _loc6_ = param1 >= _loc4_.endTime;
-               _loc7_ = _loc6_ ? 1 : (param1 - _loc4_.startTime) / _loc4_._duration;
-               _loc8_ = _loc4_._ease(_loc7_ || 0);
-               _loc9_ = _loc4_.target;
-               _loc10_ = _loc4_.properties;
-               while(_loc10_)
+               isComplete = time >= t.endTime;
+               k = isComplete ? 1 : (time - t.startTime) / t._duration;
+               ke = t._ease(k || 0);
+               target = t.target;
+               p = t.properties;
+               while(p)
                {
-                  _loc9_[_loc10_.name] = _loc10_.start + _loc10_.delta * _loc8_;
-                  _loc10_ = _loc10_.next;
+                  target[p.name] = p.start + p.delta * ke;
+                  p = p.next;
                }
-               if(_loc4_.slowTween)
+               if(t.slowTween)
                {
-                  if(_loc4_.autoVisible)
+                  if(t.autoVisible)
                   {
-                     _loc9_.visible = _loc9_.alpha > 0.001;
+                     target.visible = target.alpha > 0.001;
                   }
-                  if(_loc4_.specials)
+                  if(t.specials)
                   {
-                     _loc11_ = _loc4_.specials;
-                     while(_loc11_)
+                     s = t.specials;
+                     while(s)
                      {
-                        _loc11_.update(_loc8_,_loc6_);
-                        _loc11_ = _loc11_.next;
+                        s.update(ke,isComplete);
+                        s = s.next;
                      }
                   }
-                  if(_loc4_._onStart != null)
+                  if(t._onStart != null)
                   {
-                     _loc4_._onStart.apply(null,_loc4_._onStartArgs);
-                     _loc4_._onStart = null;
-                     _loc4_._onStartArgs = null;
+                     t._onStart.apply(null,t._onStartArgs);
+                     t._onStart = null;
+                     t._onStartArgs = null;
                   }
-                  if(_loc4_._onUpdate != null)
+                  if(t._onUpdate != null)
                   {
-                     _loc4_._onUpdate.apply(null,_loc4_._onUpdateArgs);
+                     t._onUpdate.apply(null,t._onUpdateArgs);
                   }
                }
             }
-            if(_loc6_)
+            if(isComplete)
             {
-               if(_loc4_._started)
+               if(t._started)
                {
-                  _loc14_ = new CompleteData(_loc4_._onComplete,_loc4_._onCompleteArgs,_loc4_._chain,_loc4_.endTime - param1);
-                  _loc4_._chain = null;
-                  _loc2_.unshift(_loc14_);
-                  _loc3_++;
+                  cd = new CompleteData(t._onComplete,t._onCompleteArgs,t._chain,t.endTime - time);
+                  t._chain = null;
+                  complete.unshift(cd);
+                  ct++;
                }
-               _loc4_.isDead = true;
-               _loc4_.detach();
-               _loc4_.dispose();
-               _loc12_ = _loc4_;
-               _loc13_ = _loc4_.prev;
-               _loc4_ = _loc12_.next;
-               if(_loc13_)
+               t.isDead = true;
+               t.detach();
+               t.dispose();
+               dead = t;
+               prev = t.prev;
+               t = dead.next;
+               if(prev)
                {
-                  _loc13_.next = _loc4_;
-                  if(_loc4_)
+                  prev.next = t;
+                  if(t)
                   {
-                     _loc4_.prev = _loc13_;
+                     t.prev = prev;
                   }
                }
                else
                {
-                  head = _loc4_;
-                  if(_loc4_)
+                  head = t;
+                  if(t)
                   {
-                     _loc4_.prev = null;
+                     t.prev = null;
                   }
                }
-               _loc12_.prev = _loc12_.next = null;
+               dead.prev = dead.next = null;
             }
             else
             {
-               _loc4_ = _loc4_.next;
+               t = t.next;
             }
          }
-         if(_loc3_)
+         if(ct)
          {
-            _loc15_ = 0;
-            while(_loc15_ < _loc3_)
+            for(i = 0; i < ct; i++)
             {
-               _loc2_[_loc15_].execute();
-               _loc15_++;
+               complete[i].execute();
             }
          }
-         tweenCount = _loc5_;
+         tweenCount = cpt;
       }
       
-      private function configure(param1:*, param2:Object = null, param3:Boolean = false) : void
+      private function configure(duration:*, newState:Object = null, reversed:Boolean = false) : void
       {
-         var _loc4_:String = null;
-         var _loc5_:* = undefined;
+         var name:String = null;
+         var value:* = undefined;
          this._configured = true;
-         this.reversed = param3;
-         this.duration = param1;
-         if(param2)
+         this.reversed = reversed;
+         this.duration = duration;
+         if(newState)
          {
-            for(_loc4_ in param2)
+            for(name in newState)
             {
-               _loc5_ = param2[_loc4_];
-               if(_loc4_ in specialProperties)
+               value = newState[name];
+               if(name in specialProperties)
                {
-                  if(_loc4_ == "alpha")
+                  if(name == "alpha")
                   {
                      this.autoVisible = true;
                      this.slowTween = true;
                   }
-                  else if(_loc4_ == "alphaVisible")
+                  else if(name == "alphaVisible")
                   {
-                     _loc4_ = "alpha";
+                     name = "alpha";
                      this.autoVisible = false;
                   }
-                  else if(!(_loc4_ in this.target))
+                  else if(!(name in this.target))
                   {
-                     if(_loc4_ == "scale")
+                     if(name == "scale")
                      {
-                        this.configure(param1,{
-                           "scaleX":_loc5_,
-                           "scaleY":_loc5_
-                        },param3);
+                        this.configure(duration,{
+                           "scaleX":value,
+                           "scaleY":value
+                        },reversed);
                      }
                      else
                      {
-                        this.specials = new specialProperties[_loc4_](this.target,_loc4_,_loc5_,this.specials);
+                        this.specials = new specialProperties[name](this.target,name,value,this.specials);
                         this.slowTween = true;
                      }
                      continue;
                   }
                }
-               if(_loc5_ is Array && this.target[_loc4_] is Number)
+               if(value is Array && this.target[name] is Number)
                {
                   if("__bezier" in specialProperties)
                   {
-                     this.specials = new specialProperties["__bezier"](this.target,_loc4_,_loc5_,this.specials);
+                     this.specials = new specialProperties["__bezier"](this.target,name,value,this.specials);
                      this.slowTween = true;
                   }
                }
                else
                {
-                  this.properties = new EazeProperty(_loc4_,_loc5_,this.properties);
+                  this.properties = new EazeProperty(name,value,this.properties);
                }
             }
          }
       }
       
-      public function start(param1:Boolean = true, param2:Number = 0) : void
+      public function start(killTargetTweens:Boolean = true, timeOffset:Number = 0) : void
       {
          if(this._started)
          {
@@ -359,8 +357,8 @@ package aze.motion
          {
             this.init();
          }
-         this.overwrite = param1;
-         this.startTime = getTimer() + param2;
+         this.overwrite = killTargetTweens;
+         this.startTime = getTimer() + timeOffset;
          this._duration = (isNaN(this.duration) ? this.smartDuration(String(this.duration)) : Number(this.duration)) * 1000;
          this.endTime = this.startTime + this._duration;
          if(this.reversed || this._duration == 0)
@@ -381,109 +379,109 @@ package aze.motion
          {
             return;
          }
-         var _loc1_:EazeProperty = this.properties;
-         while(_loc1_)
+         var p:EazeProperty = this.properties;
+         while(p)
          {
-            _loc1_.init(this.target,this.reversed);
-            _loc1_ = _loc1_.next;
+            p.init(this.target,this.reversed);
+            p = p.next;
          }
-         var _loc2_:EazeSpecial = this.specials;
-         while(_loc2_)
+         var s:EazeSpecial = this.specials;
+         while(s)
          {
-            _loc2_.init(this.reversed);
-            _loc2_ = _loc2_.next;
+            s.init(this.reversed);
+            s = s.next;
          }
          this._inited = true;
       }
       
-      private function smartDuration(param1:String) : Number
+      private function smartDuration(duration:String) : Number
       {
-         var _loc2_:EazeSpecial = null;
-         if(param1 in defaultDuration)
+         var s:EazeSpecial = null;
+         if(duration in defaultDuration)
          {
-            return defaultDuration[param1];
+            return defaultDuration[duration];
          }
-         if(param1 == "auto")
+         if(duration == "auto")
          {
-            _loc2_ = this.specials;
-            while(_loc2_)
+            s = this.specials;
+            while(s)
             {
-               if("getPreferredDuration" in _loc2_)
+               if("getPreferredDuration" in s)
                {
-                  return _loc2_["getPreferredDuration"]();
+                  return s["getPreferredDuration"]();
                }
-               _loc2_ = _loc2_.next;
+               s = s.next;
             }
          }
          return defaultDuration.normal;
       }
       
-      public function easing(param1:Function) : EazeTween
+      public function easing(f:Function) : EazeTween
       {
-         this._ease = param1 || defaultEasing;
+         this._ease = f || defaultEasing;
          return this;
       }
       
-      public function filter(param1:*, param2:Object, param3:Boolean = false) : EazeTween
+      public function filter(classRef:*, parameters:Object, removeWhenDone:Boolean = false) : EazeTween
       {
-         if(!param2)
+         if(!parameters)
          {
-            param2 = {};
+            parameters = {};
          }
-         if(param3)
+         if(removeWhenDone)
          {
-            param2.remove = true;
+            parameters.remove = true;
          }
-         this.addSpecial(param1,param1,param2);
+         this.addSpecial(classRef,classRef,parameters);
          return this;
       }
       
-      public function tint(param1:* = null, param2:Number = 1, param3:Number = NaN) : EazeTween
+      public function tint(tint:* = null, colorize:Number = 1, multiply:Number = NaN) : EazeTween
       {
-         if(isNaN(param3))
+         if(isNaN(multiply))
          {
-            param3 = 1 - param2;
+            multiply = 1 - colorize;
          }
-         this.addSpecial("tint","tint",[param1,param2,param3]);
+         this.addSpecial("tint","tint",[tint,colorize,multiply]);
          return this;
       }
       
-      public function colorMatrix(param1:Number = 0, param2:Number = 0, param3:Number = 0, param4:Number = 0, param5:uint = 16777215, param6:Number = 0) : EazeTween
+      public function colorMatrix(brightness:Number = 0, contrast:Number = 0, saturation:Number = 0, hue:Number = 0, tint:uint = 16777215, colorize:Number = 0) : EazeTween
       {
-         var _loc7_:Boolean = !param1 && !param2 && !param3 && !param4 && !param6;
+         var remove:Boolean = !brightness && !contrast && !saturation && !hue && !colorize;
          return this.filter(ColorMatrixFilter,{
-            "brightness":param1,
-            "contrast":param2,
-            "saturation":param3,
-            "hue":param4,
-            "tint":param5,
-            "colorize":param6
-         },_loc7_);
+            "brightness":brightness,
+            "contrast":contrast,
+            "saturation":saturation,
+            "hue":hue,
+            "tint":tint,
+            "colorize":colorize
+         },remove);
       }
       
-      public function short(param1:Number, param2:String = "rotation", param3:Boolean = false) : EazeTween
+      public function short(value:Number, name:String = "rotation", useRadian:Boolean = false) : EazeTween
       {
-         this.addSpecial("__short",param2,[param1,param3]);
+         this.addSpecial("__short",name,[value,useRadian]);
          return this;
       }
       
-      public function rect(param1:Rectangle, param2:String = "scrollRect") : EazeTween
+      public function rect(value:Rectangle, name:String = "scrollRect") : EazeTween
       {
-         this.addSpecial("__rect",param2,param1);
+         this.addSpecial("__rect",name,value);
          return this;
       }
       
-      private function addSpecial(param1:*, param2:*, param3:Object) : void
+      private function addSpecial(special:*, name:*, value:Object) : void
       {
-         if(param1 in specialProperties && Boolean(this.target))
+         if(special in specialProperties && Boolean(this.target))
          {
             if((!this._inited || this._duration == 0) && this.autoStart)
             {
-               EazeSpecial(new specialProperties[param1](this.target,param2,param3,null)).init(true);
+               EazeSpecial(new specialProperties[special](this.target,name,value,null)).init(true);
             }
             else
             {
-               this.specials = new specialProperties[param1](this.target,param2,param3,this.specials);
+               this.specials = new specialProperties[special](this.target,name,value,this.specials);
                if(this._started)
                {
                   this.specials.init(this.reversed);
@@ -493,36 +491,36 @@ package aze.motion
          }
       }
       
-      public function onStart(param1:Function, ... rest) : EazeTween
+      public function onStart(handler:Function, ... args) : EazeTween
       {
-         this._onStart = param1;
-         this._onStartArgs = rest;
+         this._onStart = handler;
+         this._onStartArgs = args;
          this.slowTween = !this.autoVisible || this.specials != null || this._onUpdate != null || this._onStart != null;
          return this;
       }
       
-      public function onUpdate(param1:Function, ... rest) : EazeTween
+      public function onUpdate(handler:Function, ... args) : EazeTween
       {
-         this._onUpdate = param1;
-         this._onUpdateArgs = rest;
+         this._onUpdate = handler;
+         this._onUpdateArgs = args;
          this.slowTween = !this.autoVisible || this.specials != null || this._onUpdate != null || this._onStart != null;
          return this;
       }
       
-      public function onComplete(param1:Function, ... rest) : EazeTween
+      public function onComplete(handler:Function, ... args) : EazeTween
       {
-         this._onComplete = param1;
-         this._onCompleteArgs = rest;
+         this._onComplete = handler;
+         this._onCompleteArgs = args;
          return this;
       }
       
-      public function kill(param1:Boolean = false) : void
+      public function kill(setEndValues:Boolean = false) : void
       {
          if(this.isDead)
          {
             return;
          }
-         if(param1)
+         if(setEndValues)
          {
             this._onUpdate = this._onComplete = null;
             this.update(this.endTime);
@@ -543,11 +541,11 @@ package aze.motion
       
       public function updateNow() : EazeTween
       {
-         var _loc1_:Number = NaN;
+         var t:Number = NaN;
          if(this._started)
          {
-            _loc1_ = Math.max(this.startTime,getTimer());
-            this.update(_loc1_);
+            t = Math.max(this.startTime,getTimer());
+            this.update(t);
          }
          else
          {
@@ -558,35 +556,35 @@ package aze.motion
          return this;
       }
       
-      private function update(param1:Number) : void
+      private function update(time:Number) : void
       {
-         var _loc2_:EazeTween = head;
+         var h:EazeTween = head;
          head = this;
-         updateTweens(param1);
-         head = _loc2_;
+         updateTweens(time);
+         head = h;
       }
       
-      private function attach(param1:Boolean) : void
+      private function attach(overwrite:Boolean) : void
       {
-         var _loc2_:EazeTween = null;
-         if(param1)
+         var parallel:EazeTween = null;
+         if(overwrite)
          {
             killTweensOf(this.target);
          }
          else
          {
-            _loc2_ = running[this.target];
+            parallel = running[this.target];
          }
-         if(_loc2_)
+         if(parallel)
          {
-            this.prev = _loc2_;
-            this.next = _loc2_.next;
+            this.prev = parallel;
+            this.next = parallel.next;
             if(this.next)
             {
                this.next.prev = this;
             }
-            _loc2_.next = this;
-            this.rnext = _loc2_;
+            parallel.next = this;
+            this.rnext = parallel;
          }
          else
          {
@@ -602,12 +600,12 @@ package aze.motion
       
       private function detach() : void
       {
-         var _loc1_:EazeTween = null;
-         var _loc2_:EazeTween = null;
+         var targetTweens:EazeTween = null;
+         var prev:EazeTween = null;
          if(Boolean(this.target) && this._started)
          {
-            _loc1_ = running[this.target];
-            if(_loc1_ == this)
+            targetTweens = running[this.target];
+            if(targetTweens == this)
             {
                if(this.rnext)
                {
@@ -618,19 +616,19 @@ package aze.motion
                   delete running[this.target];
                }
             }
-            else if(_loc1_)
+            else if(targetTweens)
             {
-               _loc2_ = _loc1_;
-               _loc1_ = _loc1_.rnext;
-               while(_loc1_)
+               prev = targetTweens;
+               targetTweens = targetTweens.rnext;
+               while(targetTweens)
                {
-                  if(_loc1_ == this)
+                  if(targetTweens == this)
                   {
-                     _loc2_.rnext = this.rnext;
+                     prev.rnext = this.rnext;
                      break;
                   }
-                  _loc2_ = _loc1_;
-                  _loc1_ = _loc1_.rnext;
+                  prev = targetTweens;
+                  targetTweens = targetTweens.rnext;
                }
             }
             this.rnext = null;
@@ -639,7 +637,7 @@ package aze.motion
       
       private function dispose() : void
       {
-         var _loc1_:EazeTween = null;
+         var tween:EazeTween = null;
          if(this._started)
          {
             this.target = null;
@@ -647,9 +645,9 @@ package aze.motion
             this._onCompleteArgs = null;
             if(this._chain)
             {
-               for each(_loc1_ in this._chain)
+               for each(tween in this._chain)
                {
-                  _loc1_.dispose();
+                  tween.dispose();
                }
                this._chain = null;
             }
@@ -675,58 +673,58 @@ package aze.motion
          }
       }
       
-      public function delay(param1:*, param2:Boolean = true) : EazeTween
+      public function delay(duration:*, overwrite:Boolean = true) : EazeTween
       {
-         return this.add(param1,null,param2);
+         return this.add(duration,null,overwrite);
       }
       
-      public function apply(param1:Object = null, param2:Boolean = true) : EazeTween
+      public function apply(newState:Object = null, overwrite:Boolean = true) : EazeTween
       {
-         return this.add(0,param1,param2);
+         return this.add(0,newState,overwrite);
       }
       
-      public function play(param1:* = 0, param2:Boolean = true) : EazeTween
+      public function play(frame:* = 0, overwrite:Boolean = true) : EazeTween
       {
-         return this.add("auto",{"frame":param1},param2).easing(Linear.easeNone);
+         return this.add("auto",{"frame":frame},overwrite).easing(Linear.easeNone);
       }
       
-      public function to(param1:*, param2:Object = null, param3:Boolean = true) : EazeTween
+      public function to(duration:*, newState:Object = null, overwrite:Boolean = true) : EazeTween
       {
-         return this.add(param1,param2,param3);
+         return this.add(duration,newState,overwrite);
       }
       
-      public function from(param1:*, param2:Object = null, param3:Boolean = true) : EazeTween
+      public function from(duration:*, fromState:Object = null, overwrite:Boolean = true) : EazeTween
       {
-         return this.add(param1,param2,param3,true);
+         return this.add(duration,fromState,overwrite,true);
       }
       
-      private function add(param1:*, param2:Object, param3:Boolean, param4:Boolean = false) : EazeTween
+      private function add(duration:*, state:Object, overwrite:Boolean, reversed:Boolean = false) : EazeTween
       {
          if(this.isDead)
          {
-            return new EazeTween(this.target).add(param1,param2,param3,param4);
+            return new EazeTween(this.target).add(duration,state,overwrite,reversed);
          }
          if(this._configured)
          {
-            return this.chain().add(param1,param2,param3,param4);
+            return this.chain().add(duration,state,overwrite,reversed);
          }
-         this.configure(param1,param2,param4);
+         this.configure(duration,state,reversed);
          if(this.autoStart)
          {
-            this.start(param3);
+            this.start(overwrite);
          }
          return this;
       }
       
-      public function chain(param1:Object = null) : EazeTween
+      public function chain(target:Object = null) : EazeTween
       {
-         var _loc2_:EazeTween = new EazeTween(param1 || this.target,false);
+         var tween:EazeTween = new EazeTween(target || this.target,false);
          if(!this._chain)
          {
             this._chain = [];
          }
-         this._chain.push(_loc2_);
-         return _loc2_;
+         this._chain.push(tween);
+         return tween;
       }
       
       public function get isStarted() : Boolean
@@ -754,25 +752,25 @@ final class EazeProperty
    
    public var next:EazeProperty;
    
-   public function EazeProperty(param1:String, param2:Number, param3:EazeProperty)
+   public function EazeProperty(name:String, end:Number, next:EazeProperty)
    {
       super();
-      this.name = param1;
-      this.end = param2;
-      this.next = param3;
+      this.name = name;
+      this.end = end;
+      this.next = next;
    }
    
-   public function init(param1:Object, param2:Boolean) : void
+   public function init(target:Object, reversed:Boolean) : void
    {
-      if(param2)
+      if(reversed)
       {
          this.start = this.end;
-         this.end = param1[this.name];
-         param1[this.name] = this.start;
+         this.end = target[this.name];
+         target[this.name] = this.start;
       }
       else
       {
-         this.start = param1[this.name];
+         this.start = target[this.name];
       }
       this.delta = this.end - this.start;
    }
@@ -798,19 +796,19 @@ final class CompleteData
    
    private var diff:Number;
    
-   public function CompleteData(param1:Function, param2:Array, param3:Array, param4:Number)
+   public function CompleteData(callback:Function, args:Array, chain:Array, diff:Number)
    {
       super();
-      this.callback = param1;
-      this.args = param2;
-      this.chain = param3;
-      this.diff = param4;
+      this.callback = callback;
+      this.args = args;
+      this.chain = chain;
+      this.diff = diff;
    }
    
    public function execute() : void
    {
-      var _loc1_:int = 0;
-      var _loc2_:int = 0;
+      var len:int = 0;
+      var i:int = 0;
       if(this.callback != null)
       {
          this.callback.apply(null,this.args);
@@ -819,12 +817,10 @@ final class CompleteData
       this.args = null;
       if(this.chain)
       {
-         _loc1_ = int(this.chain.length);
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         len = int(this.chain.length);
+         for(i = 0; i < len; i++)
          {
-            EazeTween(this.chain[_loc2_]).start(false,this.diff);
-            _loc2_++;
+            EazeTween(this.chain[i]).start(false,this.diff);
          }
          this.chain = null;
       }

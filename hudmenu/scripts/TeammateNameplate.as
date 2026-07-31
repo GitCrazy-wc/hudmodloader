@@ -10,7 +10,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol161")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol163")]
    public class TeammateNameplate extends BSUIComponent
    {
       
@@ -194,10 +194,10 @@ package
          });
       }
       
-      public function set entityID(param1:uint) : void
+      public function set entityID(aVal:uint) : void
       {
-         this._EntityID = param1;
-         this.Emote_mc.entityID = param1;
+         this._EntityID = aVal;
+         this.Emote_mc.entityID = aVal;
       }
       
       public function get entityID() : uint
@@ -205,31 +205,31 @@ package
          return this._EntityID;
       }
       
-      public function set playerState(param1:String) : void
+      public function set playerState(aVal:String) : void
       {
-         if(param1 != this._PlayerState)
+         if(aVal != this._PlayerState)
          {
-            this._PlayerState = param1;
+            this._PlayerState = aVal;
             SetIsDirty();
          }
       }
       
-      public function set wantedState(param1:String) : void
+      public function set wantedState(aVal:String) : void
       {
-         if(param1 != this._WantedState)
+         if(aVal != this._WantedState)
          {
-            this._WantedState = param1;
+            this._WantedState = aVal;
             SetIsDirty();
          }
       }
       
-      public function set displayName(param1:String) : void
+      public function set displayName(aVal:String) : void
       {
-         var _loc2_:Array = GlobalFunc.GenerateNameAndTitleArray(param1);
-         if(this._Name != _loc2_[0] || _loc2_.length > 1 && this._Title != _loc2_[1] || _loc2_.length == 1 && this._Title != "")
+         var playerStrings:Array = GlobalFunc.GenerateNameAndTitleArray(aVal);
+         if(this._Name != playerStrings[0] || playerStrings.length > 1 && this._Title != playerStrings[1] || playerStrings.length == 1 && this._Title != "")
          {
-            this._Name = _loc2_[0];
-            this._Title = _loc2_.length > 1 ? _loc2_[1] : "";
+            this._Name = playerStrings[0];
+            this._Title = playerStrings.length > 1 ? playerStrings[1] : "";
             if(this._Title == " ")
             {
                this._Title = "";
@@ -238,291 +238,291 @@ package
          }
       }
       
-      public function set HPPct(param1:Number) : void
+      public function set HPPct(aVal:Number) : void
       {
-         var _loc2_:Number = Math.min(Math.max(param1,0),1);
-         if(_loc2_ != this._HPPercent)
+         var newHPPct:Number = Math.min(Math.max(aVal,0),1);
+         if(newHPPct != this._HPPercent)
          {
-            this._HPPercent = _loc2_;
+            this._HPPercent = newHPPct;
             SetIsDirty();
          }
       }
       
-      public function set rads(param1:Number) : void
+      public function set rads(aVal:Number) : void
       {
-         if(param1 != this._Rads)
+         if(aVal != this._Rads)
          {
-            this._Rads = param1;
+            this._Rads = aVal;
             SetIsDirty();
          }
       }
       
-      public function set distance(param1:Number) : void
+      public function set distance(aVal:Number) : void
       {
-         if(param1 != this._Distance)
+         if(aVal != this._Distance)
          {
-            this._Distance = param1;
+            this._Distance = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isLocalPlayer(param1:Boolean) : void
+      public function set isLocalPlayer(aVal:Boolean) : void
       {
-         if(param1 != this._IsLocalPlayer)
+         if(aVal != this._IsLocalPlayer)
          {
-            this._IsLocalPlayer = param1;
+            this._IsLocalPlayer = aVal;
             SetIsDirty();
          }
       }
       
-      public function set inLOS(param1:Boolean) : void
+      public function set inLOS(aVal:Boolean) : void
       {
-         if(param1 != this._inLOS)
+         if(aVal != this._inLOS)
          {
-            this._inLOS = param1;
+            this._inLOS = aVal;
             SetIsDirty();
          }
       }
       
-      public function set revengeTarget(param1:Boolean) : void
+      public function set revengeTarget(aVal:Boolean) : void
       {
-         if(param1 != this._IsRevengeTarget)
+         if(aVal != this._IsRevengeTarget)
          {
-            this._IsRevengeTarget = param1;
+            this._IsRevengeTarget = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isOnScreen(param1:Boolean) : void
+      public function set isOnScreen(aVal:Boolean) : void
       {
-         if(param1 != this._IsOnScreen)
+         if(aVal != this._IsOnScreen)
          {
-            this._IsOnScreen = param1;
+            this._IsOnScreen = aVal;
             SetIsDirty();
          }
       }
       
-      public function set offScreenAngle(param1:Number) : void
+      public function set offScreenAngle(aVal:Number) : void
       {
-         if(param1 != this._OffScreenAngle)
+         if(aVal != this._OffScreenAngle)
          {
-            this._OffScreenAngle = param1;
+            this._OffScreenAngle = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isBeyondRailLimits(param1:Boolean) : void
+      public function set isBeyondRailLimits(aVal:Boolean) : void
       {
-         if(param1 != this._IsBeyondRailLimits)
+         if(aVal != this._IsBeyondRailLimits)
          {
-            this._IsBeyondRailLimits = param1;
+            this._IsBeyondRailLimits = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isFriend(param1:Boolean) : void
+      public function set isFriend(aVal:Boolean) : void
       {
-         if(param1 != this._IsFriend)
+         if(aVal != this._IsFriend)
          {
-            this._IsFriend = param1;
+            this._IsFriend = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isFriendInvitePending(param1:Boolean) : void
+      public function set isFriendInvitePending(aVal:Boolean) : void
       {
-         if(param1 != this._isFriendInvitePending)
+         if(aVal != this._isFriendInvitePending)
          {
-            this._isFriendInvitePending = param1;
+            this._isFriendInvitePending = aVal;
             SetIsDirty();
          }
       }
       
-      public function set deadState(param1:uint) : void
+      public function set deadState(aVal:uint) : void
       {
-         if(param1 != this._deadState)
+         if(aVal != this._deadState)
          {
-            this._deadState = param1;
+            this._deadState = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isTeammate(param1:Boolean) : void
+      public function set isTeammate(aVal:Boolean) : void
       {
-         if(param1 != this._isTeammate)
+         if(aVal != this._isTeammate)
          {
-            this._isTeammate = param1;
+            this._isTeammate = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isLeader(param1:Boolean) : void
+      public function set isLeader(aVal:Boolean) : void
       {
-         if(param1 != this._isLeader)
+         if(aVal != this._isLeader)
          {
-            this._isLeader = param1;
+            this._isLeader = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isInConversation(param1:Boolean) : void
+      public function set isInConversation(aVal:Boolean) : void
       {
-         if(param1 != this._isInConversation)
+         if(aVal != this._isInConversation)
          {
-            this._isInConversation = param1;
+            this._isInConversation = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isEventGroup(param1:Boolean) : void
+      public function set isEventGroup(aVal:Boolean) : void
       {
-         if(param1 != this._isEventGroup)
+         if(aVal != this._isEventGroup)
          {
-            this._isEventGroup = param1;
+            this._isEventGroup = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isHostile(param1:Boolean) : void
+      public function set isHostile(aVal:Boolean) : void
       {
-         if(param1 != this._isHostile)
+         if(aVal != this._isHostile)
          {
-            this._isHostile = param1;
+            this._isHostile = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isPvPFlagged(param1:Boolean) : void
+      public function set isPvPFlagged(aVal:Boolean) : void
       {
-         if(param1 != this._isPvPFlagged)
+         if(aVal != this._isPvPFlagged)
          {
-            this._isPvPFlagged = param1;
+            this._isPvPFlagged = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isSpeakingInSameChannel(param1:Boolean) : void
+      public function set isSpeakingInSameChannel(aVal:Boolean) : void
       {
-         if(param1 != this._isSpeakingInSameChannel)
+         if(aVal != this._isSpeakingInSameChannel)
          {
-            this._isSpeakingInSameChannel = param1;
+            this._isSpeakingInSameChannel = aVal;
             SetIsDirty();
          }
       }
       
-      public function set voiceChatStatus(param1:uint) : void
+      public function set voiceChatStatus(aVal:uint) : void
       {
-         if(param1 != this._voiceChatStatus)
+         if(aVal != this._voiceChatStatus)
          {
-            this._voiceChatStatus = param1;
+            this._voiceChatStatus = aVal;
             SetIsDirty();
          }
       }
       
-      public function set level(param1:uint) : void
+      public function set level(aVal:uint) : void
       {
-         if(param1 != this._Level)
+         if(aVal != this._Level)
          {
-            this._Level = param1;
+            this._Level = aVal;
             SetIsDirty();
          }
       }
       
-      public function set bounty(param1:uint) : void
+      public function set bounty(aVal:uint) : void
       {
-         if(param1 != this._Bounty)
+         if(aVal != this._Bounty)
          {
-            this._Bounty = param1;
+            this._Bounty = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isNuclearWinterMode(param1:Boolean) : void
+      public function set isNuclearWinterMode(aVal:Boolean) : void
       {
-         if(param1 != this._isNuclearWinterMode)
+         if(aVal != this._isNuclearWinterMode)
          {
-            this._isNuclearWinterMode = param1;
+            this._isNuclearWinterMode = aVal;
             SetIsDirty();
          }
       }
       
-      public function set teamType(param1:uint) : void
+      public function set teamType(aVal:uint) : void
       {
-         if(param1 != this._teamType)
+         if(aVal != this._teamType)
          {
-            this._teamType = param1;
+            this._teamType = aVal;
             SetIsDirty();
          }
       }
       
-      public function set isPublicTeamLeader(param1:Boolean) : void
+      public function set isPublicTeamLeader(aVal:Boolean) : void
       {
-         if(param1 != this._isPublicTeamLeader)
+         if(aVal != this._isPublicTeamLeader)
          {
-            this._isPublicTeamLeader = param1;
+            this._isPublicTeamLeader = aVal;
             SetIsDirty();
          }
       }
       
       override public function redrawUIComponent() : void
       {
-         var _loc11_:TextField = null;
-         var _loc12_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc14_:Point = null;
-         var _loc15_:Point = null;
-         var _loc16_:Point = null;
-         var _loc1_:Boolean = false;
-         var _loc2_:Boolean = true;
-         var _loc3_:Boolean = false;
-         var _loc4_:Boolean = false;
-         var _loc5_:Boolean = false;
-         var _loc6_:uint = GlobalFunc.COLOR_TEXT_HEADER;
+         var inConvoText_tf:TextField = null;
+         var titleOffset:Number = NaN;
+         var maxPlateWidth:Number = NaN;
+         var namePointGlobal:Point = null;
+         var PTHUDIconSmallPointGlobal:Point = null;
+         var newPTHUDIconSmallPoint:Point = null;
+         var showArrow:Boolean = false;
+         var arrowAlly:Boolean = true;
+         var showName:Boolean = false;
+         var showDistance:Boolean = false;
+         var showScreenEdgeArrow:Boolean = false;
+         var nameColor:uint = GlobalFunc.COLOR_TEXT_HEADER;
          switch(this._PlayerState)
          {
             case "eventgroupmate":
                if(this._inLOS && this._Distance < DISTANCE_VISIBLE_THRESHOLD)
                {
-                  _loc3_ = true;
+                  showName = true;
                }
                else
                {
-                  _loc1_ = true;
+                  showArrow = true;
                }
                break;
             case "teammate":
-               _loc5_ = this._IsBeyondRailLimits;
-               _loc3_ = true;
+               showScreenEdgeArrow = this._IsBeyondRailLimits;
+               showName = true;
                if(this._Distance >= DISTANCE_VISIBLE_THRESHOLD)
                {
-                  _loc4_ = true;
+                  showDistance = true;
                }
                break;
             case "hostile":
             case "hostileGroup":
-               _loc2_ = false;
-               _loc6_ = GlobalFunc.COLOR_TEXT_ENEMY;
+               arrowAlly = false;
+               nameColor = GlobalFunc.COLOR_TEXT_ENEMY;
                if(this._inLOS && (this._Distance <= NON_ALLY_MAX_DISTANCE || this._isNuclearWinterMode))
                {
-                  _loc1_ = true;
+                  showArrow = true;
                }
                break;
             case "nonhostile":
             case "friend":
             case "potentialHostile":
-               _loc3_ = this._inLOS && this._Distance <= NON_ALLY_MAX_DISTANCE;
-               _loc6_ = GlobalFunc.COLOR_TEXT_BODY;
+               showName = this._inLOS && this._Distance <= NON_ALLY_MAX_DISTANCE;
+               nameColor = GlobalFunc.COLOR_TEXT_BODY;
          }
          if(this._IsLocalPlayer)
          {
-            _loc3_ = false;
+            showName = false;
          }
-         var _loc7_:Boolean = false;
+         var showDeadState:Boolean = false;
          if(this._isTeammate || this._isEventGroup && !this._isHostile)
          {
             if(this._deadState == DEAD_STATE_DBNO || this._deadState == DEAD_STATE_DEAD)
             {
-               _loc7_ = true;
+               showDeadState = true;
                if(this._deadState == DEAD_STATE_DBNO)
                {
                   if(this.DisplayedDeadState != "dbno")
@@ -538,33 +538,33 @@ package
                }
             }
          }
-         this.DeadState_mc.visible = _loc7_;
+         this.DeadState_mc.visible = showDeadState;
          if(this.Name_tf)
          {
-            this.Name_tf.textColor = _loc6_;
+            this.Name_tf.textColor = nameColor;
          }
          if(this.Title_tf)
          {
-            this.Title_tf.textColor = _loc6_;
+            this.Title_tf.textColor = nameColor;
          }
-         var _loc8_:String = "";
-         var _loc9_:* = this._WantedState == "mostWanted";
+         var alertText:String = "";
+         var mostWanted:* = this._WantedState == "mostWanted";
          if(!this._IsLocalPlayer && this._inLOS && this._Distance <= NON_ALLY_MAX_DISTANCE)
          {
             if(this._IsRevengeTarget)
             {
-               _loc8_ == "$REVENGE TARGET";
+               alertText == "$REVENGE TARGET";
             }
-            else if(_loc9_)
+            else if(mostWanted)
             {
-               _loc8_ = "$MOSTWANTED";
+               alertText = "$MOSTWANTED";
             }
             else if(this._WantedState == "wanted")
             {
-               _loc8_ = "$WANTED";
+               alertText = "$WANTED";
             }
          }
-         GlobalFunc.SetText(this.AlertText_tf,_loc8_,false);
+         GlobalFunc.SetText(this.AlertText_tf,alertText,false);
          if(!this._IsLocalPlayer && this._inLOS && (this._WantedState == "wanted" || this._WantedState == "mostWanted") && this._Distance <= NON_ALLY_MAX_DISTANCE)
          {
             this.Bounty_mc.visible = true;
@@ -576,7 +576,7 @@ package
             this.Bounty_mc.visible = false;
             this.AlertText_tf.y = this._alertBaseY;
          }
-         this.ScreenEdgeArrow_mc.visible = _loc5_;
+         this.ScreenEdgeArrow_mc.visible = showScreenEdgeArrow;
          if(this.ScreenEdgeArrow_mc.visible)
          {
             if(this._PlayerState == "teammate")
@@ -594,12 +594,12 @@ package
             }
             this.ScreenEdgeArrow_mc.rotation = this._OffScreenAngle;
          }
-         this.Arrow_mc.visible = _loc1_ && !_loc5_ && this._PlayerState != "teammate";
+         this.Arrow_mc.visible = showArrow && !showScreenEdgeArrow && this._PlayerState != "teammate";
          if(this.Arrow_mc.visible)
          {
-            if(_loc2_)
+            if(arrowAlly)
             {
-               if(_loc6_ == GlobalFunc.COLOR_TEXT_BODY)
+               if(nameColor == GlobalFunc.COLOR_TEXT_BODY)
                {
                   if(this.DisplayedArrowState != "neutral")
                   {
@@ -619,20 +619,20 @@ package
                this.Arrow_mc.gotoAndStop("enemy");
             }
          }
-         this.AllyDistance_mc.visible = _loc4_ && !this._EmoteVisible && !_loc5_;
+         this.AllyDistance_mc.visible = showDistance && !this._EmoteVisible && !showScreenEdgeArrow;
          if(this.AllyDistance_mc.visible)
          {
             this.AllyDistance_mc.gotoAndStop(Boolean(this._Title) && this._Title.length > 0 ? "title" : "default");
             this.AllyDistance_mc.AllyDistance_tf.text = Math.floor(this._Distance);
          }
-         this.NamePlateNameGroup_mc.visible = _loc3_ && !_loc5_;
+         this.NamePlateNameGroup_mc.visible = showName && !showScreenEdgeArrow;
          if(this.NamePlateNameGroup_mc.visible)
          {
             if(this._isLeader && this._isInConversation)
             {
-               _loc11_ = new TextField();
-               _loc11_.text = " $$InConversation";
-               GlobalFunc.SetText(this.Name_tf,this._Name + _loc11_.text,false);
+               inConvoText_tf = new TextField();
+               inConvoText_tf.text = " $$InConversation";
+               GlobalFunc.SetText(this.Name_tf,this._Name + inConvoText_tf.text,false);
             }
             else
             {
@@ -653,26 +653,26 @@ package
          {
             this.Emote_mc.y = this._emoteBaseY;
          }
-         var _loc10_:Array = [];
+         var nameParts:Array = [];
          if(this.Arrow_mc.visible)
          {
-            _loc10_.push(this.Arrow_mc);
+            nameParts.push(this.Arrow_mc);
          }
          if(this.NamePlateNameGroup_mc.visible && Boolean(this.Title_tf))
          {
-            _loc10_.push(this.Title_tf.textWidth > this.Name_tf.textWidth ? this.Title_tf : this.Name_tf);
+            nameParts.push(this.Title_tf.textWidth > this.Name_tf.textWidth ? this.Title_tf : this.Name_tf);
          }
-         this.SpeakerIcon_mc.visible = (this.NamePlateNameGroup_mc.visible || _loc1_ && (_loc2_ || this._inLOS)) && this._voiceChatStatus != GlobalFunc.VOICE_STATUS_UNAVAILABLE;
+         this.SpeakerIcon_mc.visible = (this.NamePlateNameGroup_mc.visible || showArrow && (arrowAlly || this._inLOS)) && this._voiceChatStatus != GlobalFunc.VOICE_STATUS_UNAVAILABLE;
          if(this.SpeakerIcon_mc.visible)
          {
-            GlobalFunc.updateVoiceIndicator(this.SpeakerIcon_mc,this._voiceChatStatus > GlobalFunc.VOICE_STATUS_UNAVAILABLE,this._voiceChatStatus == GlobalFunc.VOICE_STATUS_SPEAKING,this._isSpeakingInSameChannel,_loc6_ == GlobalFunc.COLOR_TEXT_HEADER,_loc6_ == GlobalFunc.COLOR_TEXT_ENEMY);
+            GlobalFunc.updateVoiceIndicator(this.SpeakerIcon_mc,this._voiceChatStatus > GlobalFunc.VOICE_STATUS_UNAVAILABLE,this._voiceChatStatus == GlobalFunc.VOICE_STATUS_SPEAKING,this._isSpeakingInSameChannel,nameColor == GlobalFunc.COLOR_TEXT_HEADER,nameColor == GlobalFunc.COLOR_TEXT_ENEMY);
          }
          if(this._Level > 0)
          {
             this.NamePlateNameGroup_mc.Level_mc.visible = true;
-            _loc10_.unshift(this.NamePlateNameGroup_mc.Level_mc);
+            nameParts.unshift(this.NamePlateNameGroup_mc.Level_mc);
             this.Level_tf.text = this._Level.toString();
-            switch(_loc6_)
+            switch(nameColor)
             {
                case GlobalFunc.COLOR_TEXT_ENEMY:
                   this.NamePlateNameGroup_mc.Level_mc.gotoAndStop("red");
@@ -688,8 +688,8 @@ package
          {
             this.NamePlateNameGroup_mc.Level_mc.visible = false;
          }
-         _loc10_.push(this.SpeakerIcon_mc);
-         GlobalFunc.arrangeItems(_loc10_,false,GlobalFunc.ALIGN_CENTER,NAME_LEVEL_SPACING);
+         nameParts.push(this.SpeakerIcon_mc);
+         GlobalFunc.arrangeItems(nameParts,false,GlobalFunc.ALIGN_CENTER,NAME_LEVEL_SPACING);
          if(this.NamePlateNameGroup_mc.visible && Boolean(this.Title_tf))
          {
             if(this.Title_tf.textWidth > this.Name_tf.textWidth)
@@ -702,19 +702,26 @@ package
             }
             if(this.NamePlateNameGroup_mc.Level_mc)
             {
-               _loc12_ = 0;
+               titleOffset = 0;
                if(Boolean(this._Title) && this._Title.length > 0)
                {
-                  _loc12_ = (this.Title_tf.y + this.Title_tf.textHeight - this.Name_tf.y) / 2 - this.NamePlateNameGroup_mc.Level_mc.height / 3;
+                  titleOffset = (this.Title_tf.y + this.Title_tf.textHeight - this.Name_tf.y) / 2 - this.NamePlateNameGroup_mc.Level_mc.height / 3;
                }
-               this.NamePlateNameGroup_mc.Level_mc.y = this.Name_tf.y + _loc12_;
+               this.NamePlateNameGroup_mc.Level_mc.y = this.Name_tf.y + titleOffset;
             }
          }
          if(this._isPublicTeamLeader && PublicTeamsShared.IsValidPublicTeamType(this._teamType))
          {
             if(this._Distance >= PT_NAMEPLATE_DISTANCE_THRESHOLD)
             {
-               if(this.PTNameplate_mc.PTNameplateBG_mc.currentLabel != "small")
+               if(Boolean(this._Title) && this._Title.length > 0)
+               {
+                  if(this.PTNameplate_mc.PTNameplateBG_mc.currentLabel != "smallPlayerTitle")
+                  {
+                     this.PTNameplate_mc.PTNameplateBG_mc.gotoAndStop("smallPlayerTitle");
+                  }
+               }
+               else if(this.PTNameplate_mc.PTNameplateBG_mc.currentLabel != "small")
                {
                   this.PTNameplate_mc.PTNameplateBG_mc.gotoAndStop("small");
                }
@@ -725,7 +732,14 @@ package
             }
             else
             {
-               if(this.PTNameplate_mc.PTNameplateBG_mc.currentLabel != "large")
+               if(Boolean(this._Title) && this._Title.length > 0)
+               {
+                  if(this.PTNameplate_mc.PTNameplateBG_mc.currentLabel != "largePlayerTitle")
+                  {
+                     this.PTNameplate_mc.PTNameplateBG_mc.gotoAndStop("largePlayerTitle");
+                  }
+               }
+               else if(this.PTNameplate_mc.PTNameplateBG_mc.currentLabel != "large")
                {
                   this.PTNameplate_mc.PTNameplateBG_mc.gotoAndStop("large");
                }
@@ -736,10 +750,10 @@ package
             }
             this.PTNameplate_mc.visible = true;
             this.PTNameplate_mc.x = this.NamePlateNameGroup_mc.Level_mc.x - PT_NAMEPLATE_OFFSET;
-            _loc13_ = Math.max(this.Name_tf.textWidth,this.Title_tf ? this.Title_tf.textWidth : 0);
-            if(_loc13_ + PT_NAMEPLATE_WIDTH_OFFSET > PT_NAMEPLATE_MIN_WIDTH)
+            maxPlateWidth = Math.max(this.Name_tf.textWidth,this.Title_tf ? this.Title_tf.textWidth : 0);
+            if(maxPlateWidth + PT_NAMEPLATE_WIDTH_OFFSET > PT_NAMEPLATE_MIN_WIDTH)
             {
-               this.PTNameplate_mc.PTNameplateBG_mc.width = _loc13_ + PT_NAMEPLATE_WIDTH_OFFSET;
+               this.PTNameplate_mc.PTNameplateBG_mc.width = maxPlateWidth + PT_NAMEPLATE_WIDTH_OFFSET;
             }
             else
             {
@@ -747,10 +761,10 @@ package
             }
             if(this.PTHUDIconSmall_mc.visible)
             {
-               _loc14_ = this.NamePlateNameGroup_mc.localToGlobal(new Point(this.NamePlateNameGroup_mc.Name_tf.x,this.NamePlateNameGroup_mc.Name_tf.y));
-               _loc15_ = this.PTNameplate_mc.localToGlobal(new Point(this.PTHUDIconSmall_mc.x,this.PTHUDIconSmall_mc.y));
-               _loc16_ = this.PTNameplate_mc.globalToLocal(new Point(_loc14_.x + this.NamePlateNameGroup_mc.Name_tf.textWidth + PT_SMALL_ICON_OFFSET,_loc15_.y));
-               this.PTHUDIconSmall_mc.x = _loc16_.x;
+               namePointGlobal = this.NamePlateNameGroup_mc.localToGlobal(new Point(this.NamePlateNameGroup_mc.Name_tf.x,this.NamePlateNameGroup_mc.Name_tf.y));
+               PTHUDIconSmallPointGlobal = this.PTNameplate_mc.localToGlobal(new Point(this.PTHUDIconSmall_mc.x,this.PTHUDIconSmall_mc.y));
+               newPTHUDIconSmallPoint = this.PTNameplate_mc.globalToLocal(new Point(namePointGlobal.x + this.NamePlateNameGroup_mc.Name_tf.textWidth + PT_SMALL_ICON_OFFSET,PTHUDIconSmallPointGlobal.y));
+               this.PTHUDIconSmall_mc.x = newPTHUDIconSmallPoint.x;
             }
          }
          else
