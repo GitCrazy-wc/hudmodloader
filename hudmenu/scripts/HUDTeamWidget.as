@@ -97,7 +97,8 @@ package
          BSUIDataManager.Subscribe("PartyMenuList",function(arEvent:FromClientDataEvent):*
          {
             m_TeamType = arEvent.data.teamType;
-            partyListData = arEvent.data.members;
+            partyListData = arEvent.data.members.concat();
+            partyListData.sortOn("isLocalPlayer");
             var len:uint = partyListData.length;
             partyListMenuData.splice(0);
             var i:uint = 0;
@@ -118,6 +119,7 @@ package
          BSUIDataManager.Subscribe("HUDModeData",function(arEvent:FromClientDataEvent):*
          {
             m_HudMode = arEvent.data.hudMode;
+            PartyListEntry.PipBoyHUDMode = m_HudMode == HUDModes.PIPBOY;
             SetIsDirty();
          });
          BSUIDataManager.Subscribe("MenuStackData",function(arEvent:FromClientDataEvent):*

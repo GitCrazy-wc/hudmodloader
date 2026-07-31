@@ -8,6 +8,7 @@ package
    import Shared.AS3.Data.UIDataFromClient;
    import Shared.AS3.Events.CustomEvent;
    import Shared.AS3.VaultBoyImageLoader;
+   import Shared.EnumHelper;
    import Shared.GlobalFunc;
    import Shared.HUDModes;
    import flash.display.MovieClip;
@@ -68,25 +69,25 @@ package
       
       public static const EVENT_ACTIVE:String = "HUDAnnounceEvent::Active";
       
-      public static const FANFARE_TYPE_QUESTCOMPLETE:uint = 0;
+      public static const FANFARE_TYPE_QUESTCOMPLETE:uint = EnumHelper.GetEnum(0);
       
-      public static const FANFARE_TYPE_QUESTFAILED:uint = 1;
+      public static const FANFARE_TYPE_QUESTFAILED:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_ITEMREWARD:uint = 2;
+      public static const FANFARE_TYPE_ITEMREWARD:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_QUESTAVAILABLE:uint = 3;
+      public static const FANFARE_TYPE_QUESTAVAILABLE:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_QUESTACTIVE:uint = 4;
+      public static const FANFARE_TYPE_QUESTACTIVE:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_FEATUREDITEM:uint = 5;
+      public static const FANFARE_TYPE_FEATUREDITEM:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_LOCATIONDISCOVERED:uint = 6;
+      public static const FANFARE_TYPE_LOCATIONDISCOVERED:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_MESSAGETEXT:uint = 7;
+      public static const FANFARE_TYPE_MESSAGETEXT:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_QUICKPLAYANNOUNCE:uint = 8;
+      public static const FANFARE_TYPE_QUICKPLAYANNOUNCE:uint = EnumHelper.GetEnum();
       
-      public static const FANFARE_TYPE_COUNT:uint = 9;
+      public static const FANFARE_TYPE_COUNT:uint = EnumHelper.GetEnum();
       
       private static const MAX_QUEST_REWARDS:uint = 6;
       
@@ -550,6 +551,7 @@ package
          var editorNewlinePattern:RegExp = null;
          var parsedDesc:String = null;
          var rewardIndex:int = 0;
+         var anyItemsAdded:Boolean = false;
          var tooManyRewards:Boolean = false;
          var reward:* = undefined;
          var nameText:String = null;
@@ -614,6 +616,7 @@ package
                   eventClip.FanfareType_mc.FanfareType_tf.text = "$$ITEMREWARD";
                   eventClip.FanfareType_mc.FanfareType_tf.text = this.m_CurEvent.sharedPlayerPrefix + eventClip.FanfareType_mc.FanfareType_tf.text;
                   rewardIndex = 1;
+                  anyItemsAdded = false;
                   tooManyRewards = this.m_CurEvent.rewardsA.length > MAX_QUEST_REWARDS;
                   for each(reward in this.m_CurEvent.rewardsA)
                   {
@@ -629,9 +632,13 @@ package
                            nameText = "(" + reward.uRewardCount + ") " + nameText;
                         }
                      }
-                     eventClip["FanfareName_mc" + rewardIndex].FanfareName_tf.text = nameText;
-                     eventClip["FanfareName_mc" + rewardIndex].visible = true;
-                     rewardIndex++;
+                     if(nameText.length > 0)
+                     {
+                        eventClip["FanfareName_mc" + rewardIndex].FanfareName_tf.text = nameText;
+                        eventClip["FanfareName_mc" + rewardIndex].visible = true;
+                        rewardIndex++;
+                        anyItemsAdded = true;
+                     }
                      if(rewardIndex > MAX_QUEST_REWARDS)
                      {
                         break;
@@ -642,6 +649,7 @@ package
                      eventClip["FanfareName_mc" + rewardIndex].visible = false;
                      rewardIndex++;
                   }
+                  this.m_WaitingForBonusRewards = false;
                   if(this.m_CurEvent.mutatedRewards.length > 0)
                   {
                      eventClip.BonusFanfareType_mc.visible = true;
@@ -662,9 +670,14 @@ package
                               rewardText = "(" + bonusReward.uRewardCount + ") " + rewardText;
                            }
                         }
-                        eventClip["BonusFanfareName_mc" + bonusRewardIndex].FanfareName_tf.text = rewardText;
-                        eventClip["BonusFanfareName_mc" + bonusRewardIndex].visible = true;
-                        bonusRewardIndex++;
+                        if(rewardText.length > 0)
+                        {
+                           eventClip["BonusFanfareName_mc" + bonusRewardIndex].FanfareName_tf.text = rewardText;
+                           eventClip["BonusFanfareName_mc" + bonusRewardIndex].visible = true;
+                           bonusRewardIndex++;
+                           anyItemsAdded = true;
+                           this.m_WaitingForBonusRewards = true;
+                        }
                         if(bonusRewardIndex > MAX_QUEST_REWARDS)
                         {
                            break;
@@ -675,19 +688,23 @@ package
                         eventClip["BonusFanfareName_mc" + bonusRewardIndex].visible = false;
                         bonusRewardIndex++;
                      }
-                     this.m_WaitingForBonusRewards = true;
+                  }
+                  if(this.m_WaitingForBonusRewards)
+                  {
                      eventTypeData.showTimer += BONUS_REWARD_ANIM_TIME;
                   }
                   else
                   {
-                     this.m_WaitingForBonusRewards = false;
                      eventClip.BonusFanfareType_mc.visible = false;
                      for(i = 1; i <= MAX_QUEST_REWARDS; i++)
                      {
                         eventClip["BonusFanfareName_mc" + i].visible = false;
                      }
                   }
-                  GlobalFunc.PlayMenuSound("UIQuestCompleteRewardItem");
+                  if(!anyItemsAdded)
+                  {
+                     eventClip = null;
+                  }
                }
                else if(!this.m_CurEvent.isCompletionRewards)
                {
@@ -861,6 +878,10 @@ package
          if(eventClip != null && eventTypeData != null)
          {
             startedAnim = true;
+            if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_ITEMREWARD)
+            {
+               GlobalFunc.PlayMenuSound("UIQuestCompleteRewardItem");
+            }
             if(this.m_CurEvent.useDescAnim)
             {
                eventClip.gotoAndPlay("rollOnDesc");

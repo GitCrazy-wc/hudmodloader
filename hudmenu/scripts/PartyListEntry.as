@@ -17,6 +17,8 @@ package
       
       public static const EMOTE_ICON_SPACING:Number = 25;
       
+      public static var PipBoyHUDMode:Boolean = false;
+      
       private static const XPD_NOTICE_SPACING:Number = 10;
       
       private static const EMOTE_MIN_X:Number = 295.45;
@@ -36,8 +38,6 @@ package
       public var nameField_mc:MovieClip;
       
       public var LevelText_mc:MovieClip;
-      
-      public var OverseerRank_mc:MovieClip;
       
       public var LeaderIcon_mc:MovieClip;
       
@@ -208,6 +208,7 @@ package
          this._EntityID = aEntryObject.entityId;
          this.Emote_mc.entityID = aEntryObject.entityId;
          textField.text = "";
+         gotoAndStop(PipBoyHUDMode && Boolean(aEntryObject.isLocalPlayer) ? "simplified" : "default");
          if(aEntryObject.isDead)
          {
             this.nameField_mc.textField.textColor = GlobalFunc.COLOR_TEXT_UNAVAILABLE;
@@ -243,16 +244,6 @@ package
             this.LevelText_mc.LevelText_tf.text = "";
             this.LevelText_mc.visible = false;
          }
-         if(aEntryObject.overseerRank >= 0)
-         {
-            GlobalFunc.SetText(this.OverseerRank_mc.RankText_tf,aEntryObject.overseerRank);
-            this.OverseerRank_mc.visible = true;
-         }
-         else
-         {
-            this.OverseerRank_mc.RankText_tf.text = "";
-            this.OverseerRank_mc.visible = false;
-         }
          this.LeaderIcon_mc.visible = aEntryObject.isLeader;
          var appendedStatus:String = "";
          if(aEntryObject.isInExpedition)
@@ -271,7 +262,8 @@ package
          {
             appendedStatus = GlobalFunc.LocalizeFormattedString("$InDailyOp");
          }
-         GlobalFunc.SetText(this.nameField_mc.textField,this.generateName(aEntryObject.name,appendedStatus),true);
+         var name:String = PipBoyHUDMode && Boolean(aEntryObject.isLocalPlayer) ? "$You" : aEntryObject.name;
+         GlobalFunc.SetText(this.nameField_mc.textField,this.generateName(name,appendedStatus),true);
          GlobalFunc.TruncateSingleLineText(this.nameField_mc.textField);
          if(aEntryObject.voiceChatStatus != null)
          {
