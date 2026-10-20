@@ -8,9 +8,9 @@ package aze.motion.easing
          super();
       }
       
-      public static function easeNone(param1:Number) : Number
+      public static function easeNone(k:Number) : Number
       {
-         return param1;
+         return k;
       }
    }
 }

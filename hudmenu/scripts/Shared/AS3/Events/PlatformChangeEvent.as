@@ -27,19 +27,19 @@ package Shared.AS3.Events
       
       internal var _uiPlatform:uint = 4294967295;
       
-      internal var _bPS3Switch:Boolean = false;
+      internal var _bIsGen9:Boolean = false;
       
       internal var _uiController:uint = 4294967295;
       
       internal var _uiKeyboard:uint = 4294967295;
       
-      public function PlatformChangeEvent(param1:uint, param2:Boolean, param3:uint, param4:uint)
+      public function PlatformChangeEvent(auiPlatform:uint, abIsGen9:Boolean, auiController:uint, auiKeyboard:uint)
       {
          super(PLATFORM_CHANGE,true,true);
-         this.uiPlatform = param1;
-         this.bPS3Switch = param2;
-         this.uiController = param3;
-         this.uiKeyboard = param4;
+         this.uiPlatform = auiPlatform;
+         this.bIsGen9 = abIsGen9;
+         this.uiController = auiController;
+         this.uiKeyboard = auiKeyboard;
       }
       
       public function get uiPlatform() : *
@@ -47,19 +47,24 @@ package Shared.AS3.Events
          return this._uiPlatform;
       }
       
-      public function set uiPlatform(param1:uint) : *
+      public function set uiPlatform(auiPlatform:uint) : *
       {
-         this._uiPlatform = param1;
+         this._uiPlatform = auiPlatform;
+      }
+      
+      public function get bIsGen9() : *
+      {
+         return this._bIsGen9;
+      }
+      
+      public function set bIsGen9(abIsGen9:Boolean) : *
+      {
+         this._bIsGen9 = abIsGen9;
       }
       
       public function get bPS3Switch() : *
       {
-         return this._bPS3Switch;
-      }
-      
-      public function set bPS3Switch(param1:Boolean) : *
-      {
-         this._bPS3Switch = param1;
+         return this._bIsGen9;
       }
       
       public function get uiController() : *
@@ -67,9 +72,9 @@ package Shared.AS3.Events
          return this._uiController;
       }
       
-      public function set uiController(param1:uint) : *
+      public function set uiController(auiController:uint) : *
       {
-         this._uiController = param1;
+         this._uiController = auiController;
       }
       
       public function get uiKeyboard() : *
@@ -77,14 +82,14 @@ package Shared.AS3.Events
          return this._uiKeyboard;
       }
       
-      public function set uiKeyboard(param1:uint) : *
+      public function set uiKeyboard(auiKeyboard:uint) : *
       {
-         this._uiKeyboard = param1;
+         this._uiKeyboard = auiKeyboard;
       }
       
       override public function clone() : Event
       {
-         return new PlatformChangeEvent(this.uiPlatform,this.bPS3Switch,this.uiController,this.uiKeyboard);
+         return new PlatformChangeEvent(this.uiPlatform,this.bIsGen9,this.uiController,this.uiKeyboard);
       }
    }
 }

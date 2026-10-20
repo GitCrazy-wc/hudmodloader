@@ -23,6 +23,10 @@ package
       
       public static const TYPE_RAID:String = "raid";
       
+      public static const TYPE_INFESTATION:String = "infestation";
+      
+      public static const INVALID_FADE_TIME:* = -1;
+      
       private var m_MessageID:Number;
       
       private var m_Type:String;
@@ -31,18 +35,29 @@ package
       
       private var m_Sound:String;
       
-      public function HUDMessageItemData(param1:Number, param2:String, param3:Object, param4:String)
+      public function HUDMessageItemData(aMessageID:Number, aType:String, aData:Object, aSound:String)
       {
          super();
-         this.messageID = param1;
-         this.type = param2;
-         this.data = param3;
-         this.sound = param4;
+         this.messageID = aMessageID;
+         this.type = aType;
+         this.data = aData;
+         this.sound = aSound;
       }
       
-      public function set messageID(param1:Number) : void
+      public static function GetMessageFadeOutLength(aType:String) : Number
       {
-         this.m_MessageID = param1;
+         switch(aType)
+         {
+            case HUDMessageItemData.TYPE_INFESTATION:
+               return 7;
+            default:
+               return INVALID_FADE_TIME;
+         }
+      }
+      
+      public function set messageID(aMessageID:Number) : void
+      {
+         this.m_MessageID = aMessageID;
       }
       
       public function get messageID() : Number
@@ -50,9 +65,9 @@ package
          return this.m_MessageID;
       }
       
-      public function set type(param1:String) : void
+      public function set type(aType:String) : void
       {
-         this.m_Type = param1;
+         this.m_Type = aType;
       }
       
       public function get type() : String
@@ -60,12 +75,12 @@ package
          return this.m_Type;
       }
       
-      public function set data(param1:Object) : void
+      public function set data(aData:Object) : void
       {
-         var _loc2_:String = null;
-         for(_loc2_ in param1)
+         var prop:String = null;
+         for(prop in aData)
          {
-            this.m_Data[_loc2_] = param1[_loc2_];
+            this.m_Data[prop] = aData[prop];
          }
       }
       
@@ -74,9 +89,9 @@ package
          return this.m_Data;
       }
       
-      public function set sound(param1:String) : void
+      public function set sound(aSound:String) : void
       {
-         this.m_Sound = param1;
+         this.m_Sound = aSound;
       }
       
       public function get sound() : String

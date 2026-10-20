@@ -11,12 +11,12 @@ package
       
       private var _orWithPrevious:Boolean;
       
-      public function HUDObjectiveItemData(param1:String, param2:Boolean, param3:Boolean)
+      public function HUDObjectiveItemData(aObjectiveMessage:String, aIsCompleted:Boolean, aOrWithPrevious:Boolean)
       {
          super();
-         this._objectiveMessage = param1;
-         this._isCompleted = param2;
-         this._orWithPrevious = param3;
+         this._objectiveMessage = aObjectiveMessage;
+         this._isCompleted = aIsCompleted;
+         this._orWithPrevious = aOrWithPrevious;
       }
       
       public function get ObjectiveMessage() : String

@@ -10,18 +10,18 @@ package Shared
          super();
       }
       
-      public static function GetEnum(param1:int = -2147483648) : int
+      public static function GetEnum(aValue:int = -2147483648) : int
       {
-         if(param1 == int.MIN_VALUE)
+         if(aValue == int.MIN_VALUE)
          {
-            param1 = Counter;
+            aValue = Counter;
          }
          else
          {
-            Counter = param1;
+            Counter = aValue;
          }
          ++Counter;
-         return param1;
+         return aValue;
       }
    }
 }

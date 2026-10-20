@@ -39,15 +39,15 @@ package
          return this.m_CanTap;
       }
       
-      public function setInfo(param1:Boolean, param2:Object, param3:BSButtonHintData) : *
+      public function setInfo(aHold:Boolean, aInfo:Object, aHintData:BSButtonHintData) : *
       {
-         if(param1)
+         if(aHold)
          {
-            this.m_HintDataHold = param3;
+            this.m_HintDataHold = aHintData;
             this.m_CanHold = true;
-            if(param2.holdDuration > 0)
+            if(aInfo.holdDuration > 0)
             {
-               this.m_HoldTime = param2.holdDuration;
+               this.m_HoldTime = aInfo.holdDuration;
             }
             else
             {
@@ -57,7 +57,7 @@ package
          else
          {
             this.m_CanTap = true;
-            this.m_HintDataTap = param3;
+            this.m_HintDataTap = aHintData;
          }
       }
       
@@ -71,21 +71,21 @@ package
       
       public function get heldPercent() : Number
       {
-         var _loc1_:Number = this.holdTimeElapsed;
-         if(_loc1_ > 0)
+         var timeHeld:Number = this.holdTimeElapsed;
+         if(timeHeld > 0)
          {
-            return _loc1_ / this.m_HoldTime;
+            return timeHeld / this.m_HoldTime;
          }
          return 0;
       }
       
       public function get holdTimeElapsed() : Number
       {
-         var _loc1_:* = undefined;
+         var curTime:* = undefined;
          if(this.m_CanHold && this.m_IsHolding)
          {
-            _loc1_ = new Date().getTime();
-            return _loc1_ - this.m_HoldTimeStart;
+            curTime = new Date().getTime();
+            return curTime - this.m_HoldTimeStart;
          }
          return 0;
       }
@@ -99,11 +99,11 @@ package
          return false;
       }
       
-      public function set isHolding(param1:Boolean) : void
+      public function set isHolding(aHolding:Boolean) : void
       {
-         if(param1 != this.m_IsHolding)
+         if(aHolding != this.m_IsHolding)
          {
-            if(param1)
+            if(aHolding)
             {
                this.m_HoldTimeStart = new Date().getTime();
             }
@@ -112,7 +112,7 @@ package
                this.m_HoldTimeStart = 0;
             }
          }
-         this.m_IsHolding = param1;
+         this.m_IsHolding = aHolding;
       }
       
       public function get isHolding() : Boolean

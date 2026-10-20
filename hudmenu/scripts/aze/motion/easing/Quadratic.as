@@ -8,24 +8,24 @@ package aze.motion.easing
          super();
       }
       
-      public static function easeIn(param1:Number) : Number
+      public static function easeIn(k:Number) : Number
       {
-         return param1 * param1;
+         return k * k;
       }
       
-      public static function easeOut(param1:Number) : Number
+      public static function easeOut(k:Number) : Number
       {
-         return -param1 * (param1 - 2);
+         return -k * (k - 2);
       }
       
-      public static function easeInOut(param1:Number) : Number
+      public static function easeInOut(k:Number) : Number
       {
-         param1 = param1 * 2;
-         if(param1 < 1)
+         k = k * 2;
+         if(k < 1)
          {
-            return 0.5 * param1 * param1;
+            return 0.5 * k * k;
          }
-         return -0.5 * (--param1 * (param1 - 2) - 1);
+         return -0.5 * (--k * (k - 2) - 1);
       }
    }
 }

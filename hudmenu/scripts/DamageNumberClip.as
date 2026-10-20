@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol624")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol681")]
    public class DamageNumberClip extends MovieClip
    {
       

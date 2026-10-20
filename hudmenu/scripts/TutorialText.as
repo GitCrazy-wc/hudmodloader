@@ -35,21 +35,21 @@ package
          return this._numberOfHeads;
       }
       
-      public function set numberOfHeads_Inspectable(param1:uint) : void
+      public function set numberOfHeads_Inspectable(aNumberOfHeads:uint) : void
       {
-         if(this._numberOfHeads != param1)
+         if(this._numberOfHeads != aNumberOfHeads)
          {
-            this._numberOfHeads = param1;
+            this._numberOfHeads = aNumberOfHeads;
             SetIsDirty();
          }
       }
       
-      public function SetText(param1:String) : *
+      public function SetText(acText:String) : *
       {
-         var _loc2_:uint = Math.floor(Math.random() * this.numberOfHeads_Inspectable);
-         this.TutorialHeads_mc.gotoAndPlay("Head_0" + _loc2_);
+         var uiimage:uint = Math.floor(Math.random() * this.numberOfHeads_Inspectable);
+         this.TutorialHeads_mc.gotoAndPlay("Head_0" + uiimage);
          this.TutorialText_tf.autoSize = TextFieldAutoSize.LEFT;
-         GlobalFunc.SetText(this.TutorialText_tf,param1,true);
+         GlobalFunc.SetText(this.TutorialText_tf,acText,true);
          this.AdjustFrameToFitText();
          this.AlignVertically();
          SetIsDirty();
@@ -58,12 +58,12 @@ package
       
       private function AdjustFrameToFitText() : *
       {
-         var _loc1_:Number = this.TutorialText_tf.textHeight + 2 * this._frameTextOffset;
-         if(_loc1_ < this._minFrameHeight)
+         var newHeight:Number = this.TutorialText_tf.textHeight + 2 * this._frameTextOffset;
+         if(newHeight < this._minFrameHeight)
          {
-            _loc1_ = this._minFrameHeight;
+            newHeight = this._minFrameHeight;
          }
-         this.TutorialMessageFrame_mc.height = _loc1_;
+         this.TutorialMessageFrame_mc.height = newHeight;
       }
       
       private function AlignVertically() : *

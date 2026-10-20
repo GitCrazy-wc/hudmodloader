@@ -81,14 +81,14 @@ package Shared.AS3.Events
       
       private var _entryObject:Object = "";
       
-      public function MenuActionEvent(param1:String, param2:String, param3:String, param4:Number = 0, param5:String = "", param6:Object = null, param7:Boolean = false, param8:Boolean = false)
+      public function MenuActionEvent(type:String, aAction:String, aData:String, aIndex:Number = 0, aTooltip:String = "", aEntry:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this._action = param2;
-         this._data = param3;
-         this._index = param4;
-         this._tooltip = param5;
-         this._entryObject = param6;
-         super(param1,param7,param8);
+         this._action = aAction;
+         this._data = aData;
+         this._index = aIndex;
+         this._tooltip = aTooltip;
+         this._entryObject = aEntry;
+         super(type,bubbles,cancelable);
       }
       
       public function get Action() : *
@@ -96,9 +96,9 @@ package Shared.AS3.Events
          return this._action;
       }
       
-      public function set Action(param1:String) : *
+      public function set Action(aAction:String) : *
       {
-         this._action = param1;
+         this._action = aAction;
       }
       
       public function get Data() : *
@@ -106,9 +106,9 @@ package Shared.AS3.Events
          return this._data;
       }
       
-      public function set Data(param1:String) : *
+      public function set Data(aData:String) : *
       {
-         this._data = param1;
+         this._data = aData;
       }
       
       public function get Index() : *
@@ -116,9 +116,9 @@ package Shared.AS3.Events
          return this._index;
       }
       
-      public function set Index(param1:Number) : *
+      public function set Index(aIndex:Number) : *
       {
-         this._index = param1;
+         this._index = aIndex;
       }
       
       public function get Tooltip() : *
@@ -126,9 +126,9 @@ package Shared.AS3.Events
          return this._tooltip;
       }
       
-      public function set Tooltip(param1:String) : *
+      public function set Tooltip(aTooltip:String) : *
       {
-         this._tooltip = param1;
+         this._tooltip = aTooltip;
       }
       
       public function get EntryObject() : *
@@ -136,9 +136,9 @@ package Shared.AS3.Events
          return this._entryObject;
       }
       
-      public function set EntryObject(param1:Object) : *
+      public function set EntryObject(aEntry:Object) : *
       {
-         this._entryObject = param1;
+         this._entryObject = aEntry;
       }
       
       override public function clone() : Event

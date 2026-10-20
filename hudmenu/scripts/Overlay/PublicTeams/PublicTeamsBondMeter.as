@@ -63,12 +63,12 @@ package Overlay.PublicTeams
          return this.m_BondMeterState;
       }
       
-      public function set bondMeterState(param1:int) : void
+      public function set bondMeterState(aState:int) : void
       {
-         if(param1 != BOND_METER_OFF && param1 != BOND_METER_COMPLETE || this.m_BondMeterState != param1)
+         if(aState != BOND_METER_OFF && aState != BOND_METER_COMPLETE || this.m_BondMeterState != aState)
          {
-            this.m_BondMeterState = param1;
-            switch(param1)
+            this.m_BondMeterState = aState;
+            switch(aState)
             {
                case BOND_METER_OFF:
                   this.BondIcon_mc.visible = false;
@@ -108,12 +108,12 @@ package Overlay.PublicTeams
       
       public function get elapsedTime() : Number
       {
-         var _loc1_:Number = 0;
+         var deltaTime:Number = 0;
          if(LAST_BOND_UPDATE_TIME)
          {
-            _loc1_ = new Date().getTime() / 1000 - LAST_BOND_UPDATE_TIME;
+            deltaTime = new Date().getTime() / 1000 - LAST_BOND_UPDATE_TIME;
          }
-         return this.m_StartTime + _loc1_;
+         return this.m_StartTime + deltaTime;
       }
       
       public function get isBonded() : Boolean
@@ -126,12 +126,12 @@ package Overlay.PublicTeams
          this.bondMeterState = BOND_METER_OFF;
       }
       
-      public function startBondMeter(param1:Number, param2:Boolean = false) : void
+      public function startBondMeter(aStartTime:Number, aIsPaused:Boolean = false) : void
       {
-         this.m_StartTime = param1;
+         this.m_StartTime = aStartTime;
          if(this.m_StartTime >= 0)
          {
-            if(param2)
+            if(aIsPaused)
             {
                if(this.m_StartTime >= TIME_TO_FULL_BOND)
                {
@@ -157,17 +157,17 @@ package Overlay.PublicTeams
          }
       }
       
-      private function setBondFillProgress(param1:Number) : void
+      private function setBondFillProgress(aTimeElapsed:Number) : void
       {
-         var _loc2_:uint = 0;
-         if(param1 <= 0)
+         var fillFrame:uint = 0;
+         if(aTimeElapsed <= 0)
          {
             this.BondMeterFill_mc.gotoAndStop(1);
          }
-         else if(param1 <= TIME_TO_FULL_BOND)
+         else if(aTimeElapsed <= TIME_TO_FULL_BOND)
          {
-            _loc2_ = this.BondMeterFill_mc.totalFrames * (param1 / TIME_TO_FULL_BOND);
-            this.BondMeterFill_mc.gotoAndStop(_loc2_);
+            fillFrame = this.BondMeterFill_mc.totalFrames * (aTimeElapsed / TIME_TO_FULL_BOND);
+            this.BondMeterFill_mc.gotoAndStop(fillFrame);
          }
          else
          {
@@ -175,7 +175,7 @@ package Overlay.PublicTeams
          }
       }
       
-      private function onTimerEvent(param1:Event) : void
+      private function onTimerEvent(aEvent:Event) : void
       {
          if(this.bondMeterState == BOND_METER_FILLING)
          {
@@ -189,7 +189,7 @@ package Overlay.PublicTeams
          }
       }
       
-      private function onRemovedFromStage(param1:Event) : void
+      private function onRemovedFromStage(aEvent:Event) : void
       {
          if(this.m_Timer)
          {
@@ -197,11 +197,11 @@ package Overlay.PublicTeams
          }
       }
       
-      private function onPublicTeamsDataUpdate(param1:FromClientDataEvent) : void
+      private function onPublicTeamsDataUpdate(aEvent:FromClientDataEvent) : void
       {
-         if(param1 && param1.data && Boolean(param1.data.requiredBondTime))
+         if(aEvent && aEvent.data && Boolean(aEvent.data.requiredBondTime))
          {
-            TIME_TO_FULL_BOND = param1.data.requiredBondTime;
+            TIME_TO_FULL_BOND = aEvent.data.requiredBondTime;
          }
       }
    }

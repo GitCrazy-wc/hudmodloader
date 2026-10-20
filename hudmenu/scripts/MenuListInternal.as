@@ -24,14 +24,14 @@ package
          return this._Active;
       }
       
-      public function set Active(param1:Boolean) : *
+      public function set Active(aActive:Boolean) : *
       {
-         this._Active = param1;
+         this._Active = aActive;
       }
       
-      public function set itemRendererClassName(param1:String) : void
+      public function set itemRendererClassName(value:String) : void
       {
-         _itemRendererClassName = param1;
+         _itemRendererClassName = value;
          this.InitRendererClass();
       }
       
@@ -42,13 +42,13 @@ package
       
       public function InitRendererClass() : *
       {
-         var _loc1_:Object = null;
+         var classDef:Object = null;
          if(this.itemRendererClassName)
          {
-            _loc1_ = getDefinitionByName(this.itemRendererClassName);
-            if(_loc1_ is Class)
+            classDef = getDefinitionByName(this.itemRendererClassName);
+            if(classDef is Class)
             {
-               ListEntryClass = _loc1_ as Class;
+               ListEntryClass = classDef as Class;
             }
          }
       }
@@ -58,20 +58,18 @@ package
          return this._menuListData;
       }
       
-      public function set MenuListData(param1:Array) : void
+      public function set MenuListData(aValue:Array) : void
       {
          dispatchEvent(new Event(Event.CHANGE));
-         if(param1 == null)
+         if(aValue == null)
          {
-            param1 = new Array();
+            aValue = new Array();
          }
-         this._menuListData = param1;
+         this._menuListData = aValue;
          entryList.splice(0);
-         var _loc2_:Number = 0;
-         while(_loc2_ < this.MenuListData.length)
+         for(var i:Number = 0; i < this.MenuListData.length; i++)
          {
-            entryList.push(this.MenuListData[_loc2_]);
-            _loc2_++;
+            entryList.push(this.MenuListData[i]);
          }
          filterer.filterArray = entryList;
       }
@@ -99,11 +97,9 @@ package
       public function Collapse() : *
       {
          this._Collapsed = true;
-         var _loc1_:Number = 0;
-         while(_loc1_ < entryList.length)
+         for(var i:Number = 0; i < entryList.length; i++)
          {
-            entryList[_loc1_].collapsed = true;
-            _loc1_++;
+            entryList[i].collapsed = true;
          }
          UpdateList();
       }
@@ -111,22 +107,18 @@ package
       public function Expand() : *
       {
          this._Collapsed = false;
-         var _loc1_:Number = 0;
-         while(_loc1_ < entryList.length)
+         for(var i:Number = 0; i < entryList.length; i++)
          {
-            entryList[_loc1_].collapsed = false;
-            _loc1_++;
+            entryList[i].collapsed = false;
          }
          UpdateList();
       }
       
       public function EnableList() : *
       {
-         var _loc1_:Number = 0;
-         while(_loc1_ < entryList.length)
+         for(var i:Number = 0; i < entryList.length; i++)
          {
-            entryList[_loc1_].listDisabled = false;
-            _loc1_++;
+            entryList[i].listDisabled = false;
          }
          UpdateList();
          this.disableInput_Inspectable = false;
@@ -134,11 +126,9 @@ package
       
       public function DisableList() : *
       {
-         var _loc1_:Number = 0;
-         while(_loc1_ < entryList.length)
+         for(var i:Number = 0; i < entryList.length; i++)
          {
-            entryList[_loc1_].listDisabled = true;
-            _loc1_++;
+            entryList[i].listDisabled = true;
          }
          UpdateList();
          this.disableInput_Inspectable = true;
@@ -146,17 +136,15 @@ package
       
       override protected function PositionEntries() : *
       {
-         var _loc2_:BSScrollingListEntry = null;
+         var clip:BSScrollingListEntry = null;
          super.PositionEntries();
-         var _loc1_:Number = 0;
-         var _loc3_:int = 0;
-         while(_loc3_ < iListItemsShown)
+         var maxWidth:Number = 0;
+         for(var ientryCt:int = 0; ientryCt < iListItemsShown; ientryCt++)
          {
-            _loc2_ = GetClipByIndex(_loc3_);
-            _loc1_ = Math.max(_loc2_.width,_loc1_);
-            _loc3_++;
+            clip = GetClipByIndex(ientryCt);
+            maxWidth = Math.max(clip.width,maxWidth);
          }
-         border.width = _loc1_;
+         border.width = maxWidth;
       }
    }
 }

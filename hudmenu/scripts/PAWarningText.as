@@ -33,64 +33,64 @@ package
          BSUIDataManager.Subscribe("PowerArmorInfoData",this.onPowerArmorInfoUpdate);
       }
       
-      private function onHUDModeUpdate(param1:FromClientDataEvent) : void
+      private function onHUDModeUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_InPowerArmor = param1.data.inPowerArmor;
-         this.m_PowerArmorHUDEnabled = param1.data.powerArmorHUDEnabled;
-         this.m_PowerArmorExitButton = param1.data.powerArmorExitButton;
+         this.m_InPowerArmor = arEvent.data.inPowerArmor;
+         this.m_PowerArmorHUDEnabled = arEvent.data.powerArmorHUDEnabled;
+         this.m_PowerArmorExitButton = arEvent.data.powerArmorExitButton;
          this.updateWarning();
       }
       
-      private function onPowerArmorInfoUpdate(param1:FromClientDataEvent) : void
+      private function onPowerArmorInfoUpdate(arEvent:FromClientDataEvent) : void
       {
-         this.m_FusionCorePercent = param1.data.fusionCorePercent;
-         this.m_FusionCoreWarnPercent = param1.data.fusionCoreWarnPercent;
-         this.m_FusionCoreCount = param1.data.fusionCoreCount;
+         this.m_FusionCorePercent = arEvent.data.fusionCorePercent;
+         this.m_FusionCoreWarnPercent = arEvent.data.fusionCoreWarnPercent;
+         this.m_FusionCoreCount = arEvent.data.fusionCoreCount;
          this.updateWarning();
       }
       
       private function updateWarning() : void
       {
-         var _loc2_:String = null;
-         var _loc1_:Boolean = false;
+         var warningString:String = null;
+         var showWarning:Boolean = false;
          if(this.m_FusionCoreCount == 0 && this.m_FusionCorePercent < this.m_FusionCoreWarnPercent)
          {
-            _loc1_ = true;
+            showWarning = true;
             if(this.m_FusionCorePercent > 0)
             {
-               _loc2_ = "$PowerArmorLowPowerWarning";
+               warningString = "$PowerArmorLowPowerWarning";
             }
             else
             {
-               _loc2_ = "$PowerArmorNoPowerPrompt";
+               warningString = "$PowerArmorNoPowerPrompt";
             }
          }
-         if(_loc1_)
+         if(showWarning)
          {
-            this.warningText = GlobalFunc.LocalizeFormattedString(_loc2_);
+            this.warningText = GlobalFunc.LocalizeFormattedString(warningString);
          }
-         this.visible = this.m_InPowerArmor && _loc1_;
+         this.visible = this.m_InPowerArmor && showWarning;
       }
       
-      public function set warningText(param1:String) : *
+      public function set warningText(astrText:String) : *
       {
-         var _loc3_:Array = null;
-         var _loc2_:Array = param1.split("{");
+         var split2:Array = null;
+         var split1:Array = astrText.split("{");
          TextFieldEx.setNoTranslate(this.PowerArmorLowBatteryWarning_tf,true);
-         if(_loc2_.length > 1 && this.BGSCodeObj != null)
+         if(split1.length > 1 && this.BGSCodeObj != null)
          {
-            _loc3_ = _loc2_[1].split("}");
-            GlobalFunc.SetText(this.PowerArmorLowBatteryWarning_tf,_loc2_[0] + this.BGSCodeObj.GetButtonFromUserEvent("Activate") + _loc3_[1],true);
+            split2 = split1[1].split("}");
+            GlobalFunc.SetText(this.PowerArmorLowBatteryWarning_tf,split1[0] + this.BGSCodeObj.GetButtonFromUserEvent("Activate") + split2[1],true);
          }
          else
          {
-            GlobalFunc.SetText(this.PowerArmorLowBatteryWarning_tf,param1,true);
+            GlobalFunc.SetText(this.PowerArmorLowBatteryWarning_tf,astrText,true);
          }
       }
       
-      public function set codeObj(param1:Object) : *
+      public function set codeObj(aCodeObj:Object) : *
       {
-         this.BGSCodeObj = param1;
+         this.BGSCodeObj = aCodeObj;
       }
    }
 }

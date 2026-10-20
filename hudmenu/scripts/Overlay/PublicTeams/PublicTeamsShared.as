@@ -68,9 +68,9 @@ package Overlay.PublicTeams
          super();
       }
       
-      public static function DecideTeamTypeString(param1:uint) : String
+      public static function DecideTeamTypeString(aTeamType:uint) : String
       {
-         switch(param1)
+         switch(aTeamType)
          {
             case TEAM_TYPE_NEW:
                return "CreateNew";
@@ -107,14 +107,14 @@ package Overlay.PublicTeams
          }
       }
       
-      public static function IsValidPublicTeamType(param1:uint) : Boolean
+      public static function IsValidPublicTeamType(aTeamType:uint) : Boolean
       {
-         var _loc2_:Boolean = false;
-         if(param1 && param1 != TEAM_TYPE_PRIVATE && param1 != TEAM_TYPE_INVALID && param1 != TEAM_TYPE_UNAVAILABLE && param1 != TEAM_TYPE_NEW && DecideTeamTypeString(param1) != "")
+         var returnBool:Boolean = false;
+         if(aTeamType && aTeamType != TEAM_TYPE_PRIVATE && aTeamType != TEAM_TYPE_INVALID && aTeamType != TEAM_TYPE_UNAVAILABLE && aTeamType != TEAM_TYPE_NEW && DecideTeamTypeString(aTeamType) != "")
          {
-            _loc2_ = true;
+            returnBool = true;
          }
-         return _loc2_;
+         return returnBool;
       }
    }
 }

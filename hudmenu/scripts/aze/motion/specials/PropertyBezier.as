@@ -13,10 +13,10 @@ package aze.motion.specials
       
       private var segments:Array;
       
-      public function PropertyBezier(param1:Object, param2:*, param3:*, param4:EazeSpecial)
+      public function PropertyBezier(target:Object, property:*, value:*, next:EazeSpecial)
       {
-         super(param1,param2,param3,param4);
-         this.fvalue = param3;
+         super(target,property,value,next);
+         this.fvalue = value;
          if(this.fvalue[0] is Array)
          {
             this.through = true;
@@ -29,83 +29,83 @@ package aze.motion.specials
          EazeTween.specialProperties["__bezier"] = PropertyBezier;
       }
       
-      override public function init(param1:Boolean) : void
+      override public function init(reverse:Boolean) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc2_:Number = Number(target[property]);
-         this.fvalue = [_loc2_].concat(this.fvalue);
-         if(param1)
+         var p0:Number = NaN;
+         var p1:Number = NaN;
+         var current:Number = Number(target[property]);
+         this.fvalue = [current].concat(this.fvalue);
+         if(reverse)
          {
             this.fvalue.reverse();
          }
-         var _loc5_:Number = Number(this.fvalue[0]);
-         var _loc6_:int = int(this.fvalue.length - 1);
-         var _loc7_:int = 1;
-         var _loc8_:Number = NaN;
+         var p2:Number = Number(this.fvalue[0]);
+         var last:int = int(this.fvalue.length - 1);
+         var index:int = 1;
+         var auto:Number = NaN;
          this.segments = [];
          this.length = 0;
-         while(_loc7_ < _loc6_)
+         while(index < last)
          {
-            _loc3_ = _loc5_;
-            _loc4_ = Number(this.fvalue[_loc7_]);
-            _loc5_ = Number(this.fvalue[++_loc7_]);
+            p0 = p2;
+            p1 = Number(this.fvalue[index]);
+            p2 = Number(this.fvalue[++index]);
             if(this.through)
             {
                if(!this.length)
                {
-                  _loc8_ = (_loc5_ - _loc3_) / 4;
+                  auto = (p2 - p0) / 4;
                   var _loc9_:*;
-                  this.segments[_loc9_ = this.length++] = new BezierSegment(_loc3_,_loc4_ - _loc8_,_loc4_);
+                  this.segments[_loc9_ = this.length++] = new BezierSegment(p0,p1 - auto,p1);
                }
-               this.segments[_loc9_ = this.length++] = new BezierSegment(_loc4_,_loc4_ + _loc8_,_loc5_);
-               _loc8_ = _loc5_ - (_loc4_ + _loc8_);
+               this.segments[_loc9_ = this.length++] = new BezierSegment(p1,p1 + auto,p2);
+               auto = p2 - (p1 + auto);
             }
             else
             {
-               if(_loc7_ != _loc6_)
+               if(index != last)
                {
-                  _loc5_ = (_loc4_ + _loc5_) / 2;
+                  p2 = (p1 + p2) / 2;
                }
-               this.segments[_loc9_ = this.length++] = new BezierSegment(_loc3_,_loc4_,_loc5_);
+               this.segments[_loc9_ = this.length++] = new BezierSegment(p0,p1,p2);
             }
          }
          this.fvalue = null;
-         if(param1)
+         if(reverse)
          {
             this.update(0,false);
          }
       }
       
-      override public function update(param1:Number, param2:Boolean) : void
+      override public function update(ke:Number, isComplete:Boolean) : void
       {
-         var _loc3_:BezierSegment = null;
-         var _loc5_:* = 0;
-         var _loc4_:int = this.length - 1;
-         if(param2)
+         var segment:BezierSegment = null;
+         var index:* = 0;
+         var last:int = this.length - 1;
+         if(isComplete)
          {
-            _loc3_ = this.segments[_loc4_];
-            target[property] = _loc3_.p0 + _loc3_.d2;
+            segment = this.segments[last];
+            target[property] = segment.p0 + segment.d2;
          }
          else if(this.length == 1)
          {
-            _loc3_ = this.segments[0];
-            target[property] = _loc3_.calculate(param1);
+            segment = this.segments[0];
+            target[property] = segment.calculate(ke);
          }
          else
          {
-            _loc5_ = param1 * this.length >> 0;
-            if(_loc5_ < 0)
+            index = ke * this.length >> 0;
+            if(index < 0)
             {
-               _loc5_ = 0;
+               index = 0;
             }
-            else if(_loc5_ > _loc4_)
+            else if(index > last)
             {
-               _loc5_ = _loc4_;
+               index = last;
             }
-            _loc3_ = this.segments[_loc5_];
-            param1 = this.length * (param1 - _loc5_ / this.length);
-            target[property] = _loc3_.calculate(param1);
+            segment = this.segments[index];
+            ke = this.length * (ke - index / this.length);
+            target[property] = segment.calculate(ke);
          }
       }
       
@@ -127,16 +127,16 @@ class BezierSegment
    
    public var d2:Number;
    
-   public function BezierSegment(param1:Number, param2:Number, param3:Number)
+   public function BezierSegment(p0:Number, p1:Number, p2:Number)
    {
       super();
-      this.p0 = param1;
-      this.d1 = param2 - param1;
-      this.d2 = param3 - param1;
+      this.p0 = p0;
+      this.d1 = p1 - p0;
+      this.d2 = p2 - p0;
    }
    
-   public function calculate(param1:Number) : Number
+   public function calculate(t:Number) : Number
    {
-      return this.p0 + param1 * (2 * (1 - param1) * this.d1 + param1 * this.d2);
+      return this.p0 + t * (2 * (1 - t) * this.d1 + t * this.d2);
    }
 }

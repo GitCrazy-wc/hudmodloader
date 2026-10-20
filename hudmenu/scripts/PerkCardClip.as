@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol66")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol133")]
    public dynamic class PerkCardClip extends MovieClip
    {
       

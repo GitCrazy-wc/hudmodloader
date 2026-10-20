@@ -41,82 +41,82 @@ package Shared.AS3
          this.menuLoader = new Loader();
       }
       
-      private function getIconClip(param1:String, param2:String = "", param3:String = null) : MovieClip
+      private function getIconClip(aIcon:String, aPathPrefix:String = "", defaultIcon:String = null) : MovieClip
       {
-         var _loc4_:Object = null;
-         var _loc5_:MovieClip = null;
-         if(param3 != null && (param1 == null || param1.length <= 0))
+         var iconObject:Object = null;
+         var iconInstance:MovieClip = null;
+         if(defaultIcon != null && (aIcon == null || aIcon.length <= 0))
          {
-            param1 = param3;
+            aIcon = defaultIcon;
          }
-         if(param1 != null && param1.length > 0)
+         if(aIcon != null && aIcon.length > 0)
          {
             this.forceUnload();
-            if(ApplicationDomain.currentDomain.hasDefinition(param1))
+            if(ApplicationDomain.currentDomain.hasDefinition(aIcon))
             {
-               _loc4_ = getDefinitionByName(param1) as Class;
-               if(_loc4_ != null)
+               iconObject = getDefinitionByName(aIcon) as Class;
+               if(iconObject != null)
                {
-                  return new _loc4_() as MovieClip;
+                  return new iconObject() as MovieClip;
                }
             }
             else
             {
-               this.SWFLoad(param2 + param1);
+               this.SWFLoad(aPathPrefix + aIcon);
             }
          }
          return null;
       }
       
-      public function setContainerIconClip(param1:String, param2:String = "", param3:String = null) : MovieClip
+      public function setContainerIconClip(aIcon:String, aPathPrefix:String = "", aDefaultIcon:String = null) : MovieClip
       {
-         var _loc4_:MovieClip = this.getIconClip(param1,param2,param3);
-         if(_loc4_ != null)
+         var iconInstance:MovieClip = this.getIconClip(aIcon,aPathPrefix,aDefaultIcon);
+         if(iconInstance != null)
          {
-            addChild(_loc4_);
-            _loc4_.scaleX = this.ClipScale;
-            _loc4_.scaleY = this.ClipScale;
+            addChild(iconInstance);
+            iconInstance.scaleX = this.ClipScale;
+            iconInstance.scaleY = this.ClipScale;
             if(this.ClipWidth != 0)
             {
-               _loc4_.width = this.ClipWidth;
+               iconInstance.width = this.ClipWidth;
             }
             if(this.ClipHeight != 0)
             {
-               _loc4_.height = this.ClipHeight;
+               iconInstance.height = this.ClipHeight;
             }
-            _loc4_.x += this.ClipXOffset;
-            _loc4_.y += this.ClipYOffset;
+            iconInstance.x += this.ClipXOffset;
+            iconInstance.y += this.ClipYOffset;
          }
          else
          {
-            trace("Invalid Icon: Could not find image for path \'" + param1 + "\'");
+            trace("Invalid Icon: Could not find image for path \'" + aIcon + "\'");
          }
-         return _loc4_;
+         return iconInstance;
       }
       
-      public function set clipAlpha(param1:Number) : *
+      public function set clipAlpha(aClipAlpha:Number) : *
       {
-         this.ClipAlpha = param1;
+         this.ClipAlpha = aClipAlpha;
       }
       
-      public function set clipScale(param1:Number) : *
+      public function set clipScale(aClipScale:Number) : *
       {
-         this.ClipScale = param1;
+         this.ClipScale = aClipScale;
       }
       
-      public function set clipRotation(param1:Number) : *
+      public function set clipRotation(aClipRotation:Number) : *
       {
-         this.ClipRotation = param1;
+         this.ClipRotation = aClipRotation;
       }
       
-      public function set clipWidth(param1:Number) : *
+      public function set clipWidth(aClipWidth:Number) : *
       {
-         this.ClipWidth = param1;
+         this.ClipWidth = aClipWidth;
       }
       
-      public function set clipHeight(param1:Number) : *
+      public function set clipHeight(aClipHeight:Number) : *
       {
-         this.ClipHeight = param1;
+         this.ClipHeight = aClipHeight;
       }
       
       public function get clipWidth() : Number
@@ -134,9 +134,9 @@ package Shared.AS3
          return this.ClipScale;
       }
       
-      public function set clipYOffset(param1:Number) : *
+      public function set clipYOffset(aOffset:Number) : *
       {
-         this.ClipYOffset = param1;
+         this.ClipYOffset = aOffset;
       }
       
       public function get clipYOffset() : Number
@@ -144,9 +144,9 @@ package Shared.AS3
          return this.ClipYOffset;
       }
       
-      public function set clipXOffset(param1:Number) : *
+      public function set clipXOffset(aOffset:Number) : *
       {
-         this.ClipXOffset = param1;
+         this.ClipXOffset = aOffset;
       }
       
       public function get clipXOffset() : Number
@@ -154,9 +154,9 @@ package Shared.AS3
          return this.ClipXOffset;
       }
       
-      public function set centerClip(param1:Boolean) : *
+      public function set centerClip(aCenterClip:Boolean) : *
       {
-         this.CenterClip = param1;
+         this.CenterClip = aCenterClip;
       }
       
       public function get centerClip() : Boolean
@@ -172,7 +172,7 @@ package Shared.AS3
          }
       }
       
-      public function SWFLoad(param1:String) : void
+      public function SWFLoad(astrMenuName:String) : void
       {
          try
          {
@@ -185,19 +185,19 @@ package Shared.AS3
          {
             this.SWFUnload(this.SWF);
          }
-         var _loc2_:URLRequest = new URLRequest(param1 + ".swf");
+         var menuLoadRequest:URLRequest = new URLRequest(astrMenuName + ".swf");
          this.menuLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onMenuLoadComplete);
          this.menuLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this._ioErrorEventHandler,false,0,true);
-         this.menuLoader.load(_loc2_);
+         this.menuLoader.load(menuLoadRequest);
       }
       
-      public function SWFLoadAlt(param1:String, param2:String) : *
+      public function SWFLoadAlt(astrMenuName1:String, astrMenuName2:String) : *
       {
-         this.AltMenuName = param2;
-         this.SWFLoad(param1);
+         this.AltMenuName = astrMenuName2;
+         this.SWFLoad(astrMenuName1);
       }
       
-      private function _ioErrorEventHandler(param1:IOErrorEvent) : *
+      private function _ioErrorEventHandler(e:IOErrorEvent) : *
       {
          if(this.AltMenuName.length > 0)
          {
@@ -209,9 +209,9 @@ package Shared.AS3
          }
       }
       
-      public function onMenuLoadComplete(param1:Event) : void
+      public function onMenuLoadComplete(loadCompleteEvent:Event) : void
       {
-         this.SWF = param1.currentTarget.content;
+         this.SWF = loadCompleteEvent.currentTarget.content;
          addChild(this.SWF);
          this.SWF.scaleX = this.ClipScale;
          this.SWF.scaleY = this.ClipScale;
@@ -233,10 +233,10 @@ package Shared.AS3
          this.SWF.y += this.ClipYOffset;
       }
       
-      public function SWFUnload(param1:DisplayObject) : void
+      public function SWFUnload(arUnloadObj:DisplayObject) : void
       {
-         removeChild(param1);
-         param1.loaderInfo.loader.unload();
+         removeChild(arUnloadObj);
+         arUnloadObj.loaderInfo.loader.unload();
          this.SWF = null;
       }
    }

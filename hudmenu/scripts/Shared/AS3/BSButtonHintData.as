@@ -38,6 +38,8 @@ package Shared.AS3
       
       private var m_UserEvent:String;
       
+      private var m_DispatchDataID:uint = 0;
+      
       private var _hasSecondaryButton:Boolean;
       
       private var _strSecondaryPCKey:String;
@@ -72,24 +74,24 @@ package Shared.AS3
       
       public var onSecondaryButtonClick:Function;
       
-      public function BSButtonHintData(param1:String, param2:String, param3:String, param4:String, param5:uint, param6:Function, param7:String = "", param8:String = "")
+      public function BSButtonHintData(astrButtonText:String, astrPCKey:String, astrPSNButton:String, astrXenonButton:String, auiJustification:uint, aFunction:Function, aDispatchEvent:String = "", aUserEvent:String = "")
       {
          this.onAnnounceDataChange = this.onAnnounceDataChange_Impl;
          this.onTextClickDisabled = this.onTextClickDisabled_Impl;
          this.onTextClick = this.onTextClick_Impl;
          this.onSecondaryButtonClick = this.onSecondaryButtonClick_Impl;
          super();
-         this._strPCKey = param2;
-         this._strButtonText = param1;
-         this._strXenonButton = param4;
-         this._strPSNButton = param3;
-         this._uiJustification = param5;
-         this._callbackFunction = param6;
+         this._strPCKey = astrPCKey;
+         this._strButtonText = astrButtonText;
+         this._strXenonButton = astrXenonButton;
+         this._strPSNButton = astrPSNButton;
+         this._uiJustification = auiJustification;
+         this._callbackFunction = aFunction;
          this._bButtonDisabled = false;
          this._bButtonVisible = true;
          this._bButtonFlashing = false;
-         this.m_DispatchEvent = param7;
-         this.m_UserEvent = param8;
+         this.m_DispatchEvent = aDispatchEvent;
+         this.m_UserEvent = aUserEvent;
          this._hasSecondaryButton = false;
          this._strSecondaryPCKey = "";
          this._strSecondaryPSNButton = "";
@@ -125,9 +127,24 @@ package Shared.AS3
          return this.m_DispatchEvent;
       }
       
+      public function set DispatchEvent(aString:String) : void
+      {
+         this.m_DispatchEvent = aString;
+      }
+      
       public function get UserEvent() : String
       {
          return this.m_UserEvent;
+      }
+      
+      public function get DispatchDataID() : uint
+      {
+         return this.m_DispatchDataID;
+      }
+      
+      public function set DispatchDataID(aID:uint) : void
+      {
+         this.m_DispatchDataID = aID;
       }
       
       public function get SecondaryPCKey() : String
@@ -150,11 +167,11 @@ package Shared.AS3
          return this._strDynamicMovieClipName;
       }
       
-      public function set DynamicMovieClipName(param1:String) : void
+      public function set DynamicMovieClipName(aDynamicMovieClipName:String) : void
       {
-         if(this._strDynamicMovieClipName != param1)
+         if(this._strDynamicMovieClipName != aDynamicMovieClipName)
          {
-            this._strDynamicMovieClipName = param1;
+            this._strDynamicMovieClipName = aDynamicMovieClipName;
             this.AnnounceDataChange();
          }
       }
@@ -164,11 +181,11 @@ package Shared.AS3
          return this.m_CanHold;
       }
       
-      public function set canHold(param1:Boolean) : void
+      public function set canHold(aHold:Boolean) : void
       {
-         if(this.m_CanHold != param1)
+         if(this.m_CanHold != aHold)
          {
-            this.m_CanHold = param1;
+            this.m_CanHold = aHold;
             this.AnnounceDataChange();
          }
       }
@@ -178,11 +195,11 @@ package Shared.AS3
          return this.m_HoldPercent;
       }
       
-      public function set holdPercent(param1:Number) : void
+      public function set holdPercent(aPercent:Number) : void
       {
-         if(this.m_HoldPercent != param1)
+         if(this.m_HoldPercent != aPercent)
          {
-            this.m_HoldPercent = param1;
+            this.m_HoldPercent = aPercent;
             this.AnnounceDataChange();
          }
       }
@@ -192,11 +209,11 @@ package Shared.AS3
          return this.m_bIgnorePCKeyMapping;
       }
       
-      public function set ignorePCKeyMapping(param1:Boolean) : void
+      public function set ignorePCKeyMapping(aBool:Boolean) : void
       {
-         if(this.m_bIgnorePCKeyMapping != param1)
+         if(this.m_bIgnorePCKeyMapping != aBool)
          {
-            this.m_bIgnorePCKeyMapping = param1;
+            this.m_bIgnorePCKeyMapping = aBool;
             this.AnnounceDataChange();
          }
       }
@@ -206,11 +223,11 @@ package Shared.AS3
          return this.m_bForceUppercase;
       }
       
-      public function set forceUppercase(param1:Boolean) : void
+      public function set forceUppercase(aBool:Boolean) : void
       {
-         if(this.m_bForceUppercase != param1)
+         if(this.m_bForceUppercase != aBool)
          {
-            this.m_bForceUppercase = param1;
+            this.m_bForceUppercase = aBool;
             this.AnnounceDataChange();
          }
       }
@@ -220,12 +237,12 @@ package Shared.AS3
          return this.m_UserEventMapping;
       }
       
-      public function set userEventMapping(param1:String) : void
+      public function set userEventMapping(aString:String) : void
       {
-         var _loc2_:UIDataFromClient = null;
-         if(this.m_UserEventMapping != param1)
+         var controlMapData:UIDataFromClient = null;
+         if(this.m_UserEventMapping != aString)
          {
-            this.m_UserEventMapping = param1;
+            this.m_UserEventMapping = aString;
             if(this.m_UserEventMapping == "")
             {
                BSUIDataManager.Unsubscribe(EVENT_CONTROL_MAP_DATA,this.onControlMapData);
@@ -233,10 +250,10 @@ package Shared.AS3
             else
             {
                BSUIDataManager.Subscribe(EVENT_CONTROL_MAP_DATA,this.onControlMapData);
-               _loc2_ = BSUIDataManager.GetDataFromClient(EVENT_CONTROL_MAP_DATA);
-               if(_loc2_ && _loc2_.data && Boolean(_loc2_.data.buttonMappings) && _loc2_.data.uiController != null)
+               controlMapData = BSUIDataManager.GetDataFromClient(EVENT_CONTROL_MAP_DATA);
+               if(controlMapData && controlMapData.data && Boolean(controlMapData.data.buttonMappings) && controlMapData.data.uiController != null)
                {
-                  this.updateButtonsFromMapping(_loc2_.data.uiController,_loc2_.data.buttonMappings);
+                  this.updateButtonsFromMapping(controlMapData.data.uiController,controlMapData.data.buttonMappings);
                }
             }
             this.AnnounceDataChange();
@@ -248,11 +265,11 @@ package Shared.AS3
          return this._bButtonDisabled;
       }
       
-      public function set ButtonDisabled(param1:Boolean) : *
+      public function set ButtonDisabled(abButtonDisabled:Boolean) : *
       {
-         if(this._bButtonDisabled != param1)
+         if(this._bButtonDisabled != abButtonDisabled)
          {
-            this._bButtonDisabled = param1;
+            this._bButtonDisabled = abButtonDisabled;
             this.AnnounceDataChange();
          }
       }
@@ -262,9 +279,9 @@ package Shared.AS3
          return !this.ButtonDisabled;
       }
       
-      public function set ButtonEnabled(param1:Boolean) : void
+      public function set ButtonEnabled(abButtonEnabled:Boolean) : void
       {
-         this.ButtonDisabled = !param1;
+         this.ButtonDisabled = !abButtonEnabled;
       }
       
       public function get SecondaryButtonDisabled() : Boolean
@@ -272,11 +289,11 @@ package Shared.AS3
          return this._bSecondaryButtonDisabled;
       }
       
-      public function set SecondaryButtonDisabled(param1:Boolean) : *
+      public function set SecondaryButtonDisabled(abSecondaryButtonDisabled:Boolean) : *
       {
-         if(this._bSecondaryButtonDisabled != param1)
+         if(this._bSecondaryButtonDisabled != abSecondaryButtonDisabled)
          {
-            this._bSecondaryButtonDisabled = param1;
+            this._bSecondaryButtonDisabled = abSecondaryButtonDisabled;
             this.AnnounceDataChange();
          }
       }
@@ -286,9 +303,9 @@ package Shared.AS3
          return !this.SecondaryButtonDisabled;
       }
       
-      public function set SecondaryButtonEnabled(param1:Boolean) : void
+      public function set SecondaryButtonEnabled(abSecondaryButtonEnabled:Boolean) : void
       {
-         this.SecondaryButtonDisabled = !param1;
+         this.SecondaryButtonDisabled = !abSecondaryButtonEnabled;
       }
       
       public function get ButtonText() : String
@@ -296,11 +313,11 @@ package Shared.AS3
          return this._strButtonText;
       }
       
-      public function set ButtonText(param1:String) : void
+      public function set ButtonText(astrButtonText:String) : void
       {
-         if(this._strButtonText != param1)
+         if(this._strButtonText != astrButtonText)
          {
-            this._strButtonText = param1;
+            this._strButtonText = astrButtonText;
             this.AnnounceDataChange();
          }
       }
@@ -310,11 +327,11 @@ package Shared.AS3
          return this._bButtonVisible;
       }
       
-      public function set ButtonVisible(param1:Boolean) : void
+      public function set ButtonVisible(abButtonVisible:Boolean) : void
       {
-         if(this._bButtonVisible != param1)
+         if(this._bButtonVisible != abButtonVisible)
          {
-            this._bButtonVisible = param1;
+            this._bButtonVisible = abButtonVisible;
             this.AnnounceDataChange();
          }
       }
@@ -324,11 +341,11 @@ package Shared.AS3
          return this._bButtonFlashing;
       }
       
-      public function set ButtonFlashing(param1:Boolean) : void
+      public function set ButtonFlashing(abButtonFlashing:Boolean) : void
       {
-         if(this._bButtonFlashing != param1)
+         if(this._bButtonFlashing != abButtonFlashing)
          {
-            this._bButtonFlashing = param1;
+            this._bButtonFlashing = abButtonFlashing;
             this.AnnounceDataChange();
          }
       }
@@ -343,11 +360,11 @@ package Shared.AS3
          return this._isWarning;
       }
       
-      public function set IsWarning(param1:Boolean) : void
+      public function set IsWarning(abIsWarning:Boolean) : void
       {
-         if(this._isWarning != param1)
+         if(this._isWarning != abIsWarning)
          {
-            this._isWarning = param1;
+            this._isWarning = abIsWarning;
             this.AnnounceDataChange();
          }
       }
@@ -365,58 +382,58 @@ package Shared.AS3
       {
       }
       
-      public function SetButtons(param1:String, param2:String, param3:String) : *
+      public function SetButtons(astrPCKey:String, astrPSNButton:String, astrXenonButton:String) : *
       {
-         var _loc4_:Boolean = false;
-         if(this._strPCKey != param1)
+         var buttonChange:Boolean = false;
+         if(this._strPCKey != astrPCKey)
          {
-            this._strPCKey = param1;
-            _loc4_ = true;
+            this._strPCKey = astrPCKey;
+            buttonChange = true;
          }
-         if(this._strPSNButton != param2)
+         if(this._strPSNButton != astrPSNButton)
          {
-            this._strPSNButton = param2;
-            _loc4_ = true;
+            this._strPSNButton = astrPSNButton;
+            buttonChange = true;
          }
-         if(this._strXenonButton != param3)
+         if(this._strXenonButton != astrXenonButton)
          {
-            this._strXenonButton = param3;
-            _loc4_ = true;
+            this._strXenonButton = astrXenonButton;
+            buttonChange = true;
          }
-         if(_loc4_)
+         if(buttonChange)
          {
             this.AnnounceDataChange();
          }
       }
       
-      public function SetSecondaryButtons(param1:String, param2:String, param3:String) : *
+      public function SetSecondaryButtons(astrSecondaryPCKey:String, astrSecondaryPSNButton:String, astrSecondaryXenonButton:String) : *
       {
          this._hasSecondaryButton = true;
-         var _loc4_:Boolean = false;
-         if(this._strSecondaryPCKey != param1)
+         var buttonChange:Boolean = false;
+         if(this._strSecondaryPCKey != astrSecondaryPCKey)
          {
-            this._strSecondaryPCKey = param1;
-            _loc4_ = true;
+            this._strSecondaryPCKey = astrSecondaryPCKey;
+            buttonChange = true;
          }
-         if(this._strSecondaryPSNButton != param2)
+         if(this._strSecondaryPSNButton != astrSecondaryPSNButton)
          {
-            this._strSecondaryPSNButton = param2;
-            _loc4_ = true;
+            this._strSecondaryPSNButton = astrSecondaryPSNButton;
+            buttonChange = true;
          }
-         if(this._strSecondaryXenonButton != param3)
+         if(this._strSecondaryXenonButton != astrSecondaryXenonButton)
          {
-            this._strSecondaryXenonButton = param3;
-            _loc4_ = true;
+            this._strSecondaryXenonButton = astrSecondaryXenonButton;
+            buttonChange = true;
          }
-         if(_loc4_)
+         if(buttonChange)
          {
             this.AnnounceDataChange();
          }
       }
       
-      public function set secondaryButtonCallback(param1:Function) : *
+      public function set secondaryButtonCallback(aSecondaryFunction:Function) : *
       {
-         this._secondaryButtonCallback = param1;
+         this._secondaryButtonCallback = aSecondaryFunction;
       }
       
       public function get disabledButtonCallback() : Function
@@ -424,9 +441,9 @@ package Shared.AS3
          return this.m_DisabledButtonCallback;
       }
       
-      public function set disabledButtonCallback(param1:Function) : *
+      public function set disabledButtonCallback(aDisabledFunction:Function) : *
       {
-         this.m_DisabledButtonCallback = param1;
+         this.m_DisabledButtonCallback = aDisabledFunction;
       }
       
       private function onTextClickDisabled_Impl() : void
@@ -460,44 +477,42 @@ package Shared.AS3
          }
       }
       
-      private function onControlMapData(param1:FromClientDataEvent) : void
+      private function onControlMapData(aEvent:FromClientDataEvent) : void
       {
-         if(this.userEventMapping != "" && param1 && param1.data && Boolean(param1.data.buttonMappings) && param1.data.uiController != null)
+         if(this.userEventMapping != "" && aEvent && aEvent.data && Boolean(aEvent.data.buttonMappings) && aEvent.data.uiController != null)
          {
-            this.updateButtonsFromMapping(param1.data.uiController,param1.data.buttonMappings);
+            this.updateButtonsFromMapping(aEvent.data.uiController,aEvent.data.buttonMappings);
          }
       }
       
-      private function updateButtonsFromMapping(param1:uint, param2:Array) : void
+      private function updateButtonsFromMapping(aUIController:uint, aButtonMappings:Array) : void
       {
-         var _loc3_:String = null;
-         var _loc4_:uint = 0;
-         if(param1 != PlatformChangeEvent.PLATFORM_INVALID && this.userEventMapping != "" && (!this.ignorePCKeyMapping || param1 != PlatformChangeEvent.PLATFORM_PC_KB_MOUSE))
+         var buttonName:String = null;
+         var i:uint = 0;
+         if(aUIController != PlatformChangeEvent.PLATFORM_INVALID && this.userEventMapping != "" && (!this.ignorePCKeyMapping || aUIController != PlatformChangeEvent.PLATFORM_PC_KB_MOUSE))
          {
-            _loc3_ = "";
-            _loc4_ = 0;
-            while(_loc4_ < param2.length)
+            buttonName = "";
+            for(i = 0; i < aButtonMappings.length; i++)
             {
-               if(param2[_loc4_].userEventName == this.userEventMapping)
+               if(aButtonMappings[i].userEventName == this.userEventMapping)
                {
-                  _loc3_ = param2[_loc4_].buttonName;
+                  buttonName = aButtonMappings[i].buttonName;
                   break;
                }
-               _loc4_++;
             }
-            if(_loc3_ != "")
+            if(buttonName != "")
             {
-               switch(param1)
+               switch(aUIController)
                {
                   case PlatformChangeEvent.PLATFORM_PC_KB_MOUSE:
-                     this.SetButtons(_loc3_,this.PSNButton,this.XenonButton);
+                     this.SetButtons(buttonName,this.PSNButton,this.XenonButton);
                      break;
                   case PlatformChangeEvent.PLATFORM_PS4:
-                     this.SetButtons(this.PCKey,_loc3_,this.XenonButton);
+                     this.SetButtons(this.PCKey,buttonName,this.XenonButton);
                      break;
                   case PlatformChangeEvent.PLATFORM_PC_GAMEPAD:
                   case PlatformChangeEvent.PLATFORM_XB1:
-                     this.SetButtons(this.PCKey,this.PSNButton,_loc3_);
+                     this.SetButtons(this.PCKey,this.PSNButton,buttonName);
                }
             }
          }

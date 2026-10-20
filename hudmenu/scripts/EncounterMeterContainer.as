@@ -28,37 +28,35 @@ package
          BSUIDataManager.Subscribe("HUDModeData",this.onHudModeDataChange);
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(aEvent:Event) : void
       {
          BSUIDataManager.Subscribe("EncounterHealthMeterArray",this.onEncounterHealthMeterUpdate);
       }
       
-      private function onEncounterHealthMeterUpdate(param1:FromClientDataEvent) : void
+      private function onEncounterHealthMeterUpdate(arEvent:FromClientDataEvent) : void
       {
-         var _loc3_:Object = null;
-         var _loc2_:int = 0;
-         while(_loc2_ < this.m_EncounterMeters.length)
+         var aData:Object = null;
+         for(var i:int = 0; i < this.m_EncounterMeters.length; i++)
          {
-            _loc3_ = param1.data.EncounterHealthMeterArray[_loc2_];
-            if(_loc3_.DamageList)
+            aData = arEvent.data.EncounterHealthMeterArray[i];
+            if(aData.DamageList)
             {
-               this.m_EncounterMeters[_loc2_].SetDamageList(_loc3_.DamageList);
+               this.m_EncounterMeters[i].SetDamageList(aData.DamageList);
             }
             else
             {
-               this.m_EncounterMeters[_loc2_].ResetDamageList();
+               this.m_EncounterMeters[i].ResetDamageList();
             }
-            this.m_EncounterMeters[_loc2_].SetMeterHostile(_loc3_.IsHostile);
-            this.m_EncounterMeters[_loc2_].SetMeterPercent(_loc3_.Percent);
-            this.m_EncounterMeters[_loc2_].SetMeterName(_loc3_.Name);
-            this.m_EncounterMeters[_loc2_].SetEncounter(_loc3_.EncounterIconType,_loc3_.EncounterIconLevel);
-            _loc2_++;
+            this.m_EncounterMeters[i].SetMeterHostile(aData.IsHostile);
+            this.m_EncounterMeters[i].SetMeterPercent(aData.Percent);
+            this.m_EncounterMeters[i].SetMeterName(aData.Name);
+            this.m_EncounterMeters[i].SetEncounter(aData.EncounterIconType,aData.EncounterIconLevel);
          }
       }
       
-      private function onHudModeDataChange(param1:FromClientDataEvent) : *
+      private function onHudModeDataChange(event:FromClientDataEvent) : *
       {
-         this.visible = this.m_ValidHudModes.indexOf(param1.data.hudMode) != -1;
+         this.visible = this.m_ValidHudModes.indexOf(event.data.hudMode) != -1;
       }
    }
 }

@@ -36,12 +36,12 @@ package Shared.AS3
          return this._defaultVaultBoyName;
       }
       
-      public function set DefaultBoySwfName_Inspectable(param1:String) : *
+      public function set DefaultBoySwfName_Inspectable(aDefaultBoyName:String) : *
       {
-         this._defaultVaultBoyName = param1;
+         this._defaultVaultBoyName = aDefaultBoyName;
       }
       
-      private function OnAnimComplete(param1:Event) : *
+      private function OnAnimComplete(e:Event) : *
       {
          if(!this.Loop)
          {
@@ -55,15 +55,11 @@ package Shared.AS3
          }
       }
       
-      public function DisplayPerkVaultBoy(param1:String, param2:Boolean, param3:Boolean, param4:Boolean) : *
+      public function DisplayPerkVaultBoy(aPerkName:String, abAnimate:Boolean, abLoop:Boolean, abRemoveOnComplete:Boolean) : *
       {
          var newClip:MovieClip;
          var clipType:Object = null;
          var frameName:String = null;
-         var aPerkName:String = param1;
-         var abAnimate:Boolean = param2;
-         var abLoop:Boolean = param3;
-         var abRemoveOnComplete:Boolean = param4;
          var begin:* = aPerkName.lastIndexOf("/") + 1;
          var end:* = aPerkName.lastIndexOf(".");
          if(begin > 0 && end > 0)

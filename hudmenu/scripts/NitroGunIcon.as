@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol70")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol136")]
    public dynamic class NitroGunIcon extends MovieClip
    {
       

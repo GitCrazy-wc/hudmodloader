@@ -28,11 +28,11 @@ package
          return this.m_Data != null;
       }
       
-      public function init(param1:Object) : void
+      public function init(aData:Object) : void
       {
-         if(param1)
+         if(aData)
          {
-            this.m_Data = param1;
+            this.m_Data = aData;
             switch(this.m_Data.casinoGameType)
             {
                case CasinoShared.CASINO_GAME_TYPE_DERBY_RACE:

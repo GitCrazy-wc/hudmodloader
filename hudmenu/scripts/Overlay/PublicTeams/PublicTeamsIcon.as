@@ -19,11 +19,10 @@ package Overlay.PublicTeams
          this.m_originalHeight = this.height;
       }
       
-      public function setIconType(param1:uint) : void
+      public function setIconType(aTeamType:uint) : void
       {
          var typeString:String = null;
          var iconClip:DisplayObject = null;
-         var aTeamType:uint = param1;
          if(aTeamType != this.m_TeamType && PublicTeamsShared.IsValidPublicTeamType(aTeamType))
          {
             this.m_TeamType = aTeamType;

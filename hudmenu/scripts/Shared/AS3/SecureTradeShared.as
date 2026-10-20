@@ -142,87 +142,87 @@ package Shared.AS3
          super();
       }
       
-      public static function IsCampVendingMenuType(param1:uint) : Boolean
+      public static function IsCampVendingMenuType(aMode:uint) : Boolean
       {
-         return param1 == SecureTradeShared.MODE_VENDING_MACHINE || param1 == SecureTradeShared.MODE_DISPLAY_CASE || param1 == SecureTradeShared.MODE_ALLY || param1 == SecureTradeShared.MODE_CAMP_DISPENSER || param1 == SecureTradeShared.MODE_FERMENTER || param1 == SecureTradeShared.MODE_REFRIGERATOR || param1 == SecureTradeShared.MODE_RECHARGER || param1 == SecureTradeShared.MODE_FREEZER || param1 == SecureTradeShared.MODE_PET;
+         return aMode == SecureTradeShared.MODE_VENDING_MACHINE || aMode == SecureTradeShared.MODE_DISPLAY_CASE || aMode == SecureTradeShared.MODE_ALLY || aMode == SecureTradeShared.MODE_CAMP_DISPENSER || aMode == SecureTradeShared.MODE_FERMENTER || aMode == SecureTradeShared.MODE_REFRIGERATOR || aMode == SecureTradeShared.MODE_RECHARGER || aMode == SecureTradeShared.MODE_FREEZER || aMode == SecureTradeShared.MODE_PET;
       }
       
-      public static function DoesMachineTypeMatchMode(param1:uint, param2:uint) : Boolean
+      public static function DoesMachineTypeMatchMode(aMachineType:uint, aMode:uint) : Boolean
       {
-         return param1 == MACHINE_TYPE_VENDING ? param2 == MODE_VENDING_MACHINE : (param1 == MACHINE_TYPE_DISPLAY ? param2 == MODE_DISPLAY_CASE : (param1 == MACHINE_TYPE_DISPENSER ? param2 == MODE_CAMP_DISPENSER : (param1 == MACHINE_TYPE_FERMENTER ? param2 == MODE_FERMENTER : (param1 == MACHINE_TYPE_REFRIGERATOR ? param2 == MODE_REFRIGERATOR : (param1 == MACHINE_TYPE_ALLY ? param2 == MODE_ALLY : (param1 == MACHINE_TYPE_RECHARGER ? param2 == MODE_RECHARGER : (param1 == MACHINE_TYPE_FREEZER ? param2 == MODE_FREEZER : (param1 == MACHINE_TYPE_PET ? param2 == MODE_PET : false))))))));
+         return aMachineType == MACHINE_TYPE_VENDING ? aMode == MODE_VENDING_MACHINE : (aMachineType == MACHINE_TYPE_DISPLAY ? aMode == MODE_DISPLAY_CASE : (aMachineType == MACHINE_TYPE_DISPENSER ? aMode == MODE_CAMP_DISPENSER : (aMachineType == MACHINE_TYPE_FERMENTER ? aMode == MODE_FERMENTER : (aMachineType == MACHINE_TYPE_REFRIGERATOR ? aMode == MODE_REFRIGERATOR : (aMachineType == MACHINE_TYPE_ALLY ? aMode == MODE_ALLY : (aMachineType == MACHINE_TYPE_RECHARGER ? aMode == MODE_RECHARGER : (aMachineType == MACHINE_TYPE_FREEZER ? aMode == MODE_FREEZER : (aMachineType == MACHINE_TYPE_PET ? aMode == MODE_PET : false))))))));
       }
       
-      public static function setCurrencyIcon(param1:SWFLoaderClip, param2:uint, param3:Boolean = false) : MovieClip
+      public static function setCurrencyIcon(aClip:SWFLoaderClip, aCurrencyType:uint, aIsHUD:Boolean = false) : MovieClip
       {
-         var _loc4_:String = null;
-         switch(param2)
+         var currencyIcon:String = null;
+         switch(aCurrencyType)
          {
             case CURRENCY_CAPS:
-               if(param3)
+               if(aIsHUD)
                {
-                  _loc4_ = "IconCu_CapsHUD";
+                  currencyIcon = "IconCu_CapsHUD";
                }
                else
                {
-                  _loc4_ = "IconCu_Caps";
+                  currencyIcon = "IconCu_Caps";
                }
                break;
             case CURRENCY_LEGENDARY_TOKENS:
-               if(param3)
+               if(aIsHUD)
                {
-                  _loc4_ = "IconCu_LegendaryTokenHUD";
+                  currencyIcon = "IconCu_LegendaryTokenHUD";
                }
                else
                {
-                  _loc4_ = "IconCu_LegendaryToken";
+                  currencyIcon = "IconCu_LegendaryToken";
                }
                break;
             case CURRENCY_POSSUM_BADGES:
-               _loc4_ = "IconCu_Possum";
+               currencyIcon = "IconCu_Possum";
                break;
             case CURRENCY_TADPOLE_BADGES:
-               _loc4_ = "IconCu_Tadpole";
+               currencyIcon = "IconCu_Tadpole";
                break;
             case CURRENCY_GOLD_BULLION:
-               if(param3)
+               if(aIsHUD)
                {
-                  _loc4_ = "IconCu_GBHUD";
+                  currencyIcon = "IconCu_GBHUD";
                }
                else
                {
-                  _loc4_ = "IconCu_GB";
+                  currencyIcon = "IconCu_GB";
                }
                break;
             case CURRENCY_PERK_COINS:
-               if(param3)
+               if(aIsHUD)
                {
-                  _loc4_ = "IconCu_LGNPerkCoinHUD";
+                  currencyIcon = "IconCu_LGNPerkCoinHUD";
                }
                else
                {
-                  _loc4_ = "IconCu_LGNPerkCoin";
+                  currencyIcon = "IconCu_LGNPerkCoin";
                }
                break;
             case CURRENCY_EXPEDITION_ULTRACITE_BATTERY:
-               if(param3)
+               if(aIsHUD)
                {
-                  _loc4_ = "IconCu_BatteryHUD";
+                  currencyIcon = "IconCu_BatteryHUD";
                }
                break;
             case CURRENCY_EXPEDITION_STAMPS:
-               if(param3)
+               if(aIsHUD)
                {
-                  _loc4_ = "IconCu_StampsHUD";
+                  currencyIcon = "IconCu_StampsHUD";
                }
                else
                {
-                  _loc4_ = "IconCu_Stamps";
+                  currencyIcon = "IconCu_Stamps";
                }
                break;
             case CURRENCY_SUPPLIES:
-               _loc4_ = "IconCu_SuppliesHUD";
+               currencyIcon = "IconCu_SuppliesHUD";
          }
-         return param1.setContainerIconClip(_loc4_);
+         return aClip.setContainerIconClip(currencyIcon);
       }
    }
 }

@@ -9,17 +9,17 @@ package com.adobe.serialization.json
       
       public var value:Object;
       
-      public function JSONToken(param1:int = -1, param2:Object = null)
+      public function JSONToken(type:int = -1, value:Object = null)
       {
          super();
-         this.type = param1;
-         this.value = param2;
+         this.type = type;
+         this.value = value;
       }
       
-      internal static function create(param1:int = -1, param2:Object = null) : JSONToken
+      internal static function create(type:int = -1, value:Object = null) : JSONToken
       {
-         token.type = param1;
-         token.value = param2;
+         token.type = type;
+         token.value = value;
          return token;
       }
    }

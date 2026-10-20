@@ -15,41 +15,41 @@ package aze.motion.specials
       
       private var frameEnd:*;
       
-      public function PropertyFrame(param1:Object, param2:*, param3:*, param4:EazeSpecial)
+      public function PropertyFrame(target:Object, property:*, value:*, next:EazeSpecial)
       {
-         var _loc6_:Array = null;
-         var _loc7_:String = null;
-         var _loc8_:int = 0;
-         super(param1,param2,param3,param4);
-         var _loc5_:MovieClip = MovieClip(param1);
-         if(param3 is String)
+         var parts:Array = null;
+         var label:String = null;
+         var index:int = 0;
+         super(target,property,value,next);
+         var mc:MovieClip = MovieClip(target);
+         if(value is String)
          {
-            _loc7_ = param3;
-            if(_loc7_.indexOf("+") > 0)
+            label = value;
+            if(label.indexOf("+") > 0)
             {
-               _loc6_ = _loc7_.split("+");
-               this.frameStart = _loc6_[0];
-               this.frameEnd = _loc7_;
+               parts = label.split("+");
+               this.frameStart = parts[0];
+               this.frameEnd = label;
             }
-            else if(_loc7_.indexOf(">") > 0)
+            else if(label.indexOf(">") > 0)
             {
-               _loc6_ = _loc7_.split(">");
-               this.frameStart = _loc6_[0];
-               this.frameEnd = _loc6_[1];
+               parts = label.split(">");
+               this.frameStart = parts[0];
+               this.frameEnd = parts[1];
             }
             else
             {
-               this.frameEnd = _loc7_;
+               this.frameEnd = label;
             }
          }
          else
          {
-            _loc8_ = int(param3);
-            if(_loc8_ <= 0)
+            index = int(value);
+            if(index <= 0)
             {
-               _loc8_ += _loc5_.totalFrames;
+               index += mc.totalFrames;
             }
-            this.frameEnd = Math.max(1,Math.min(_loc5_.totalFrames,_loc8_));
+            this.frameEnd = Math.max(1,Math.min(mc.totalFrames,index));
          }
       }
       
@@ -58,22 +58,22 @@ package aze.motion.specials
          EazeTween.specialProperties.frame = PropertyFrame;
       }
       
-      override public function init(param1:Boolean) : void
+      override public function init(reverse:Boolean) : void
       {
-         var _loc2_:MovieClip = MovieClip(target);
+         var mc:MovieClip = MovieClip(target);
          if(this.frameStart is String)
          {
-            this.frameStart = this.findLabel(_loc2_,this.frameStart);
+            this.frameStart = this.findLabel(mc,this.frameStart);
          }
          else
          {
-            this.frameStart = _loc2_.currentFrame;
+            this.frameStart = mc.currentFrame;
          }
          if(this.frameEnd is String)
          {
-            this.frameEnd = this.findLabel(_loc2_,this.frameEnd);
+            this.frameEnd = this.findLabel(mc,this.frameEnd);
          }
-         if(param1)
+         if(reverse)
          {
             this.start = this.frameEnd;
             this.delta = this.frameStart - this.start;
@@ -83,33 +83,33 @@ package aze.motion.specials
             this.start = this.frameStart;
             this.delta = this.frameEnd - this.start;
          }
-         _loc2_.gotoAndStop(this.start);
+         mc.gotoAndStop(this.start);
       }
       
-      private function findLabel(param1:MovieClip, param2:String) : int
+      private function findLabel(mc:MovieClip, name:String) : int
       {
-         var _loc3_:FrameLabel = null;
-         for each(_loc3_ in param1.currentLabels)
+         var label:FrameLabel = null;
+         for each(label in mc.currentLabels)
          {
-            if(_loc3_.name == param2)
+            if(label.name == name)
             {
-               return _loc3_.frame;
+               return label.frame;
             }
          }
          return 1;
       }
       
-      override public function update(param1:Number, param2:Boolean) : void
+      override public function update(ke:Number, isComplete:Boolean) : void
       {
-         var _loc3_:MovieClip = MovieClip(target);
-         _loc3_.gotoAndStop(Math.round(this.start + this.delta * param1));
+         var mc:MovieClip = MovieClip(target);
+         mc.gotoAndStop(Math.round(this.start + this.delta * ke));
       }
       
       public function getPreferredDuration() : Number
       {
-         var _loc1_:MovieClip = MovieClip(target);
-         var _loc2_:Number = _loc1_.stage ? _loc1_.stage.frameRate : 30;
-         return Math.abs(Number(this.delta) / _loc2_);
+         var mc:MovieClip = MovieClip(target);
+         var fps:Number = mc.stage ? mc.stage.frameRate : 30;
+         return Math.abs(Number(this.delta) / fps);
       }
    }
 }

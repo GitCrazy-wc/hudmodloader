@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol549")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol606")]
    public dynamic class AmmoIcon extends MovieClip
    {
       

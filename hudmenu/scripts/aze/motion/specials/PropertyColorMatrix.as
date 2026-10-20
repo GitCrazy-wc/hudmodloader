@@ -17,33 +17,33 @@ package aze.motion.specials
       
       private var temp:Array;
       
-      public function PropertyColorMatrix(param1:Object, param2:*, param3:*, param4:EazeSpecial)
+      public function PropertyColorMatrix(target:Object, property:*, value:*, next:EazeSpecial)
       {
-         var _loc5_:uint = 0;
-         super(param1,param2,param3,param4);
+         var tint:uint = 0;
+         super(target,property,value,next);
          this.colorMatrix = new ColorMatrix();
-         if(param3.brightness)
+         if(value.brightness)
          {
-            this.colorMatrix.adjustBrightness(param3.brightness * 255);
+            this.colorMatrix.adjustBrightness(value.brightness * 255);
          }
-         if(param3.contrast)
+         if(value.contrast)
          {
-            this.colorMatrix.adjustContrast(param3.contrast);
+            this.colorMatrix.adjustContrast(value.contrast);
          }
-         if(param3.hue)
+         if(value.hue)
          {
-            this.colorMatrix.adjustHue(param3.hue);
+            this.colorMatrix.adjustHue(value.hue);
          }
-         if(param3.saturation)
+         if(value.saturation)
          {
-            this.colorMatrix.adjustSaturation(param3.saturation + 1);
+            this.colorMatrix.adjustSaturation(value.saturation + 1);
          }
-         if(param3.colorize)
+         if(value.colorize)
          {
-            _loc5_ = "tint" in param3 ? uint(param3.tint) : 16777215;
-            this.colorMatrix.colorize(_loc5_,param3.colorize);
+            tint = "tint" in value ? uint(value.tint) : 16777215;
+            this.colorMatrix.colorize(tint,value.colorize);
          }
-         this.removeWhenComplete = param3.remove;
+         this.removeWhenComplete = value.remove;
       }
       
       public static function register() : void
@@ -52,54 +52,50 @@ package aze.motion.specials
          EazeTween.specialProperties[ColorMatrixFilter] = PropertyColorMatrix;
       }
       
-      override public function init(param1:Boolean) : void
+      override public function init(reverse:Boolean) : void
       {
-         var _loc4_:Array = null;
-         var _loc5_:Array = null;
-         var _loc2_:DisplayObject = DisplayObject(target);
-         var _loc3_:ColorMatrixFilter = PropertyFilter.getCurrentFilter(ColorMatrixFilter,_loc2_,true) as ColorMatrixFilter;
-         if(!_loc3_)
+         var begin:Array = null;
+         var end:Array = null;
+         var disp:DisplayObject = DisplayObject(target);
+         var current:ColorMatrixFilter = PropertyFilter.getCurrentFilter(ColorMatrixFilter,disp,true) as ColorMatrixFilter;
+         if(!current)
          {
-            _loc3_ = new ColorMatrixFilter();
+            current = new ColorMatrixFilter();
          }
-         if(param1)
+         if(reverse)
          {
-            _loc5_ = _loc3_.matrix;
-            _loc4_ = this.colorMatrix.matrix;
+            end = current.matrix;
+            begin = this.colorMatrix.matrix;
          }
          else
          {
-            _loc5_ = this.colorMatrix.matrix;
-            _loc4_ = _loc3_.matrix;
+            end = this.colorMatrix.matrix;
+            begin = current.matrix;
          }
          this.delta = new Array(20);
-         var _loc6_:int = 0;
-         while(_loc6_ < 20)
+         for(var i:int = 0; i < 20; i++)
          {
-            this.delta[_loc6_] = _loc5_[_loc6_] - _loc4_[_loc6_];
-            _loc6_++;
+            this.delta[i] = end[i] - begin[i];
          }
-         this.start = _loc4_;
+         this.start = begin;
          this.temp = new Array(20);
-         PropertyFilter.addFilter(_loc2_,new ColorMatrixFilter(_loc4_));
+         PropertyFilter.addFilter(disp,new ColorMatrixFilter(begin));
       }
       
-      override public function update(param1:Number, param2:Boolean) : void
+      override public function update(ke:Number, isComplete:Boolean) : void
       {
-         var _loc3_:DisplayObject = DisplayObject(target);
-         PropertyFilter.getCurrentFilter(ColorMatrixFilter,_loc3_,true) as ColorMatrixFilter;
-         if(this.removeWhenComplete && param2)
+         var disp:DisplayObject = DisplayObject(target);
+         PropertyFilter.getCurrentFilter(ColorMatrixFilter,disp,true) as ColorMatrixFilter;
+         if(this.removeWhenComplete && isComplete)
          {
-            _loc3_.filters = _loc3_.filters;
+            disp.filters = disp.filters;
             return;
          }
-         var _loc4_:int = 0;
-         while(_loc4_ < 20)
+         for(var i:int = 0; i < 20; i++)
          {
-            this.temp[_loc4_] = this.start[_loc4_] + param1 * this.delta[_loc4_];
-            _loc4_++;
+            this.temp[i] = this.start[i] + ke * this.delta[i];
          }
-         PropertyFilter.addFilter(_loc3_,new ColorMatrixFilter(this.temp));
+         PropertyFilter.addFilter(disp,new ColorMatrixFilter(this.temp));
       }
       
       override public function dispose() : void
@@ -138,16 +134,16 @@ class ColorMatrix
    
    public var matrix:Array;
    
-   public function ColorMatrix(param1:Object = null)
+   public function ColorMatrix(mat:Object = null)
    {
       super();
-      if(param1 is ColorMatrix)
+      if(mat is ColorMatrix)
       {
-         this.matrix = param1.matrix.concat();
+         this.matrix = mat.matrix.concat();
       }
-      else if(param1 is Array)
+      else if(mat is Array)
       {
-         this.matrix = param1.concat();
+         this.matrix = mat.concat();
       }
       else
       {
@@ -160,67 +156,67 @@ class ColorMatrix
       this.matrix = IDENTITY.concat();
    }
    
-   public function adjustSaturation(param1:Number) : void
+   public function adjustSaturation(s:Number) : void
    {
-      var _loc2_:Number = NaN;
-      var _loc3_:Number = NaN;
-      var _loc4_:Number = NaN;
-      var _loc5_:Number = NaN;
-      _loc2_ = 1 - param1;
-      _loc3_ = _loc2_ * LUMA_R;
-      _loc4_ = _loc2_ * LUMA_G;
-      _loc5_ = _loc2_ * LUMA_B;
-      this.concat([_loc3_ + param1,_loc4_,_loc5_,0,0,_loc3_,_loc4_ + param1,_loc5_,0,0,_loc3_,_loc4_,_loc5_ + param1,0,0,0,0,0,1,0]);
+      var sInv:Number = NaN;
+      var irlum:Number = NaN;
+      var iglum:Number = NaN;
+      var iblum:Number = NaN;
+      sInv = 1 - s;
+      irlum = sInv * LUMA_R;
+      iglum = sInv * LUMA_G;
+      iblum = sInv * LUMA_B;
+      this.concat([irlum + s,iglum,iblum,0,0,irlum,iglum + s,iblum,0,0,irlum,iglum,iblum + s,0,0,0,0,0,1,0]);
    }
    
-   public function adjustContrast(param1:Number, param2:Number = NaN, param3:Number = NaN) : void
+   public function adjustContrast(r:Number, g:Number = NaN, b:Number = NaN) : void
    {
-      if(isNaN(param2))
+      if(isNaN(g))
       {
-         param2 = param1;
+         g = r;
       }
-      if(isNaN(param3))
+      if(isNaN(b))
       {
-         param3 = param1;
+         b = r;
       }
-      param1 += 1;
-      param2 += 1;
-      param3 += 1;
-      this.concat([param1,0,0,0,128 * (1 - param1),0,param2,0,0,128 * (1 - param2),0,0,param3,0,128 * (1 - param3),0,0,0,1,0]);
+      r += 1;
+      g += 1;
+      b += 1;
+      this.concat([r,0,0,0,128 * (1 - r),0,g,0,0,128 * (1 - g),0,0,b,0,128 * (1 - b),0,0,0,1,0]);
    }
    
-   public function adjustBrightness(param1:Number, param2:Number = NaN, param3:Number = NaN) : void
+   public function adjustBrightness(r:Number, g:Number = NaN, b:Number = NaN) : void
    {
-      if(isNaN(param2))
+      if(isNaN(g))
       {
-         param2 = param1;
+         g = r;
       }
-      if(isNaN(param3))
+      if(isNaN(b))
       {
-         param3 = param1;
+         b = r;
       }
-      this.concat([1,0,0,0,param1,0,1,0,0,param2,0,0,1,0,param3,0,0,0,1,0]);
+      this.concat([1,0,0,0,r,0,1,0,0,g,0,0,1,0,b,0,0,0,1,0]);
    }
    
-   public function adjustHue(param1:Number) : void
+   public function adjustHue(degrees:Number) : void
    {
-      param1 *= RAD;
-      var _loc2_:Number = Math.cos(param1);
-      var _loc3_:Number = Math.sin(param1);
-      this.concat([LUMA_R + _loc2_ * (1 - LUMA_R) + _loc3_ * -LUMA_R,LUMA_G + _loc2_ * -LUMA_G + _loc3_ * -LUMA_G,LUMA_B + _loc2_ * -LUMA_B + _loc3_ * (1 - LUMA_B),0,0,LUMA_R + _loc2_ * -LUMA_R + _loc3_ * 0.143,LUMA_G + _loc2_ * (1 - LUMA_G) + _loc3_ * 0.14,LUMA_B + _loc2_ * -LUMA_B + _loc3_ * -0.283,0,0,LUMA_R + _loc2_ * -LUMA_R + _loc3_ * -(1 - LUMA_R),LUMA_G + _loc2_ * -LUMA_G + _loc3_ * LUMA_G,LUMA_B + _loc2_ * (1 - LUMA_B) + _loc3_ * LUMA_B,0,0,0,0,0,1,0]);
+      degrees *= RAD;
+      var cos:Number = Math.cos(degrees);
+      var sin:Number = Math.sin(degrees);
+      this.concat([LUMA_R + cos * (1 - LUMA_R) + sin * -LUMA_R,LUMA_G + cos * -LUMA_G + sin * -LUMA_G,LUMA_B + cos * -LUMA_B + sin * (1 - LUMA_B),0,0,LUMA_R + cos * -LUMA_R + sin * 0.143,LUMA_G + cos * (1 - LUMA_G) + sin * 0.14,LUMA_B + cos * -LUMA_B + sin * -0.283,0,0,LUMA_R + cos * -LUMA_R + sin * -(1 - LUMA_R),LUMA_G + cos * -LUMA_G + sin * LUMA_G,LUMA_B + cos * (1 - LUMA_B) + sin * LUMA_B,0,0,0,0,0,1,0]);
    }
    
-   public function colorize(param1:int, param2:Number = 1) : void
+   public function colorize(rgb:int, amount:Number = 1) : void
    {
-      var _loc3_:Number = NaN;
-      var _loc4_:Number = NaN;
-      var _loc5_:Number = NaN;
-      var _loc6_:Number = NaN;
-      _loc3_ = (param1 >> 16 & 0xFF) / 255;
-      _loc4_ = (param1 >> 8 & 0xFF) / 255;
-      _loc5_ = (param1 & 0xFF) / 255;
-      _loc6_ = 1 - param2;
-      this.concat([_loc6_ + param2 * _loc3_ * LUMA_R,param2 * _loc3_ * LUMA_G,param2 * _loc3_ * LUMA_B,0,0,param2 * _loc4_ * LUMA_R,_loc6_ + param2 * _loc4_ * LUMA_G,param2 * _loc4_ * LUMA_B,0,0,param2 * _loc5_ * LUMA_R,param2 * _loc5_ * LUMA_G,_loc6_ + param2 * _loc5_ * LUMA_B,0,0,0,0,0,1,0]);
+      var r:Number = NaN;
+      var g:Number = NaN;
+      var b:Number = NaN;
+      var inv_amount:Number = NaN;
+      r = (rgb >> 16 & 0xFF) / 255;
+      g = (rgb >> 8 & 0xFF) / 255;
+      b = (rgb & 0xFF) / 255;
+      inv_amount = 1 - amount;
+      this.concat([inv_amount + amount * r * LUMA_R,amount * r * LUMA_G,amount * r * LUMA_B,0,0,amount * g * LUMA_R,inv_amount + amount * g * LUMA_G,amount * g * LUMA_B,0,0,amount * b * LUMA_R,amount * b * LUMA_G,inv_amount + amount * b * LUMA_B,0,0,0,0,0,1,0]);
    }
    
    public function get filter() : ColorMatrixFilter
@@ -228,24 +224,20 @@ class ColorMatrix
       return new ColorMatrixFilter(this.matrix);
    }
    
-   public function concat(param1:Array) : void
+   public function concat(mat:Array) : void
    {
-      var _loc4_:int = 0;
-      var _loc5_:int = 0;
-      var _loc2_:Array = [];
-      var _loc3_:int = 0;
-      _loc5_ = 0;
-      while(_loc5_ < 4)
+      var x:int = 0;
+      var y:int = 0;
+      var temp:Array = [];
+      var i:int = 0;
+      for(y = 0; y < 4; y++)
       {
-         _loc4_ = 0;
-         while(_loc4_ < 5)
+         for(x = 0; x < 5; x++)
          {
-            _loc2_[int(_loc3_ + _loc4_)] = Number(param1[_loc3_]) * Number(this.matrix[_loc4_]) + Number(param1[int(_loc3_ + 1)]) * Number(this.matrix[int(_loc4_ + 5)]) + Number(param1[int(_loc3_ + 2)]) * Number(this.matrix[int(_loc4_ + 10)]) + Number(param1[int(_loc3_ + 3)]) * Number(this.matrix[int(_loc4_ + 15)]) + (_loc4_ == 4 ? Number(param1[int(_loc3_ + 4)]) : 0);
-            _loc4_++;
+            temp[int(i + x)] = Number(mat[i]) * Number(this.matrix[x]) + Number(mat[int(i + 1)]) * Number(this.matrix[int(x + 5)]) + Number(mat[int(i + 2)]) * Number(this.matrix[int(x + 10)]) + Number(mat[int(i + 3)]) * Number(this.matrix[int(x + 15)]) + (x == 4 ? Number(mat[int(i + 4)]) : 0);
          }
-         _loc3_ += 5;
-         _loc5_++;
+         i += 5;
       }
-      this.matrix = _loc2_;
+      this.matrix = temp;
    }
 }

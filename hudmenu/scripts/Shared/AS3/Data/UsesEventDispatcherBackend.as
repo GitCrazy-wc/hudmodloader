@@ -25,9 +25,9 @@ package Shared.AS3.Data
          return this._eventDispatcherBackend;
       }
       
-      protected function set eventDispatcherBackend(param1:BSUIEventDispatcherBackend) : void
+      protected function set eventDispatcherBackend(value:BSUIEventDispatcherBackend) : void
       {
-         this._eventDispatcherBackend = param1;
+         this._eventDispatcherBackend = value;
          this.SendCachedEvents();
       }
       
@@ -39,38 +39,38 @@ package Shared.AS3.Data
          }
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         this.m_Dispatcher.addEventListener(param1,param2,param3,param4,param5);
+         this.m_Dispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         this.m_Dispatcher.removeEventListener(param1,param2,param3);
+         this.m_Dispatcher.removeEventListener(type,listener,useCapture);
       }
       
-      public function dispatchEvent(param1:Event) : Boolean
+      public function dispatchEvent(event:Event) : Boolean
       {
-         var _loc2_:Boolean = false;
+         var success:Boolean = false;
          if(this.eventDispatcherBackend is BSUIEventDispatcherBackend)
          {
-            this.eventDispatcherBackend.DispatchEventToGame(param1);
+            this.eventDispatcherBackend.DispatchEventToGame(event);
          }
          else
          {
-            this._cachedEvents.push(param1.clone());
+            this._cachedEvents.push(event.clone());
          }
-         return this.m_Dispatcher.dispatchEvent(param1);
+         return this.m_Dispatcher.dispatchEvent(event);
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         return this.m_Dispatcher.hasEventListener(param1);
+         return this.m_Dispatcher.hasEventListener(type);
       }
       
-      public function willTrigger(param1:String) : Boolean
+      public function willTrigger(type:String) : Boolean
       {
-         return this.m_Dispatcher.willTrigger(param1);
+         return this.m_Dispatcher.willTrigger(type);
       }
    }
 }

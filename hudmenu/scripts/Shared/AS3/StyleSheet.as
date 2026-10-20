@@ -11,55 +11,53 @@ package Shared.AS3
          super();
       }
       
-      private static function aggregateSheetProperties(param1:Object, param2:Object, param3:Object, param4:Boolean = false) : *
+      private static function aggregateSheetProperties(aTargObj:Object, aSheetObj:Object, aNewProperties:Object, aIgnoreWarnings:Boolean = false) : *
       {
-         var _loc8_:XML = null;
-         var _loc9_:String = null;
-         var _loc10_:* = null;
-         var _loc11_:* = null;
-         var _loc5_:String = getQualifiedClassName(param2);
-         var _loc6_:XML = describeType(param2);
-         var _loc7_:XMLList = _loc6_..variable;
-         for each(_loc8_ in _loc7_)
+         var item:XML = null;
+         var key:String = null;
+         var sourceType:* = null;
+         var targType:* = null;
+         var sheetName:String = getQualifiedClassName(aSheetObj);
+         var classInfo:XML = describeType(aSheetObj);
+         var propertyList:XMLList = classInfo..variable;
+         for each(item in propertyList)
          {
-            _loc9_ = _loc8_.@name;
-            _loc10_ = typeof param2[_loc9_];
-            _loc11_ = typeof param1[_loc9_];
-            if(param1.hasOwnProperty(_loc9_))
+            key = item.@name;
+            sourceType = typeof aSheetObj[key];
+            targType = typeof aTargObj[key];
+            if(aTargObj.hasOwnProperty(key))
             {
-               if(_loc10_ == "function")
+               if(sourceType == "function")
                {
-                  throw new Error("StyleSheet:aggregateSheetProperties - Stylesheet " + _loc5_ + " contains function parameters (prohibited).");
+                  throw new Error("StyleSheet:aggregateSheetProperties - Stylesheet " + sheetName + " contains function parameters (prohibited).");
                }
-               if(_loc10_ == typeof param1[_loc9_])
+               if(sourceType == typeof aTargObj[key])
                {
-                  param3[_loc9_] = param2[_loc9_];
+                  aNewProperties[key] = aSheetObj[key];
                }
-               else if(!param4)
+               else if(!aIgnoreWarnings)
                {
-                  trace("WARNING: StyleSheet:aggregateSheetProperties - Stylesheet " + _loc5_ + " : Type mismatch between source (" + _loc10_ + ") and target (" + _loc11_ + ") for property " + _loc9_);
+                  trace("WARNING: StyleSheet:aggregateSheetProperties - Stylesheet " + sheetName + " : Type mismatch between source (" + sourceType + ") and target (" + targType + ") for property " + key);
                }
             }
-            else if(!param4)
+            else if(!aIgnoreWarnings)
             {
-               trace("WARNING: SheetSheet:aggregateSheetProperties - Stylesheet " + _loc5_ + " contains property " + _loc9_ + " which does not exist on target object.");
+               trace("WARNING: SheetSheet:aggregateSheetProperties - Stylesheet " + sheetName + " contains property " + key + " which does not exist on target object.");
             }
          }
       }
       
-      public static function apply(param1:Object, param2:Boolean = false, ... rest) : *
+      public static function apply(aTargObj:Object, aIgnoreWarnings:Boolean = false, ... args) : *
       {
-         var _loc6_:String = null;
-         var _loc4_:Object = new Object();
-         var _loc5_:* = 0;
-         while(_loc5_ < rest.length)
+         var key:String = null;
+         var newProperties:Object = new Object();
+         for(var i:* = 0; i < args.length; i++)
          {
-            aggregateSheetProperties(param1,rest[_loc5_],_loc4_,param2);
-            _loc5_++;
+            aggregateSheetProperties(aTargObj,args[i],newProperties,aIgnoreWarnings);
          }
-         for(_loc6_ in _loc4_)
+         for(key in newProperties)
          {
-            param1[_loc6_] = _loc4_[_loc6_];
+            aTargObj[key] = newProperties[key];
          }
       }
    }

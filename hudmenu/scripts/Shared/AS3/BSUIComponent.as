@@ -10,7 +10,7 @@ package Shared.AS3
       
       private var _uiPlatform:uint;
       
-      private var _bPS3Switch:Boolean;
+      private var _bIsGen9:Boolean;
       
       private var _uiController:uint;
       
@@ -22,7 +22,7 @@ package Shared.AS3
       {
          super();
          this._uiPlatform = PlatformChangeEvent.PLATFORM_INVALID;
-         this._bPS3Switch = false;
+         this._bIsGen9 = false;
          this._uiController = PlatformChangeEvent.PLATFORM_INVALID;
          this._uiKeyboard = PlatformChangeEvent.PLATFORM_INVALID;
          this._bAcquiredByNativeCode = false;
@@ -34,9 +34,14 @@ package Shared.AS3
          return this._uiPlatform;
       }
       
+      public function get bIsGen9() : Boolean
+      {
+         return this._bIsGen9;
+      }
+      
       public function get bPS3Switch() : Boolean
       {
-         return this._bPS3Switch;
+         return this._bIsGen9;
       }
       
       public function get uiController() : uint
@@ -71,10 +76,10 @@ package Shared.AS3
          }
       }
       
-      final private function onSetPlatformEvent(param1:Event) : *
+      final private function onSetPlatformEvent(event:Event) : *
       {
-         var _loc2_:PlatformChangeEvent = param1 as PlatformChangeEvent;
-         this.SetPlatform(_loc2_.uiPlatform,_loc2_.bPS3Switch,_loc2_.uiController,_loc2_.uiKeyboard);
+         var e:PlatformChangeEvent = event as PlatformChangeEvent;
+         this.SetPlatform(e.uiPlatform,e.bIsGen9,e.uiController,e.uiKeyboard);
       }
       
       override public function onAddedToStage() : void
@@ -98,14 +103,14 @@ package Shared.AS3
       {
       }
       
-      public function SetPlatform(param1:uint, param2:Boolean, param3:uint, param4:uint) : void
+      public function SetPlatform(auiPlatform:uint, abIsGen9:Boolean, auiController:uint, auiKeyboard:uint) : void
       {
-         if(this._uiPlatform != param1 || this._bPS3Switch != param2 || this._uiController != param3 || this._uiKeyboard != param4)
+         if(this._uiPlatform != auiPlatform || this._bIsGen9 != abIsGen9 || this._uiController != auiController || this._uiKeyboard != auiKeyboard)
          {
-            this._uiPlatform = param1;
-            this._bPS3Switch = param2;
-            this._uiController = param3;
-            this._uiKeyboard = param4;
+            this._uiPlatform = auiPlatform;
+            this._bIsGen9 = abIsGen9;
+            this._uiController = auiController;
+            this._uiKeyboard = auiKeyboard;
             SetIsDirty();
          }
       }
