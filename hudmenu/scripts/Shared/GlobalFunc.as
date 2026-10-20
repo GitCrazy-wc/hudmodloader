@@ -1609,7 +1609,7 @@ package Shared
          return _loc3_;
       }
       
-      public static function BuildLegendaryStarsGlyphString(param1:Object) : String
+      public static function BuildStarsGlyphString(param1:Object) : String
       {
          var _loc5_:* = undefined;
          var _loc6_:TextField = null;

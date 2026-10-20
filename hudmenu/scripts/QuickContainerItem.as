@@ -203,7 +203,7 @@ package
             this.RaritySelector_mc.RarityOverlay_mc.transform.colorTransform = _loc5_;
             this.RarityIndicator_mc.transform.colorTransform = _loc5_;
             this.RarityBorder_mc.transform.colorTransform = _loc5_;
-            _loc7_ = GlobalFunc.BuildLegendaryStarsGlyphString(this.data);
+            _loc7_ = GlobalFunc.BuildStarsGlyphString(this.data);
             if(this.data.count > 1)
             {
                GlobalFunc.SetText(this.ItemName_tf,this.data.text + " (" + this.data.count + ")" + _loc7_,false,false,true);
